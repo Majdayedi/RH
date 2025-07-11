@@ -10,7 +10,7 @@
 		<div class="product-card">
             <span class="product-badge">Sale</span>
             <div class="product-img-container">
-            <img src="{{ asset('build/assets/'.$company->logo) }}" alt="{{ $company->name }} logo" class="product-img">            </div>
+            <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->name }} logo" class="product-img">            </div>
             <div class="product-info">
               <h3 class="product-title">{{$company->legal_name}}</h3>
               <div class="product-price">
@@ -18,8 +18,8 @@
                 <span class="original-price">₹3999</span>
               </div>
               <div class="product-actions">
-                <button class="details-btn">Details</button>
-                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+              <button class="details-btn" onclick="window.location.href='{{ route('login', ['company' => $company->id]) }}'">Details</button>
+                              <button class="wishlist-btn"><i class="far fa-heart"></i></button>
               </div>
             </div>
           </div>

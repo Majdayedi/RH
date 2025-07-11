@@ -65,7 +65,7 @@
     }
     
     .btn-signin {
-        background-color: #007bff;
+        background-color:  {{ $gradientColor1 }} ;
         border: none;
         border-radius: 4px;
         width: 100%;
@@ -75,7 +75,7 @@
     }
     
     .btn-signin:hover {
-        background-color: #0056b3;
+        background-color: {{ $gradientColor2 }};
     }
     
     .copyright {
@@ -88,15 +88,43 @@
     .alert {
         margin-bottom: 1rem;
     }
+    .company-logo{
+        width: 200;
+        height: 200;
+        object-fit: cover;
+        border-radius: 0%;
+        margin-bottom: 1rem;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensures the image fits within the container */
+    margin-bottom: 1rem;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+
+    }
+    .company-logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
 </style>
 @endpush
-
+@section('background')
+background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }});
+@endsection
 @section('content')
 <div class="login-container">
-    <div class="logo-container">
-        <div class="logo">B</div>
-        <h1 class="login-title">Please sign in</h1>
-    </div>
+    @if(isset($company))
+        <div class="company-logo-container">
+            <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->name }} logo" class="company-logo">
+        </div>
+    @endif
+
+    <h1 style="color: white;">Welcome to {{ $company->name }}</h1>
+
     
     <!-- Error Messages -->
     @if($errors->any())

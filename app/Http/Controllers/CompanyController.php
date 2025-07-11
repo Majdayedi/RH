@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -26,54 +27,60 @@ class CompanyController extends Controller
         return view('companies.companyform'); // Assuming you have a view for creating companies
     }
 
+
     public function store(Request $request)
     {
+        // Validate all fields
         $validated = $request->validate([
-            'legal_name' => ['required', 'string', 'max:255'],
-            'trade_name' => ['nullable', 'string', 'max:255'],
-            'registration_number' => ['required', 'string', 'unique:companies,registration_number'],
-            'tax_id' => ['required', 'string', 'unique:companies,tax_id'],
-            'incorporation_date' => ['required', 'date'],
-            'legal_structure' => ['required', 'string', 'max:255'],
-            'jurisdiction' => ['required', 'string', 'max:255'],
-            'industry' => ['required', 'string', 'max:255'],
-            'headquarters_address' => ['required', 'string'],
-            'country' => ['required', 'string', 'size:2'], // Assuming ISO 3166-1 alpha-2 country code
-            'phone' => ['required', 'string', 'max:20'],
-            'email' => ['required', 'email', 'max:255'],
-            'website' => ['nullable', 'url'],
-            'certificate_of_incorporation' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png'],
-            'tax_registration_certificate' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png'],
-            'logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif']
-            
+            'legal_name' => 'required|string|max:255',
+            'trade_name' => 'nullable|string|max:255',
+            'registration_number' => 'required|string|max:100',
+            'tax_id' => 'required|string|max:100',
+            'incorporation_date' => 'required|date',
+            'legal_structure' => 'required|string|max:50',
+            'jurisdiction' => 'nullable|string|max:100',
+            'industry' => 'required|string|max:100',
+            'is_active' => 'sometimes|boolean',
+            'headquarters_address' => 'required|string',
+            'country' => 'required|string|size:2',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'website' => 'nullable|url|max:255',
+            'certificate_of_incorporation' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'tax_registration_certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'logo' => 'nullable|image|max:2048',
         ]);
-
-        $company = company::create([
-            'legal_name' => $validated['legal_name'],
-            'trade_name' => $validated['trade_name'],
-            'registration_number' => $validated['registration_number'],
-            'tax_id' => $validated['tax_id'],
-            'incorporation_date' => $validated['incorporation_date'],
-            'legal_structure' => $validated['legal_structure'],
-            'jurisdiction' => $validated['jurisdiction'],
-            'industry' => $validated['industry'],
-            'is_active' => true, // Default active status
-            'headquarters_address' => $validated['headquarters_address'],
-            'country' => $validated['country'],
-            'phone' => $validated['phone'],
-            'email' => $validated['email'],
-            'website' => $validated['website'] ?? null,
-            'certificate_of_incorporation' => $validated['certificate_of_incorporation'] ?? null,
-            'tax_registration_certificate' => $validated['tax_registration_certificate'] ?? null,
-            'logo' => $validated['logo'] ?? null,
-        ]);
-
-
-        return redirect()->route('login') // Redirect to dashboard after successful registration
-               ->with('success', 'Registration successful! Welcome to the system.');
-    }
     
-
+        // Handle file uploads
+        $jurisdiction = $request->input('jurisdiction', 'Default Jurisdiction Here');
+        // Example: 'Tunisia' or 'Your Default Jurisdiction'
+    
+        // Handle file uploads
+        $data = $request->except([
+            'certificate_of_incorporation', 
+            'tax_registration_certificate',
+            'logo'
+        ]);
+    
+        // Add the jurisdiction to the data
+        $data['jurisdiction'] = $jurisdiction;
+        // Process each file upload
+        foreach (['logo', 'certificate_of_incorporation', 'tax_registration_certificate'] as $fileField) {
+            if ($request->hasFile($fileField)) {
+                $path = $request->file($fileField)->store("company/{$fileField}s", 'public');
+                $data[$fileField] = $path;
+            }
+        }
+    
+        // Set default value for is_active if not provided
+        $data['is_active'] = $request->has('is_active') ? 1 : 0;
+    
+        // Create the company
+        $company = Company::create($data);
+    
+        return redirect()->route('companies.index')
+            ->with('success', 'Company created successfully!');
+    }
 
     /**
      * Display the specified resource.

@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\HomeController;
 
 // Public routes (accessible without authentication)
 Route::middleware('guest')->group(function () {
@@ -22,17 +23,15 @@ Route::middleware('guest')->group(function () {
     Route::get('register', [RegisterController::class, 'create'])->name('register');
     Route::post('register', [RegisterController::class, 'store']);
     Route::get('companies', [CompanyController::class, 'index'])->name('companies.index');
-    Route::get('companies/create', [CompanyController::class, 'create'])->name('companies.companyform');
+    Route::get('companies/create', [CompanyController::class, 'create'])->name('companies.create');
     Route::post('companies', [CompanyController::class, 'store'])->name('companies.store');
 
 });
 
 // Authenticated routes (require login)
 Route::middleware('auth')->group(function () {
-    // Protected home page
-    Route::get('home', function () {
-        return view('welcome');
-    })->name('home');
+    Route::get('home', [HomeController::class, 'redirectToHome'])->name('home');
+
     
     // Logout
     Route::post('/logout', function () {
