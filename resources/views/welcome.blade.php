@@ -6,13 +6,21 @@
     <title>User Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .fou9ani {
+            background: linear-gradient(135deg, {{$gradientColor1}}, {{$gradientColor2}});
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <!-- User Card -->
         <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
             <!-- Header -->
-            <div class="bg-blue-600 p-6 text-white">
+            <div class="fou9ani">
                 <div class="flex justify-between items-center">
                     <div>
                         <h1 class="text-2xl font-bold">Welcome back, {{ Auth::user()->first_name }}!</h1>

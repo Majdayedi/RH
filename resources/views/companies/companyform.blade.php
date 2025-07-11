@@ -132,6 +132,14 @@
                             Next <i class="fas fa-arrow-right ms-2"></i>
                         </button>
                     </div>
+                    <div class="col-md-4">
+    <label for="jurisdiction" class="form-label">Jurisdiction</label>
+    <input type="text" class="form-input @error('jurisdiction') is-invalid @enderror" 
+           id="jurisdiction" name="jurisdiction" value="{{ old('jurisdiction') }}">
+    @error('jurisdiction')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
                 </div>
 
                 <!-- Step 3: Contact Information -->

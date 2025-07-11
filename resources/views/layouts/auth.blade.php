@@ -98,10 +98,12 @@
             </nav>
         @endauth
         
-        <!-- Main Content -->
-        <main class="d-flex align-items-center justify-content-center min-vh-100">
+       
+        <main class="d-flex align-items-center justify-content-center min-vh-100"
+              style=" @yield('background') ">
             @yield('content')
-        </main>
+        
+</main>
         
         <!-- Footer (optional) -->
         @hasSection('footer')

@@ -604,7 +604,7 @@
 
         
         <div class="hero-cta">
-		<a href="{{ route('companies.companyform') }}" class="btn btn-primary btn-lg me-3">
+		<a href="{{ route('companies.create') }}" class="btn btn-primary btn-lg me-3">
         <i class="fas fa-building me-2"></i> List Your Company
     </a>
           <button class="btn btn-outline-light btn-lg">
@@ -618,12 +618,13 @@
           <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf" alt="Business professionals networking" class="img-fluid rounded">
           <div class="stats-overlay">
             <div class="stat-item">
-              <div class="stat-number">5,000+</div>
+            
+              <div class="stat-number">{{ App\Models\Company::count() }}</div>
               <div class="stat-label">Companies</div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">120+</div>
-              <div class="stat-label">Industries</div>
+              <div class="stat-number">{{App\Models\User::count()}}</div>
+              <div class="stat-label">Users</div>
             </div>
             <div class="stat-item">
               <div class="stat-number">98%</div>

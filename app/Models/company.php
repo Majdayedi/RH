@@ -15,16 +15,23 @@ class Company extends Model
      * @var array<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'phone',
-        'address',
-        'website',
-        'logo',
-        'description',
-        'subscription_type',
-        'subscription_expires_at',
+        'legal_name',
+        'trade_name',
+        'registration_number',
+        'tax_id',
+        'incorporation_date',
+        'legal_structure',
+        'jurisdiction',
+        'industry',
         'is_active',
+        'headquarters_address',
+        'country',
+        'phone',
+        'email',
+        'website',
+        'certificate_of_incorporation',
+        'tax_registration_certificate',
+        'logo'
     ];
 
     /**
