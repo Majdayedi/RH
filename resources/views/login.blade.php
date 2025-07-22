@@ -2,8 +2,120 @@
 
 @section('title', 'Sign in')
 
+
 @push('styles')
 <style>
+    /* Reuse all login page styles */
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-container {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .logo-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6f42c1, #5a4fcf);
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .login-title {
+        color: #6c757d;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    
+    .form-floating input,
+    .form-floating select {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        height: calc(3.5rem + 2px);
+        padding: 1rem 0.75rem;
+    }
+    
+    .form-floating label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 1rem 0.75rem;
+        pointer-events: none;
+        transform-origin: 0 0;
+        transition: all 0.2s ease-out;
+    }
+    
+    .form-floating input:focus,
+    .form-floating select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-floating input:not(:placeholder-shown) ~ label,
+    .form-floating input:focus ~ label,
+    .form-floating select:not([value=""]) ~ label,
+    .form-floating select:focus ~ label {
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+    
+    .btn-signin {
+        background-color: {{ $gradientColor1 ?? '#6f42c1' }};
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-signin:hover {
+        background-color: {{ $gradientColor2 ?? '#5a4fcf' }};
+    }
+    
+    .text-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    .text-link:hover {
+        text-decoration: underline;
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    <style>
     body {
         background-color: #f8f9fa;
         min-height: 100vh;
@@ -112,6 +224,7 @@
     }
 </style>
 @endpush
+
 @section('background')
 background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }});
 @endsection
@@ -123,7 +236,7 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
         </div>
     @endif
 
-    <h1 style="color: white;">Welcome to {{ $company->name }}</h1>
+    <h1 style="color: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }});">Welcome to {{ $company->legal_name }}</h1>
 
     
     <!-- Error Messages -->
@@ -214,7 +327,7 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
     @if (Route::has('register'))
         <div class="text-center mt-2">
             <span class="text-muted">Don't have an account? </span>
-            <a href="{{ route('register') }}" class="text-decoration-none">
+            <a href="{{ route('register', ['company' => $company->id]) }}" class="text-decoration-none">
                 Sign up here
             </a>
         </div>

@@ -1,107 +1,353 @@
 @extends('layouts.auth')
 
+@section('title', 'Register')
+@push('styles')
+<style>
+    /* Reuse all login page styles */
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-container {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .logo-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6f42c1, #5a4fcf);
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .login-title {
+        color: #6c757d;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    
+    .form-floating input,
+    .form-floating select {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        height: calc(3.5rem + 2px);
+        padding: 1rem 0.75rem;
+    }
+    
+    .form-floating label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 1rem 0.75rem;
+        pointer-events: none;
+        transform-origin: 0 0;
+        transition: all 0.2s ease-out;
+    }
+    
+    .form-floating input:focus,
+    .form-floating select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-floating input:not(:placeholder-shown) ~ label,
+    .form-floating input:focus ~ label,
+    .form-floating select:not([value=""]) ~ label,
+    .form-floating select:focus ~ label {
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+    
+    .btn-signin {
+        background-color: {{ $gradientColor1 ?? '#6f42c1' }};
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-signin:hover {
+        background-color: {{ $gradientColor2 ?? '#5a4fcf' }};
+    }
+    
+    .text-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    .text-link:hover {
+        text-decoration: underline;
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    <style>
+    body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .login-container {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .logo-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6f42c1, #5a4fcf);
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .login-title {
+        color: #6c757d;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-floating {
+        margin-bottom: 1rem;
+    }
+    
+    .form-floating input {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+    
+    .form-floating input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .form-check {
+        margin: 1.5rem 0;
+    }
+    
+    .btn-signin {
+        background-color:  {{ $gradientColor1 }} ;
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    
+    .btn-signin:hover {
+        background-color: {{ $gradientColor2 }};
+    }
+    
+    .copyright {
+        text-align: center;
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 2rem;
+    }
+    
+    .alert {
+        margin-bottom: 1rem;
+    }
+    .company-logo{
+        width: 200;
+        height: 200;
+        object-fit: cover;
+        border-radius: 0%;
+        margin-bottom: 1rem;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensures the image fits within the container */
+    margin-bottom: 1rem;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+
+    }
+    .company-logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+</style>
+@endpush
+
+@section('background')
+background: linear-gradient(135deg, {{ $gradientColor1 ?? '#6f42c1' }}, {{ $gradientColor2 ?? '#5a4fcf' }});
+@endsection
+
 @section('content')
-<div class="py-12">
-    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden md:max-w-lg">
-        <div class="p-6">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Register</h2>
-            
-            <form method="POST" action="{{ route('register') }}">                @csrf
-
-                <!-- Matricule -->
-                <div class="mb-4">
-                    <label for="matricule" class="block text-gray-700 text-sm font-bold mb-2">Employee ID</label>
-                    <input id="matricule" type="text" class="form-input w-full @error('matricule') border-red-500 @enderror" 
-                           name="matricule" value="{{ old('matricule') }}" required autofocus>
-                    @error('matricule')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- First Name -->
-                <div class="mb-4">
-                    <label for="first_name" class="block text-gray-700 text-sm font-bold mb-2">First Name</label>
-                    <input id="first_name" type="text" class="form-input w-full @error('first_name') border-red-500 @enderror" 
-                           name="first_name" value="{{ old('first_name') }}" required>
-                    @error('first_name')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Department -->
-                <div class="mb-4">
-                    <label for="department" class="block text-gray-700 text-sm font-bold mb-2">Department</label>
-                    <input id="department" type="text" class="form-input w-full @error('department') border-red-500 @enderror" 
-                           name="department" value="{{ old('department') }}" required placeholder="Enter your department">
-                    @error('department')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-<!-- Role -->
-<div class="mb-4">
-    <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role</label>
-    <select id="role" name="role" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        <option value="employee">Employee</option>
-        <option value="manager">Manager</option>
-        <option value="RH">RH</option>
-        <option value="admin">Admin</option>
-    </select>
-    @error('role')
-        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-    @enderror
-</div>
-                <!-- Email -->
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                    <input id="email" type="email" class="form-input w-full @error('email') border-red-500 @enderror" 
-                           name="email" value="{{ old('email') }}" required>
-                    @error('email')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Password -->
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <input id="password" type="password" class="form-input w-full @error('password') border-red-500 @enderror" 
-                           name="password" required>
-                    @error('password')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Confirm Password -->
-                <div class="mb-4">
-                    <label for="password_confirmation" class="block text-gray-700 text-sm font-bold mb-2">Confirm Password</label>
-                    <input id="password_confirmation" type="password" class="form-input w-full" name="password_confirmation" required>
-                </div>
-
-                <!-- Company -->
-                <div class="mb-6">
-                    <label for="company_id" class="block text-gray-700 text-sm font-bold mb-2">Company</label>
-                    <select id="company_id" name="company_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('company_id') border-red-500 @enderror" required>
-                        <option value="">Select your company...</option>
-                            <option value= "1">microsoft
-                            </option>
-                        
-                    </select>
-                    @error('company_id')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                
-
-                <div class="flex items-center justify-between">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Register
-                </button>
-                    <a href="{{ route('login') }}" class="text-blue-500 hover:text-blue-700 text-sm">
-                        Already have an account?
-                    </a>
-                </div>
-            </form>
+<<div class="login-container">
+    @if(isset($company))
+        <div class="company-logo-container">
+            <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->legal_name }} logo" class="company-logo">
         </div>
-    </div>
+    @endif
+
+
+    
+    <h1 class="login-title">Create Account</h1>
+    
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    
+    <form method="POST" action="{{ route('register', ['company' => $company->id]) }}">
+    @csrf
+    <input type="hidden" name="company_id" value="{{ $company->id }}">
+        
+        <!-- Matricule -->
+        <div class="form-floating">
+            <input id="matricule" type="text" 
+                   class="form-control @error('matricule') is-invalid @enderror" 
+                   name="matricule" value="{{ old('matricule') }}" 
+                   placeholder="Employee ID" required autofocus>
+            <label for="matricule">Employee ID</label>
+            @error('matricule')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        
+        <!-- First Name -->
+        <div class="form-floating">
+            <input id="first_name" type="text" 
+                   class="form-control @error('first_name') is-invalid @enderror" 
+                   name="first_name" value="{{ old('first_name') }}" 
+                   placeholder="First Name" required>
+            <label for="first_name">First Name</label>
+            @error('first_name')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        
+        <!-- Department -->
+        <div class="form-floating">
+            <input id="department" type="text" 
+                   class="form-control @error('department') is-invalid @enderror" 
+                   name="department" value="{{ old('department') }}" 
+                   placeholder="Department" required>
+            <label for="department">Department</label>
+            @error('department')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        
+        <!-- Role -->
+        <div class="form-floating">
+            <select id="role" name="role" 
+                    class="form-control @error('role') is-invalid @enderror" required>
+                <option value="">Select Role</option>
+                <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Employee</option>
+                <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
+                <option value="RH" {{ old('role') == 'RH' ? 'selected' : '' }}>RH</option>
+                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+            </select>
+            <label for="role">Role</label>
+            @error('role')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        
+        <!-- Email -->
+        <div class="form-floating">
+            <input id="email" type="email" 
+                   class="form-control @error('email') is-invalid @enderror" 
+                   name="email" value="{{ old('email') }}" 
+                   placeholder="Email" required>
+            <label for="email">Email</label>
+            @error('email')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        
+        <!-- Password -->
+        <div class="form-floating">
+            <input id="password" type="password" 
+                   class="form-control @error('password') is-invalid @enderror" 
+                   name="password" placeholder="Password" required>
+            <label for="password">Password</label>
+            @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        
+        <!-- Confirm Password -->
+        <div class="form-floating">
+            <input id="password_confirmation" type="password" 
+                   class="form-control" 
+                   name="password_confirmation" 
+                   placeholder="Confirm Password" required>
+            <label for="password_confirmation">Confirm Password</label>
+        </div>
+        
+        <!-- Company -->
+        
+        
+        <button type="submit" class="btn btn-signin mt-3">
+            Register
+        </button>
+        
+        <div class="text-center mt-3">
+            <span>Already have an account? </span>
+            <a href="{{ route('login',['company'=>$company->id]) }}" class="text-link">Sign in</a>
+        </div>
+    </form>
 </div>
 @endsection

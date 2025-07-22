@@ -26,9 +26,9 @@
                         <h1 class="text-2xl font-bold">Welcome back, {{ Auth::user()->first_name }}!</h1>
                         <p class="opacity-90">Here's your profile information</p>
                     </div>
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->first_name) }}&background=random" 
-                         alt="Profile" 
-                         class="w-16 h-16 rounded-full border-2 border-white">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->first_name) }}&background={{ substr($gradientColor1, 4) }}&color=fff" 
+     alt="Profile" 
+     class="w-16 h-16 rounded-full border-2 border-white">
                 </div>
             </div>
             
@@ -83,7 +83,7 @@
                     <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                         <i class="fas fa-edit mr-2"></i> Edit Profile
                     </button>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout', ['company' => $company->id])  }}">
                         @csrf
                         <button type="submit" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">
                             <i class="fas fa-sign-out-alt mr-2"></i> Logout
