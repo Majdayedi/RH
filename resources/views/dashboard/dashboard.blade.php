@@ -702,15 +702,23 @@
     top: 10px;
     right: 10px;
     background: transparent;
-    color: #888;
-    font-size: 20px;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
+    color: var(--primary-gradient);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
 }
 
 .close-btn:hover {
     color: red;
+}
+.act-btn {
+    color: var(--primary-gradient);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+    background: transparent;
+    border:transparent;
+    font-size: 1.0rem;
 }
 
     </style>
@@ -802,11 +810,16 @@
                                 @endif
                                 <td>"{{ $user->role }}"</td>
                                 <td><a href="#">Edit</a> | 
-                                @if ($user->is_active)
-                                <a href="#" @click=>Activate</a></td>                                
+                                @if (!$user->is_active)
+                                <form action="{{ route('user.active', ['user_id' => $user->id]) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="act-btn">Activate</button>
+                                </form>
                                 @else
-                                <a href="#">Disactivate</a></td>
-                                @endif
+                                <form action="{{ route('user.active', ['user_id' => $user->id]) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="act-btn">Disactivate</button>
+                                </form>                                @endif
                                 <td>
    
 </td>

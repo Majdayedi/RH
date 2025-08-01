@@ -367,9 +367,7 @@
                         </h1>
                         <p>Here's your profile information</p>
                     </div>
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->first_name) }}&background={{ substr($gradientColor1, 1) }}&color=fff" 
-                         alt="Profile" 
-                         class="user-avatar">
+                   
                 </div>
             </div>
             

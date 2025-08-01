@@ -58,6 +58,9 @@ Route::get('formulaire',  [FormController::class, 'index'])->name('form.formulai
         ]);
     });
     Route::post('formDEL',[FormController::class,'delete'])->name('form.delete');
+    Route::post('activation', [Dashboard::class, 'active'])->name('user.active');
+
+
 
     Route::post('form',function(Request $request ){
         $form_id = $request->query('form_id');
@@ -76,6 +79,4 @@ Route::get('formulaire',  [FormController::class, 'index'])->name('form.formulai
             'page' => 'forms',
         ]);
     })->name('form.publish');
-
-    });
-
+});

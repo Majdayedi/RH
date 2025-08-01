@@ -784,19 +784,20 @@
     </div>
 
     <!-- Preview Modal -->
-    <div id="previewModal" style="display: none;" class="modal-overlay" @click="closePreview">
-        <div class="modal-content" @click.stop>
-            <div class="modal-header">
-                <h2>Form Preview</h2>
-                <button @click="closePreview" class="modal-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="popup-form-content"></div>
-            </div>
+    <div id="previewModal" style="display: none;" class="modal-overlay" onclick="closePreview()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Form Preview</h2>
+            <button onclick="closePreview()" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="popup-form-content"></div>
         </div>
     </div>
+</div>
+
 
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
@@ -1148,7 +1149,8 @@
                     document.getElementById('previewModal').style.display = 'flex';
                 },
                 closePreview() {
-                    document.getElementById('previewModal').style.display = 'none';
+                    console.log("closing");                  
+                      document.getElementById('previewModal').style.display = 'none';
                 },
                 async testFetch() {
                     try {
@@ -1190,6 +1192,12 @@
                 }
             }
         });
+    </script>
+    <script>
+       function closePreview() {
+                    console.log("closing");                  
+                      document.getElementById('previewModal').style.display = 'none';
+                }
     </script>
 </body>
 </html>

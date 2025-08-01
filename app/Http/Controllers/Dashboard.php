@@ -30,4 +30,65 @@ class Dashboard extends Controller
 
             return view('dashboard.dashboard',compact('company', 'gradientColor1', 'gradientColor2','forms','userc','page'));
         }
-    }}
+    }
+    public function active(Request $request){
+        $user=$request->query('user_id');
+        $user = User::find($user);
+            if($user->is_active){
+                $user->is_active = false;
+    
+            }
+            else{
+                $user->is_active = true;
+            }
+            $user->save();
+    
+            return redirect()->route('dashboard',[
+                'page' => 'dashboard',
+            ]);
+}
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
