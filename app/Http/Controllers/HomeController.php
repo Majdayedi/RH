@@ -25,8 +25,10 @@ class HomeController extends Controller
     
         // Fix: Remove the incorrect where() clause
         $company = Company::find($company_id);
-        $forms= Form::where('company_id', $company_id)->get();
-       
+        $forms = Form::where('company_id', $company_id)
+        ->where('is_active', true)
+        ->get();
+  
         
         if (!$company) {
             return redirect()->route('home')->with('error', 'Company not found');
