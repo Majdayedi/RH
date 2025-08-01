@@ -1,698 +1,1196 @@
-@extends('layouts.form1')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Form Creator</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gradient-color-1: {{ $gradientColor1 ?? '#6f42c1' }};
+            --gradient-color-2: {{ $gradientColor2 ?? '#5a4fcf' }};
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
 
-@section('content')
-<div id="app" style="display: flex; height: 100vh; font-family: Inter, Arial, sans-serif;">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    {{-- Toolbox (Left) --}}
-    <div style="width: 280px; background: #f8fafc; padding: 15px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column;">
-        <div style="margin-bottom: 20px;">
-            <h3 style="color: #1e293b; font-size: 18px; font-weight: 600;">{{ $company->legal_name }}</h3>
-            <p style="color: #64748b; font-size: 14px;">Resignation Form</p>
-        </div>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            margin: 0;
+        }
 
-        <h4 style="color: #334155; font-size: 15px; font-weight: 500; margin-bottom: 15px;">Toolbox</h4>
-        <div style="height: 600px; overflow-y: auto; padding-right: 8px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-            <div v-for="item in toolboxItems"
-                 :key="item.type"
-                 class="toolbox-card"
-                 draggable="true"
-                 @dragstart="startDrag(item.type)"
-                 :style="{ backgroundColor: item.color }">
-                <div class="toolbox-icon">
-                    <span v-html="item.icon"></span>
-                </div>
-                <div class="toolbox-label">@{{ item.label }}</div>
+        /* Main App Container */
+        #app {
+            display: flex;
+            height: 100vh;
+            background: var(--white);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* Toolbox Styles */
+        .toolbox-container {
+            width: 300px;
+            background: var(--gray-50);
+            border-right: 2px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .toolbox-header {
+            padding: 20px;
+            background: #ffffff;
+            color: var(--gradient-color-2);
+            text-align: center;
+        }
+
+        .company-logo-container {
+            width: 150px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .company-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .toolbox-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .toolbox-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .toolbox-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .toolbox-section-title {
+            color: var(--gray-700);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .toolbox-card {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: grab;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .toolbox-card:hover {
+            border-color: var(--gradient-color-1);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .toolbox-card:active {
+            cursor: grabbing;
+            transform: translateY(0);
+        }
+
+        .toolbox-icon {
+            color: var(--gradient-color-1);
+            font-size: 20px;
+        }
+
+        .toolbox-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--gray-50);
+        }
+
+        .toolbar {
+            background: var(--white);
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn {
+            background: var(--white);
+            border: 2px solid var(--gray-300);
+            color: var(--gray-700);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            border-color: var(--gradient-color-1);
+            color: var(--gradient-color-1);
+            box-shadow: 0 2px 8px rgba(111, 66, 193, 0.15);
+        }
+
+        .btn.primary {
+            background: var(--gradient-color-2);
+            border-color: var(--gradient-color-2);
+            color: var(--white);
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn.active {
+            background: var(--gradient-color-1);
+            border-color: var(--gradient-color-1);
+            color: var(--white);
+        }
+
+        .toolbar-spacer {
+            flex: 1;
+        }
+
+        /* Page Info */
+        .page-info {
+            padding: 15px 20px;
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 5px;
+        }
+
+        .page-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-indicator {
+            background: var(--gradient-color-2);
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Drop Area */
+        .drop-area-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .drop-area {
+            background: var(--white);
+            border: 3px dashed var(--gray-300);
+            border-radius: 16px;
+            min-height: 400px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .drop-area:hover {
+            border-color: var(--gradient-color-1);
+            background: rgba(111, 66, 193, 0.02);
+        }
+
+        .empty-drop {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-400);
+        }
+
+        .empty-drop svg {
+            margin-bottom: 15px;
+        }
+
+        .empty-drop p {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Question Block */
+        .question-block {
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .question-block:hover {
+            border-color: var(--gradient-color-1);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.1);
+        }
+
+        .question-block.selected {
+            border-color: var(--gradient-color-1);
+            box-shadow: 0 4px 16px rgba(111, 66, 193, 0.2);
+            background: rgba(111, 66, 193, 0.02);
+        }
+
+        .question-block label {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .question-block .description {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            border-bottom: 2px solid var(--gradient-color-1);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .section-title h3 {
+            color: var(--gradient-color-1);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .question-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .question-block:hover .question-controls {
+            opacity: 1;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-icon.danger {
+            color: #ef4444;
+        }
+
+        .btn-icon.danger:hover {
+            background: #fef2f2;
+        }
+
+        /* Form Controls */
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gradient-color-1);
+            box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1);
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            width: 320px;
+            background: var(--white);
+            border-left: 2px solid var(--gray-200);
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-header {
+            color: var(--gray-800);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .option-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .option-row input {
+            flex: 1;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            background: var(--gradient-color-2);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* JSON Display */
+        .json-display {
+            background: var(--gray-900);
+            color: var(--gray-100);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .toolbox-container {
+                width: 250px;
+            }
+            .settings-panel {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #app {
+                flex-direction: column;
+                height: auto;
+                margin: 10px;
+            }
+            
+            .toolbox-container {
+                width: 100%;
+                max-height: 200px;
+            }
+            
+            .toolbox-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .settings-panel {
+                width: 100%;
+                border-left: none;
+                border-top: 2px solid var(--gray-200);
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-500);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Toolbox (Left) -->
+        <div class="toolbox-container">
+            <div class="toolbox-header">
+                @if(isset($company))
+                    <div class="company-logo-container">
+                        <img src="{{ asset('storage/'.$company->logo) }}" 
+                             alt="{{ $company->name }} logo">
+                    </div>
+                @endif
+                <div class="toolbox-title">Form Builder</div>
+                <div class="toolbox-subtitle">Drag & Drop Components</div>
             </div>
-        </div>
-    </div>
 
-    {{-- Main Content (Center) --}}
-    <div style="flex: 1; padding: 20px; display: flex; flex-direction: column; background: #f9fafb;">
-
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button @click="undo" class="btn secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h10a10 10 0 0 1 10 10v2M3 10l6-6M3 10l6 6"/></svg>
-                Undo
-            </button>
-            <button @click="redo" class="btn secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10H11a10 10 0 0 0-10 10v2M21 10l-6-6M21 10l-6 6"/></svg>
-                Redo
-            </button>
-            <button @click="addPage" class="btn secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                Add Page
-            </button>
-            <button @click="showFormPreview" class="btn" :class="{ 'active': previewMode }">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-    Preview
-</button>
-            <div style="flex: 1;"></div>
-            <button @click="saveToLocalStorage" class="btn secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                Save
-            </button>
-            <button @click="showJson = !showJson" class="btn secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2z"></path><path d="M10 8h4"></path><path d="M10 12h4"></path><path d="M10 16h4"></path></svg>
-                JSON
-            </button>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <h3 style="color: #334155; font-size: 16px; font-weight: 500;">Pages</h3>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="background: #e2e8f0; padding: 4px 12px; border-radius: 20px; font-size: 14px;">Page 1</span>
-                <button class="btn secondary" @click="addPage">+ Add Page</button>
-            </div>
-        </div>
-
-        <div class="page-container">
-            <h4 style="color: #1e293b; font-size: 20px; font-weight: 600; margin-bottom: 5px;">Drafts/ Resignation form</h4>
-
-            <div class="drop-area" @dragover.prevent @drop="onDrop">
-
-                <div v-if="questions.length === 0" class="empty-drop">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    <p>Drag questions here</p>
+            <div class="toolbox-content">
+                <div class="toolbox-section-title">
+                    <i class="fas fa-cube"></i>
+                    Basic Elements
                 </div>
-
-                <div v-for="(question, index) in questions"
-                     :key="question.id"
-                     class="question-block"
-                     draggable="true"
-                     @dragstart="startReorder(index)"
-                     @dragover.prevent
-                     @drop="reorderQuestion(index)"
-                     @click="selectQuestion(index)"
-                     
-                     :class="{ 'selected': selectedQuestionIndex === index }">
-
-                    <div v-if="question.type === 'section-title'" class="section-title">
-                        <h3 v-text="question.label || 'Section Title'"></h3>
-                        <hr>
-                    </div>
-
-                    <div v-if="question.type !== 'section-title'">
-                        <label v-text="question.label || 'Question label...'"></label>
-                        <div v-if="question.description" class="description" v-text="question.description"></div>
-                    </div>
-
-                    <div v-if="question.type === 'text'">
-                        <input type="text" :placeholder="question.placeholder || ''">
-                    </div>
-                    
-                    <div v-if="question.type === 'select'">
-                        <select>
-                            <option v-for="opt in question.options" :value="opt">@{{ opt }}</option>
-                        </select>
-                    </div>
-                    
-                    <div v-if="question.type === 'radio-group'" class="radio-group">
-                        <div v-for="opt in question.options" class="radio-option">
-                            <input type="radio" :name="question.id" :id="'opt-'+question.id+'-'+opt" :value="opt">
-                            <label :for="'opt-'+question.id+'-'+opt">@{{ opt }}</label>
+                <div class="toolbox-grid">
+                    <div v-for="item in toolboxItems"
+                         :key="item.type"
+                         class="toolbox-card"
+                         draggable="true"
+                         @dragstart="startDrag(item.type)">
+                        <div class="toolbox-icon">
+                            <span v-html="item.icon"></span>
                         </div>
+                        <div class="toolbox-label">@{{ item.label }}</div>
                     </div>
-                    
-                    <div v-if="question.type === 'checkbox-group'" class="checkbox-group">
-                        <div v-for="opt in question.options" class="checkbox-option">
-                            <input type="checkbox" :id="'chk-'+question.id+'-'+opt" :value="opt">
-                            <label :for="'chk-'+question.id+'-'+opt">@{{ opt }}</label>
-                        </div>
-                    </div>
-
-                    <div class="question-controls">
-                        <button @click.stop="removeQuestion(index)" class="btn-icon danger">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                        </button>
-                    </div>
-
                 </div>
-
             </div>
         </div>
 
-        <pre v-if="showJson" style="margin-top: 20px; padding: 15px; background: #1e293b; color: #f8fafc; border-radius: 6px;">@{{ JSON.stringify(questions, null, 2) }}</pre>
-
-        
-     <div id="myModal" style="
-    display:none; 
-    position:fixed; 
-    top:0; 
-    left:0; 
-    width:100%; 
-    height:100%; 
-    background:rgba(0,0,0,0.4); 
-    z-index:1000; 
-    justify-content:center; 
-    align-items:center;
-    font-family: Inter, Arial, sans-serif;
-">
-    <div style="
-        background:white; 
-        width:90%; 
-        max-width:700px; 
-        margin:auto; 
-        padding:30px; 
-        border-radius:16px; 
-        box-shadow:0 8px 24px rgba(0,0,0,0.2);
-        max-height:85vh; 
-        overflow-y:auto;
-        display:flex; 
-        flex-direction:column;
-    ">
-        <div style="
-            display:flex; 
-            justify-content:space-between; 
-            align-items:center; 
-            margin-bottom:20px;
-            border-bottom:1px solid #eee;
-            padding-bottom:10px;
-        ">
-            <h2 style="
-                margin:0; 
-                font-size:1.5rem; 
-                font-weight:600; 
-                color:#4f46e5;
-            ">
-                Form Preview
-            </h2>
-            <button @click="closePreview" style="
-                background:none; 
-                border:none; 
-                font-size:1.5rem; 
-                font-weight:bold; 
-                cursor:pointer; 
-                color:#999;
-                transition:color 0.3s;
-            " 
-            onmouseover="this.style.color='#4f46e5'" 
-            onmouseout="this.style.color='#999'">
-                ×
-            </button>
-        </div>
-
-        <div id="popup-form-content" style="flex:1;"></div>
-    </div>
-</div>
-
-
-
-
-
-    </div>
-
-    {{-- Settings Panel (Right) --}}
-    <div v-if="selectedQuestionIndex !== null" style="width: 300px; background: #fff; border-left: 1px solid #e2e8f0; padding: 20px; overflow-y: auto;">
-        <h3 style="color: #1e293b; font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            Question Settings
-        </h3>
-
-        <div class="settings-group">
-            <label>Label</label>
-            <input type="text" v-model="questions[selectedQuestionIndex].label" placeholder="Question label">
-        </div>
-
-        <div v-if="['text'].includes(questions[selectedQuestionIndex].type)" class="settings-group">
-            <label>Placeholder</label>
-            <input type="text" v-model="questions[selectedQuestionIndex].placeholder" placeholder="Placeholder text">
-        </div>
-
-        <div v-if="['select', 'checkbox-group', 'radio-group'].includes(questions[selectedQuestionIndex].type)" class="settings-group">
-            <label>Options</label>
-            <div v-for="(option, index) in questions[selectedQuestionIndex].options" class="option-row">
-                <input type="text" v-model="questions[selectedQuestionIndex].options[index]" placeholder="Option">
-                <button @click="removeOption(questions[selectedQuestionIndex], index)" class="btn-icon danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        <!-- Main Content (Center) -->
+        <div class="main-content">
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <button @click="undo" class="btn">
+                    <i class="fas fa-undo"></i>
+                    Undo
+                </button>
+                <button @click="redo" class="btn">
+                    <i class="fas fa-redo"></i>
+                    Redo
+                </button>
+                <button @click="addPage" class="btn">
+                    <i class="fas fa-plus"></i>
+                    Add Page
+                </button>
+                <button @click="showFormPreview" class="btn" :class="{ 'active': previewMode }">
+                    <i class="fas fa-eye"></i>
+                    Preview
+                </button>
+                
+                <div class="toolbar-spacer"></div>
+                
+                <button @click="testFetch" class="btn primary">
+                    <i class="fas fa-save"></i>
+                    Save Form
+                </button>
+                <button @click="showJson = !showJson" class="btn">
+                    <i class="fas fa-code"></i>
+                    JSON
                 </button>
             </div>
-            <button @click="addOption(questions[selectedQuestionIndex])" class="btn secondary" style="margin-top: 5px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                Add Option
-            </button>
+
+            <!-- Page Info -->
+            <div class="page-info">
+                <div class="page-title">Form Designer</div>
+                <div class="page-meta">
+                    <div class="page-indicator">Page 1</div>
+                    <span style="color: var(--gray-500); font-size: 14px;">Resignation Form</span>
+                </div>
+            </div>
+
+            <!-- Drop Area -->
+            <div class="drop-area-container">
+                <div class="drop-area" @dragover.prevent @drop="onDrop">
+                    <div v-if="questions.length === 0" class="empty-drop">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <p>Drag form elements here to build your form</p>
+                    </div>
+
+                    <div v-for="(question, index) in questions"
+                         :key="question.id"
+                         class="question-block"
+                         draggable="true"
+                         @dragstart="startReorder(index)"
+                         @dragover.prevent
+                         @drop="reorderQuestion(index)"
+                         @click="selectQuestion(index)"
+                         :class="{ 'selected': selectedQuestionIndex === index }">
+
+                        <div v-if="question.type === 'section-title'" class="section-title">
+                            <h3 v-text="question.label || 'Section Title'"></h3>
+                        </div>
+
+                        <div v-if="question.type !== 'section-title'">
+                            <label v-text="question.label || 'Question label...'"></label>
+                            <div v-if="question.description" class="description" v-text="question.description"></div>
+                        </div>
+
+                        <div v-if="question.type === 'text'">
+                            <input type="text" class="form-control" :placeholder="question.placeholder || ''">
+                        </div>
+                        
+                        <div v-if="question.type === 'select'">
+                            <select class="form-control">
+                                <option v-for="opt in question.options" :value="opt">@{{ opt }}</option>
+                            </select>
+                        </div>
+                        
+                        <div v-if="question.type === 'radio-group'" class="radio-group">
+                            <div v-for="opt in question.options" class="radio-option">
+                                <input type="radio" :name="question.id" :id="'opt-'+question.id+'-'+opt" :value="opt">
+                                <label :for="'opt-'+question.id+'-'+opt">@{{ opt }}</label>
+                            </div>
+                        </div>
+                        
+                        <div v-if="question.type === 'checkbox-group'" class="checkbox-group">
+                            <div v-for="opt in question.options" class="checkbox-option">
+                                <input type="checkbox" :id="'chk-'+question.id+'-'+opt" :value="opt">
+                                <label :for="'chk-'+question.id+'-'+opt">@{{ opt }}</label>
+                            </div>
+                        </div>
+
+                        <div class="question-controls">
+                            <button @click.stop="removeQuestion(index)" class="btn-icon danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JSON Display -->
+            <div v-if="showJson" class="json-display">@{{ JSON.stringify(questions, null, 2) }}</div>
         </div>
 
-        <div class="settings-group">
-            <label>Description</label>
-            <textarea v-model="questions[selectedQuestionIndex].description" placeholder="Help text or description" rows="3"></textarea>
-        </div>
+        <!-- Settings Panel (Right) -->
+        <div v-if="selectedQuestionIndex !== null" class="settings-panel">
+            <div class="settings-header">
+                <i class="fas fa-cog"></i>
+                Question Settings
+            </div>
 
-        <div class="settings-group">
-            <label class="checkbox-label">
-                <input type="checkbox" v-model="questions[selectedQuestionIndex].required">
-                <span>Required</span>
-            </label>
-        </div>
+            <div class="settings-group">
+                <label>Label</label>
+                <input type="text" class="form-control" v-model="questions[selectedQuestionIndex].label" placeholder="Question label">
+            </div>
 
-        <div v-if="questions[selectedQuestionIndex].type === 'section-title'" class="settings-group">
-            <label>Section Style</label>
-            <select v-model="questions[selectedQuestionIndex].style" style="width: 100%;">
-                <option value="h3">Heading with line</option>
-                <option value="h2">Large heading</option>
-                <option value="h4">Small heading</option>
-            </select>
-        </div>
+            <div v-if="['text'].includes(questions[selectedQuestionIndex].type)" class="settings-group">
+                <label>Placeholder</label>
+                <input type="text" class="form-control" v-model="questions[selectedQuestionIndex].placeholder" placeholder="Placeholder text">
+            </div>
 
-        <div class="settings-group" style="margin-top: 20px;">
-            <button @click="duplicateQuestion(selectedQuestionIndex)" class="btn secondary" style="width: 100%;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                Duplicate
-            </button>
+            <div v-if="['select', 'checkbox-group', 'radio-group'].includes(questions[selectedQuestionIndex].type)" class="settings-group">
+                <label>Options</label>
+                <div v-for="(option, index) in questions[selectedQuestionIndex].options" class="option-row">
+                    <input type="text" class="form-control" v-model="questions[selectedQuestionIndex].options[index]" placeholder="Option">
+                    <button @click="removeOption(questions[selectedQuestionIndex], index)" class="btn-icon danger">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <button @click="addOption(questions[selectedQuestionIndex])" class="btn" style="margin-top: 8px; width: 100%;">
+                    <i class="fas fa-plus"></i>
+                    Add Option
+                </button>
+            </div>
+
+            <div class="settings-group">
+                <label>Description</label>
+                <textarea class="form-control" v-model="questions[selectedQuestionIndex].description" placeholder="Help text or description" rows="3"></textarea>
+            </div>
+
+            <div class="settings-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" v-model="questions[selectedQuestionIndex].required">
+                    <span>Required</span>
+                </label>
+            </div>
+
+            <div v-if="questions[selectedQuestionIndex].type === 'section-title'" class="settings-group">
+                <label>Section Style</label>
+                <select class="form-control" v-model="questions[selectedQuestionIndex].style">
+                    <option value="h3">Heading with line</option>
+                    <option value="h2">Large heading</option>
+                    <option value="h4">Small heading</option>
+                </select>
+            </div>
+
+            <div class="settings-group" style="margin-top: 30px;">
+                <button @click="duplicateQuestion(selectedQuestionIndex)" class="btn" style="width: 100%;">
+                    <i class="fas fa-copy"></i>
+                    Duplicate Question
+                </button>
+            </div>
         </div>
     </div>
 
-</div>
+    <!-- Preview Modal -->
+    <div id="previewModal" style="display: none;" class="modal-overlay" @click="closePreview">
+        <div class="modal-content" @click.stop>
+            <div class="modal-header">
+                <h2>Form Preview</h2>
+                <button @click="closePreview" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="popup-form-content"></div>
+            </div>
+        </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                toolboxItems: [
+                    // Basic Inputs
+                    { 
+                        type: 'text', 
+                        label: 'Text Input', 
+                        icon: '<i class="fas fa-font"></i>',
+                        color: '#eff6ff',
+                        category: 'basic'
+                    },
+                    { 
+                        type: 'textarea', 
+                        label: 'Long Text', 
+                        icon: '<i class="fas fa-align-left"></i>',
+                        color: '#ecfdf5',
+                        category: 'basic'
+                    },
+                    { 
+                        type: 'number', 
+                        label: 'Number', 
+                        icon: '<i class="fas fa-hashtag"></i>',
+                        color: '#fffbeb',
+                        category: 'basic'
+                    },
+                    { 
+                        type: 'email', 
+                        label: 'Email', 
+                        icon: '<i class="fas fa-envelope"></i>',
+                        color: '#eff6ff',
+                        category: 'basic'
+                    },
 
+                    // Choice Elements
+                    { 
+                        type: 'radio-group', 
+                        label: 'Single Choice', 
+                        icon: '<i class="far fa-dot-circle"></i>',
+                        color: '#ecfdf5',
+                        category: 'choice'
+                    },
+                    { 
+                        type: 'checkbox-group', 
+                        label: 'Multiple Choice', 
+                        icon: '<i class="fas fa-check-square"></i>',
+                        color: '#fef2f2',
+                        category: 'choice'
+                    },
+                    { 
+                        type: 'select', 
+                        label: 'Dropdown', 
+                        icon: '<i class="fas fa-chevron-down"></i>',
+                        color: '#f5f3ff',
+                        category: 'choice'
+                    },
+                    { 
+                        type: 'toggle', 
+                        label: 'Toggle', 
+                        icon: '<i class="fas fa-toggle-on"></i>',
+                        color: '#ecfdf5',
+                        category: 'choice'
+                    },
 
-{{-- Vue App --}}
-<script>
-    new Vue({
-        el: '#app',
-        data: {
-            toolboxItems: [
-                // Basic Inputs
-                { 
-                    type: 'text', 
-                    label: 'Text Input', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
-                    color: '#eff6ff',
-                    category: 'basic'
-                },
-                { 
-                    type: 'textarea', 
-                    label: 'Long Text', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>',
-                    color: '#ecfdf5',
-                    category: 'basic'
-                },
-                { 
-                    type: 'number', 
-                    label: 'Number', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><path d="M9 10h6"></path><path d="M12 7v6"></path></svg>',
-                    color: '#fffbeb',
-                    category: 'basic'
-                },
-                { 
-                    type: 'email', 
-                    label: 'Email', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>',
-                    color: '#eff6ff',
-                    category: 'basic'
-                },
+                    // Date & Time
+                    { 
+                        type: 'date', 
+                        label: 'Date', 
+                        icon: '<i class="fas fa-calendar-alt"></i>',
+                        color: '#f0fdf9',
+                        category: 'datetime'
+                    },
+                    { 
+                        type: 'time', 
+                        label: 'Time', 
+                        icon: '<i class="fas fa-clock"></i>',
+                        color: '#f5f3ff',
+                        category: 'datetime'
+                    },
 
-                // Choice Elements
-                { 
-                    type: 'radio-group', 
-                    label: 'Single Choice', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>',
-                    color: '#ecfdf5',
-                    category: 'choice'
-                },
-                { 
-                    type: 'checkbox-group', 
-                    label: 'Multiple Choice', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>',
-                    color: '#fef2f2',
-                    category: 'choice'
-                },
-                { 
-                    type: 'select', 
-                    label: 'Dropdown', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>',
-                    color: '#f5f3ff',
-                    category: 'choice'
-                },
-                { 
-                    type: 'toggle', 
-                    label: 'Toggle', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="7"></rect><circle cx="8" cy="12" r="3"></circle></svg>',
-                    color: '#ecfdf5',
-                    category: 'choice'
-                },
+                    // Special Inputs
+                    { 
+                        type: 'file', 
+                        label: 'File Upload', 
+                        icon: '<i class="fas fa-upload"></i>',
+                        color: '#fef2f2',
+                        category: 'special'
+                    },
+                    { 
+                        type: 'signature', 
+                        label: 'Signature', 
+                        icon: '<i class="fas fa-signature"></i>',
+                        color: '#eff6ff',
+                        category: 'special'
+                    },
+                    { 
+                        type: 'rating', 
+                        label: 'Rating', 
+                        icon: '<i class="fas fa-star"></i>',
+                        color: '#fffbeb',
+                        category: 'special'
+                    },
+                    { 
+                        type: 'range', 
+                        label: 'Range Slider', 
+                        icon: '<i class="fas fa-sliders-h"></i>',
+                        color: '#ecfdf5',
+                        category: 'special'
+                    },
 
-                // Date & Time
-                { 
-                    type: 'date', 
-                    label: 'Date', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>',
-                    color: '#f0fdf9',
-                    category: 'datetime'
-                },
-                { 
-                    type: 'time', 
-                    label: 'Time', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
-                    color: '#f5f3ff',
-                    category: 'datetime'
-                },
-                { 
-                    type: 'datetime-local', 
-                    label: 'Date & Time', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
-                    color: '#eff6ff',
-                    category: 'datetime'
-                },
-
-                // Special Inputs
-                { 
-                    type: 'file', 
-                    label: 'File Upload', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>',
-                    color: '#fef2f2',
-                    category: 'special'
-                },
-                { 
-                    type: 'signature', 
-                    label: 'Signature', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 0 1-4 0V5a2 2 0 0 0-4 0v3h4"></path><path d="m19 17-3-3-3 3"></path><path d="m19 14-3 3-3-3"></path></svg>',
-                    color: '#eff6ff',
-                    category: 'special'
-                },
-                { 
-                    type: 'rating', 
-                    label: 'Rating', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
-                    color: '#fffbeb',
-                    category: 'special'
-                },
-                { 
-                    type: 'range', 
-                    label: 'Range Slider', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 12h-6M8 12H2"></path></svg>',
-                    color: '#ecfdf5',
-                    category: 'special'
-                },
-
-                // Layout Elements
-                { 
-                    type: 'section-title', 
-                    label: 'Section Title', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>',
-                    color: '#f0fdf4',
-                    category: 'layout'
-                },
-                { 
-                    type: 'divider', 
-                    label: 'Divider', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>',
-                    color: '#f8fafc',
-                    category: 'layout'
-                },
-                { 
-                    type: 'html', 
-                    label: 'HTML Content', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>',
-                    color: '#f0fdf9',
-                    category: 'layout'
-                },
-                { 
-                    type: 'page-break', 
-                    label: 'Page Break', 
-                    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>',
-                    color: '#fef2f2',
-                    category: 'layout'
-                }
-            ],
-            questions: [],
-            draggedType: '',
-            draggedIndex: null,
-            previewMode: false,
-            showJson: false,
-            selectedQuestionIndex: null,
-            activeToolboxCategory: 'basic'
-        },
-        computed: {
-            filteredToolboxItems() {
-                return this.toolboxItems.filter(item => item.category === this.activeToolboxCategory);
-            }
-        },
-        methods: {
-            startDrag(type) {
-                this.draggedType = type;
-            },
-            startReorder(index) {
-                this.draggedIndex = index;
-            },
-            reorderQuestion(index) {
-                if (this.draggedIndex !== null && this.draggedIndex !== index) {
-                    const moved = this.questions.splice(this.draggedIndex, 1)[0];
-                    this.questions.splice(index, 0, moved);
-                    this.draggedIndex = null;
-                }
-            },
-            onDrop() {
-                if (this.draggedType) {
-                    const question = {
-                        id: 'q-' + Date.now(),
-                        type: this.draggedType,
-                        label: this.getDefaultLabel(this.draggedType),
-                        required: false
-                    };
-                    
-                    // Set type-specific defaults
-                    switch(this.draggedType) {
-                        case 'section-title':
-                            question.style = 'h3';
-                            break;
-                        case 'select':
-                        case 'checkbox-group':
-                        case 'radio-group':
-                            question.options = ['Option 1', 'Option 2'];
-                            break;
-                        case 'rating':
-                            question.max = 5;
-                            question.icon = 'star';
-                            break;
-                        case 'range':
-                            question.min = 0;
-                            question.max = 100;
-                            question.step = 1;
-                            break;
-                        case 'toggle':
-                            question.defaultValue = false;
-                            break;
+                    // Layout Elements
+                    { 
+                        type: 'section-title', 
+                        label: 'Section Title', 
+                        icon: '<i class="fas fa-heading"></i>',
+                        color: '#f0fdf4',
+                        category: 'layout'
+                    },
+                    { 
+                        type: 'divider', 
+                        label: 'Divider', 
+                        icon: '<i class="fas fa-minus"></i>',
+                        color: '#f8fafc',
+                        category: 'layout'
                     }
-                    
-                    this.questions.push(question);
-                    this.draggedType = '';
-                    this.selectedQuestionIndex = this.questions.length - 1;
-                }
+                ],
+                questions: [],
+                draggedType: '',
+                draggedIndex: null,
+                previewMode: false,
+                showJson: false,
+                selectedQuestionIndex: null,
+                activeToolboxCategory: 'basic'
             },
-            getDefaultLabel(type) {
-                const defaults = {
-                    'text': 'Text Input',
-                    'textarea': 'Long Text',
-                    'number': 'Number Input',
-                    'email': 'Email Address',
-                    'radio-group': 'Select One',
-                    'checkbox-group': 'Select Multiple',
-                    'select': 'Dropdown',
-                    'toggle': 'Toggle Option',
-                    'date': 'Select Date',
-                    'time': 'Select Time',
-                    'datetime-local': 'Select Date & Time',
-                    'file': 'Upload File',
-                    'signature': 'Signature',
-                    'rating': 'Rating',
-                    'range': 'Range',
-                    'section-title': 'Section Title',
-                    'divider': '',
-                    'html': 'Custom Content',
-                    'page-break': ''
-                };
-                return defaults[type] || '';
-            },
-            addOption(question) {
-                if (!question.options) question.options = [];
-                const optionCount = question.options.length + 1;
-                question.options.push(`Option ${optionCount}`);
-            },
-            removeOption(question, index) {
-                question.options.splice(index, 1);
-            },
-            removeQuestion(index) {
-                this.questions.splice(index, 1);
-                if (this.selectedQuestionIndex === index) {
-                    this.selectedQuestionIndex = null;
-                } else if (this.selectedQuestionIndex > index) {
-                    this.selectedQuestionIndex--;
-                }
-            },
-            selectQuestion(index) {
-                this.selectedQuestionIndex = index;
-            },
-            duplicateQuestion(index) {
-                const question = JSON.parse(JSON.stringify(this.questions[index]));
-                question.id = 'q-' + Date.now();
-                this.questions.splice(index + 1, 0, question);
-                this.selectedQuestionIndex = index + 1;
-            },
-            
-              saveToLocalStorage() {
-    localStorage.setItem('formBuilderData', JSON.stringify(this.questions));
-    // This saves the form configuration as JSON
-
-            },
-            loadFromLocalStorage() {
-    const saved = localStorage.getItem('formBuilderData');
-    if (saved) {
-        this.questions = JSON.parse(saved); // This loads form from JSON
-        alert('Form loaded from browser storage!');
-    }
-},
-            exportForm() {
-                this.showJson = true;
-                // In a real app, you might want to implement actual export functionality
-            },
-            importForm(json) {
-                try {
-                    const data = JSON.parse(json);
-                    this.questions = data;
-                    this.showJson = false;
-                    alert('Form imported successfully!');
-                } catch (e) {
-                    alert('Invalid JSON format');
-                }
-            },
-            setToolboxCategory(category) {
-                this.activeToolboxCategory = category;
-            },
-            undo() { 
-                // Implement undo functionality with a history stack
-                alert('Undo functionality would be implemented with a history stack');
-            },
-            redo() { 
-                alert('Redo functionality would be implemented with a history stack');
-            },
-            addPage() { 
-                alert('Multi-page support would be implemented by managing multiple question arrays');
-            },
-           
-exportFormJSON() {
-        return JSON.stringify(this.questions, null, 2);
-    },
-    
-    importFormJSON(jsonString) {
-        try {
-            const parsed = JSON.parse(jsonString);
-            this.questions = parsed;
-            return true;
-        } catch (e) {
-            console.error("Invalid JSON", e);
-            return false;
-        }
-    },
-    generateFormHTML() {
-    let html = `
-        <form style="padding:20px; max-width:600px; margin:0 auto; font-family:Inter, Arial, sans-serif; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-    `;
-
-    this.questions.forEach(q => {
-        html += `<div style="margin-bottom:20px;">`;
-
-        // Section title
-        if (q.type === 'section-title' && q.label) {
-            html += `
-                <h3 style="font-size:1.25rem; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px; color:#4f46e5;">
-                    ${q.label}
-                </h3>
-            `;
-        }
-
-        // Label for inputs
-        if (q.type !== 'section-title' && q.label) {
-            html += `
-                <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.95rem; color:#333;">
-                    ${q.label}
-                </label>
-            `;
-        }
-
-        // Inputs
-        const commonInputStyle = 'width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:1rem;';
-
-        switch (q.type) {
-            case 'text':
-            case 'email':
-            case 'number':
-                html += `<input type="${q.type}" placeholder="${q.placeholder || ''}" style="${commonInputStyle}">`;
-                break;
-            case 'textarea':
-                html += `<textarea placeholder="${q.placeholder || ''}" style="${commonInputStyle} height:100px; resize:vertical;"></textarea>`;
-                break;
-            case 'select':
-                html += `<select style="${commonInputStyle} appearance:none; background:#fff;">`;
-                (q.options || []).forEach(opt => {
-                    html += `<option>${opt}</option>`;
-                });
-                html += `</select>`;
-                break;
-            case 'radio-group':
-                html += `<div style="display:flex; flex-direction:column; gap:8px;">`;
-                (q.options || []).forEach(opt => {
-                    html += `
-                        <label style="display:flex; align-items:center; gap:8px;">
-                            <input type="radio" name="${q.id}" value="${opt}"> ${opt}
-                        </label>
+            methods: {
+                startDrag(type) {
+                    this.draggedType = type;
+                },
+                startReorder(index) {
+                    this.draggedIndex = index;
+                },
+                reorderQuestion(index) {
+                    if (this.draggedIndex !== null && this.draggedIndex !== index) {
+                        const moved = this.questions.splice(this.draggedIndex, 1)[0];
+                        this.questions.splice(index, 0, moved);
+                        this.draggedIndex = null;
+                    }
+                },
+                onDrop() {
+                    if (this.draggedType) {
+                        const question = {
+                            id: 'q-' + Date.now(),
+                            type: this.draggedType,
+                            label: this.getDefaultLabel(this.draggedType),
+                            required: false
+                        };
+                        
+                        // Set type-specific defaults
+                        switch(this.draggedType) {
+                            case 'section-title':
+                                question.style = 'h3';
+                                break;
+                            case 'select':
+                            case 'checkbox-group':
+                            case 'radio-group':
+                                question.options = ['Option 1', 'Option 2'];
+                                break;
+                            case 'rating':
+                                question.max = 5;
+                                question.icon = 'star';
+                                break;
+                            case 'range':
+                                question.min = 0;
+                                question.max = 100;
+                                question.step = 1;
+                                break;
+                            case 'toggle':
+                                question.defaultValue = false;
+                                break;
+                        }
+                        
+                        this.questions.push(question);
+                        this.draggedType = '';
+                        this.selectedQuestionIndex = this.questions.length - 1;
+                    }
+                },
+                getDefaultLabel(type) {
+                    const defaults = {
+                        'text': 'Text Input',
+                        'textarea': 'Long Text',
+                        'number': 'Number Input',
+                        'email': 'Email Address',
+                        'radio-group': 'Select One',
+                        'checkbox-group': 'Select Multiple',
+                        'select': 'Dropdown',
+                        'toggle': 'Toggle Option',
+                        'date': 'Select Date',
+                        'time': 'Select Time',
+                        'datetime-local': 'Select Date & Time',
+                        'file': 'Upload File',
+                        'signature': 'Signature',
+                        'rating': 'Rating',
+                        'range': 'Range',
+                        'section-title': 'Section Title',
+                        'divider': '',
+                        'html': 'Custom Content',
+                        'page-break': ''
+                    };
+                    return defaults[type] || '';
+                },
+                addOption(question) {
+                    if (!question.options) question.options = [];
+                    const optionCount = question.options.length + 1;
+                    question.options.push(`Option ${optionCount}`);
+                },
+                removeOption(question, index) {
+                    question.options.splice(index, 1);
+                },
+                removeQuestion(index) {
+                    this.questions.splice(index, 1);
+                    if (this.selectedQuestionIndex === index) {
+                        this.selectedQuestionIndex = null;
+                    } else if (this.selectedQuestionIndex > index) {
+                        this.selectedQuestionIndex--;
+                    }
+                },
+                selectQuestion(index) {
+                    this.selectedQuestionIndex = index;
+                },
+                duplicateQuestion(index) {
+                    const question = JSON.parse(JSON.stringify(this.questions[index]));
+                    question.id = 'q-' + Date.now();
+                    this.questions.splice(index + 1, 0, question);
+                    this.selectedQuestionIndex = index + 1;
+                },
+                undo() { 
+                    alert('Undo functionality would be implemented with a history stack');
+                },
+                redo() { 
+                    alert('Redo functionality would be implemented with a history stack');
+                },
+                addPage() { 
+                    alert('Multi-page support would be implemented by managing multiple question arrays');
+                },
+                exportFormJSON() {
+                    return JSON.stringify(this.questions, null, 2);
+                },
+                generateFormHTML() {
+                    let html = `
+                        <form style="padding:30px; max-width:700px; margin:0 auto; font-family:Poppins, sans-serif; background:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.1);">
                     `;
-                });
-                html += `</div>`;
-                break;
-            case 'checkbox-group':
-                html += `<div style="display:flex; flex-direction:column; gap:8px;">`;
-                (q.options || []).forEach(opt => {
+
+                    this.questions.forEach(q => {
+                        html += `<div style="margin-bottom:24px;">`;
+
+                        // Section title
+                        if (q.type === 'section-title' && q.label) {
+                            html += `
+                                <h3 style="font-size:1.4rem; margin-bottom:16px; border-bottom:2px solid var(--gradient-color-1); padding-bottom:8px; color:var(--gradient-color-1); font-weight:600;">
+                                    ${q.label}
+                                </h3>
+                            `;
+                        }
+
+                        // Label for inputs
+                        if (q.type !== 'section-title' && q.label) {
+                            html += `
+                                <label style="display:block; margin-bottom:8px; font-weight:600; font-size:1rem; color:#374151;">
+                                    ${q.label}
+                                    ${q.required ? '<span style="color:#ef4444;">*</span>' : ''}
+                                </label>
+                            `;
+                        }
+
+                        // Description
+                        if (q.description) {
+                            html += `
+                                <p style="margin-bottom:12px; color:#6b7280; font-size:0.9rem;">
+                                    ${q.description}
+                                </p>
+                            `;
+                        }
+
+                        // Inputs
+                        const commonInputStyle = 'width:100%; padding:12px 16px; border:2px solid #d1d5db; border-radius:10px; font-size:1rem; transition:all 0.3s; font-family:inherit;';
+
+                        switch (q.type) {
+                            case 'text':
+                            case 'email':
+                            case 'number':
+                                html += `<input type="${q.type}" placeholder="${q.placeholder || ''}" style="${commonInputStyle}">`;
+                                break;
+                            case 'textarea':
+                                html += `<textarea placeholder="${q.placeholder || ''}" style="${commonInputStyle} height:120px; resize:vertical;"></textarea>`;
+                                break;
+                            case 'select':
+                                html += `<select style="${commonInputStyle} background:#fff;">`;
+                                (q.options || []).forEach(opt => {
+                                    html += `<option>${opt}</option>`;
+                                });
+                                html += `</select>`;
+                                break;
+                            case 'radio-group':
+                                html += `<div style="display:flex; flex-direction:column; gap:12px;">`;
+                                (q.options || []).forEach(opt => {
+                                    html += `
+                                        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.3s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                                            <input type="radio" name="${q.id}" value="${opt}" style="margin:0;"> 
+                                            <span>${opt}</span>
+                                        </label>
+                                    `;
+                                });
+                                html += `</div>`;
+                                break;
+                            case 'checkbox-group':
+                                html += `<div style="display:flex; flex-direction:column; gap:12px;">`;
+                                (q.options || []).forEach(opt => {
+                                    html += `
+                                        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.3s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+                                            <input type="checkbox" value="${opt}" style="margin:0;"> 
+                                            <span>${opt}</span>
+                                        </label>
+                                    `;
+                                });
+                                html += `</div>`;
+                                break;
+                        }
+
+                        html += `</div>`;
+                    });
+
                     html += `
-                        <label style="display:flex; align-items:center; gap:8px;">
-                            <input type="checkbox" value="${opt}"> ${opt}
-                        </label>
+                        <button type="submit" style="padding:16px 32px; background:linear-gradient(135deg, var(--gradient-color-1), var(--gradient-color-2)); color:#fff; font-weight:600; font-size:1.1rem; border:none; border-radius:12px; cursor:pointer; transition:all 0.3s; font-family:inherit; box-shadow:0 4px 12px rgba(111, 66, 193, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(111, 66, 193, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(111, 66, 193, 0.3)'">
+                            Submit Form
+                        </button>
                     `;
-                });
-                html += `</div>`;
-                break;
-        }
 
-        html += `</div>`;
-    });
-
-    html += `
-        <button type="submit" style="padding:12px 20px; background:#4f46e5; color:#fff; font-weight:bold; font-size:1rem; border:none; border-radius:8px; cursor:pointer; transition:background 0.3s;">
-            Submit
-        </button>
-    `;
-
-    html += '</form>';
-
-    return html;
-}
-,
-    showFormPreview() {
-        const formHTML = this.generateFormHTML();
-        document.getElementById('popup-form-content').innerHTML = formHTML;
-        document.getElementById('myModal').style.display = 'block';
-    },
-    
-    closePreview() {
-        document.getElementById('myModal').style.display = 'none';
-    }
-
-
-
-        
-        },
-        mounted() {
-            const saved = localStorage.getItem('formBuilderData');
-            if (saved) {
-                try {
-                    this.questions = JSON.parse(saved);
-                } catch (e) {
-                    console.error('Failed to parse saved form data', e);
+                    html += '</form>';
+                    return html;
+                },
+                showFormPreview() {
+                    const formHTML = this.generateFormHTML();
+                    document.getElementById('popup-form-content').innerHTML = formHTML;
+                    document.getElementById('previewModal').style.display = 'flex';
+                },
+                closePreview() {
+                    document.getElementById('previewModal').style.display = 'none';
+                },
+                async testFetch() {
+                    try {
+                        const formData = this.exportFormJSON();
+                        const response = await fetch('/show-string', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'text/plain',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: formData 
+                        });
+                        
+                        const result = await response.text();
+                        alert('Form saved successfully!');
+                        console.log('Form saved:', result);
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error saving form: ' + error.message);
+                    }
+                }
+            },
+            mounted() {
+                const saved = localStorage.getItem('formBuilderData');
+                if (saved) {
+                    try {
+                        this.questions = JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Failed to parse saved form data', e);
+                    }
+                }
+            },
+            watch: {
+                questions: {
+                    handler() {
+                        localStorage.setItem('formBuilderData', JSON.stringify(this.questions));
+                    },
+                    deep: true
                 }
             }
-        }
-    });
-</script>
+        });
+    </script>
+</body>
+</html>
 
-@endsection

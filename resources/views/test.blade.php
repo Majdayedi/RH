@@ -11,8 +11,8 @@
   <style>
     /* ====== Global Styles ====== */
     :root {
-      --primary-color: #5f00dd;
-      --secondary-color: #3d0686;
+      --primary-color: {{ $gradientColor1 ?? '#5f00dd' }};
+      --secondary-color: {{ $gradientColor2 ?? '#3d0686' }};
       --accent-color: #fff;
       --text-dark: #222;
       --text-medium: #555;

@@ -10,6 +10,8 @@ use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogoutController;
+use App\Models\Form;
+use Illuminate\Http\Request;
 
 // Public routes (accessible without authentication)
 Route::middleware('guest')->group(function () {
@@ -39,13 +41,41 @@ Route::middleware('auth')->group(function () {
     
     Route::get('dashboard', [Dashboard::class, 'rh_dash'])->name('dashboard');
     Route::get('form', [FormController::class, 'create'])->name('form');
-    Route::post('/save-survey', [FormController::class, 'store']);
-    
+    Route::post('/save-form-json', [FormController::class, 'store'])->name('form.saveHtml');
+   // routes/web.php
+// In routes/web.php (backend)
+Route::post('/show-string',  [FormController::class, 'store'])->name('form.saveHtml');
+Route::get('formulaire',  [FormController::class, 'index'])->name('form.formulaire');
 
-     // Welcome page (public landing page)
-     
-    // Logout
+    Route::get('forms', [FormController::class, 'listForms'])->name('forms.index');
+    Route::get('forms/list', [FormController::class, 'listForms'])->name('forms.show');
     Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::post('/test', [FormController::class,'submit'])->name('testfetch');
+    Route::post('/test-simple', function(Request $request) {
+        return response()->json([
+            'message' => 'Test successful',
+            'data' => $request->all()
+        ]);
+    });
+    Route::post('formDEL',[FormController::class,'delete'])->name('form.delete');
+
+    Route::post('form',function(Request $request ){
+        $form_id = $request->query('form_id');
+
+        $form = Form::find($request->form_id);
+        if($form->is_active){
+            $form->is_active = false;
+
+        }
+        else{
+            $form->is_active = true;
+        }
+        $form->save();
+
+        return redirect()->route('dashboard',[
+            'page' => 'forms',
+        ]);
+    })->name('form.publish');
 
     });
 
