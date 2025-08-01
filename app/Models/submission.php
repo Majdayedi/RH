@@ -13,12 +13,13 @@ class Submission extends Model
     protected $fillable = [
         'form_id',
         'user_id',
-        'submitted_at',
-        'status'
+        'data',           // Added to match database
+        'status',
+        'reviewed_by',    // Added to match database
     ];
 
     protected $casts = [
-        'submitted_at' => 'datetime',
+        'data' => 'array', // Cast the longtext data field to array if it stores JSON
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
@@ -31,6 +32,11 @@ class Submission extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 
     public function answers()

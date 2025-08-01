@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Form extends Model
 {
     use HasUuids;
-
+    						
     protected $fillable = [
         'company_id',
         'title',
         'description',
+        'schema',
         'created_by',
         'is_active',
         'status',
