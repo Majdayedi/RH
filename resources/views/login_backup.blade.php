@@ -1,6 +1,8 @@
 @extends('layouts.auth')
 
-@section('title', 'Register')
+@section('title', 'Sign in')
+
+
 @push('styles')
 <style>
     /* Reuse all login page styles */
@@ -224,21 +226,20 @@
 @endpush
 
 @section('background')
-background: linear-gradient(135deg, {{ $gradientColor1 ?? '#6f42c1' }}, {{ $gradientColor2 ?? '#5a4fcf' }});
+background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }});
 @endsection
-
 @section('content')
-<<div class="login-container">
+<div class="login-container">
     @if(isset($company))
         <div class="company-logo-container">
-            <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->legal_name }} logo" class="company-logo">
+            <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->name }} logo" class="company-logo">
         </div>
     @endif
 
+    <h1 style="color: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }});">Welcome to {{ $company->legal_name }}</h1>
 
     
-    <h1 class="login-title">Create Account</h1>
-    
+    <!-- Error Messages -->
     @if($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -249,105 +250,92 @@ background: linear-gradient(135deg, {{ $gradientColor1 ?? '#6f42c1' }}, {{ $grad
         </div>
     @endif
     
-    <form method="POST" action="{{ route('register', ['company' => $company->id]) }}">
-    @csrf
-    <input type="hidden" name="company_id" value="{{ $company->id }}">
-        
-        <!-- Matricule -->
-        <div class="form-floating">
-            <input id="matricule" type="text" 
-                   class="form-control @error('matricule') is-invalid @enderror" 
-                   name="matricule" value="{{ old('matricule') }}" 
-                   placeholder="Employee ID" required autofocus>
-            <label for="matricule">Employee ID</label>
-            @error('matricule')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+    <!-- Success Message -->
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
-        
-        <!-- First Name -->
-        <div class="form-floating">
-            <input id="first_name" type="text" 
-                   class="form-control @error('first_name') is-invalid @enderror" 
-                   name="first_name" value="{{ old('first_name') }}" 
-                   placeholder="First Name" required>
-            <label for="first_name">First Name</label>
-            @error('first_name')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+    @endif
+    
+    <!-- Error Message -->
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
         </div>
-        
-        <!-- Department -->
+    @endif
+    
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
+       
+        <!-- matricule Field -->
         <div class="form-floating">
-            <input id="department" type="text" 
-                   class="form-control @error('department') is-invalid @enderror" 
-                   name="department" value="{{ old('department') }}" 
-                   placeholder="Department" required>
-            <label for="department">Department</label>
-            @error('department')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <input type="text"
+           class="form-control @error('matricule') is-invalid @enderror" 
+           name="Matricule"  
+           placeholder="donner votre matricule" 
+           required>
+    <label for="Matricule">Matricule</label>
+    @error('matricule')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
         
-        <!-- Role -->
+        <!-- Password Field -->
         <div class="form-floating">
-            <select id="role" name="role" 
-                    class="form-control @error('role') is-invalid @enderror" required>
-                <option value="">Select Role</option>
-                <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Employee</option>
-                <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
-                <option value="RH" {{ old('role') == 'RH' ? 'selected' : '' }}>RH</option>
-                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-            </select>
-            <label for="role">Role</label>
-            @error('role')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-        
-        <!-- Email -->
-        <div class="form-floating">
-            <input id="email" type="email" 
-                   class="form-control @error('email') is-invalid @enderror" 
-                   name="email" value="{{ old('email') }}" 
-                   placeholder="Email" required>
-            <label for="email">Email</label>
-            @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-        
-        <!-- Password -->
-        <div class="form-floating">
-            <input id="password" type="password" 
+            <input type="password" 
                    class="form-control @error('password') is-invalid @enderror" 
-                   name="password" placeholder="Password" required>
+                   id="password" 
+                   name="password" 
+                   placeholder="Password" 
+                   required>
             <label for="password">Password</label>
             @error('password')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
             @enderror
         </div>
         
-        <!-- Confirm Password -->
-        <div class="form-floating">
-            <input id="password_confirmation" type="password" 
-                   class="form-control" 
-                   name="password_confirmation" 
-                   placeholder="Confirm Password" required>
-            <label for="password_confirmation">Confirm Password</label>
+        <!-- Remember Me -->
+        <div class="form-check">
+            <input class="form-check-input" 
+                   type="checkbox" 
+                   name="remember" 
+                   id="remember" 
+                   {{ old('remember') ? 'checked' : '' }}>
+            <label class="form-check-label" for="remember">
+                Remember me
+            </label>
         </div>
         
-        <!-- Company -->
-        
-        
-        <button type="submit" class="btn btn-signin mt-3">
-            Register
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-signin">
+            Sign in
         </button>
-        
-        <div class="text-center mt-3">
-            <span>Already have an account? </span>
-            <a href="{{ route('login',['company'=>$company->id]) }}" class="text-link">Sign in</a>
-        </div>
     </form>
+    
+    <!-- Optional: Add forgot password link -->
+    @if (Route::has('password.request'))
+        <div class="text-center mt-3">
+            <a href="{{ route('password.request') }}" class="text-decoration-none">
+                Forgot your password?
+            </a>
+        </div>
+    @endif
+    
+    <!-- Optional: Add register link -->
+    @if (Route::has('register'))
+        <div class="text-center mt-2">
+            <span class="text-muted">Don't have an account? </span>
+            <a href="{{ route('register', ['company' => $company->id]) }}" class="text-decoration-none">
+                Sign up here
+            </a>
+        </div>
+    @endif
+    
+    <!-- Footer -->
+    <div class="copyright">
+        © 2017-2018
+    </div>
 </div>
 @endsection

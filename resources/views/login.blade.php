@@ -19,40 +19,53 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
-    .logo-container {
-        text-align: center;
+    .logo-container, .company-logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin-bottom: 2rem;
     }
     
     .logo {
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, #6f42c1, #5a4fcf);
         border-radius: 12px;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
         font-size: 2.5rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #6f42c1, #5a4fcf);
+        color: white;
+    }
+    
+    .company-logo {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
     }
     
     .login-title {
         color: #6c757d;
         font-size: 1.5rem;
-        margin-bottom: 2rem;
+        text-align: center;
     }
     
     .form-floating {
+        width: 100%;
         margin-bottom: 1rem;
     }
     
     .form-floating input {
         border: 1px solid #ced4da;
         border-radius: 4px;
+        width: 100%;
+        padding: 1rem;
+        transition: all 0.3s;
     }
     
     .form-floating input:focus {
@@ -62,20 +75,39 @@
     
     .form-check {
         margin: 1.5rem 0;
+        display: flex;
+        align-items: center;
     }
     
     .btn-signin {
-        background-color: #007bff;
+        background-color: {{ $gradientColor1 ?? '#6f42c1' }};
         border: none;
         border-radius: 4px;
         width: 100%;
         padding: 0.75rem;
         font-size: 1rem;
         font-weight: 500;
+        color: white;
+        transition: background-color 0.3s;
     }
     
     .btn-signin:hover {
-        background-color: #0056b3;
+        background-color: {{ $gradientColor2 ?? '#5a4fcf' }};
+    }
+    
+    .text-link {
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    
+    .text-link:hover {
+        text-decoration: underline;
+    }
+    
+    .invalid-feedback {
+        color: #dc3545;
+        font-size: 0.875rem;
     }
     
     .copyright {
@@ -91,14 +123,20 @@
 </style>
 @endpush
 
+@section('background')
+background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }});
+@endsection
+
 @section('content')
 <div class="login-container">
-    <div class="logo-container">
-        <div class="logo">B</div>
-        <h1 class="login-title">Please sign in</h1>
-    </div>
+    @if(isset($company))
+        <div class="company-logo-container">
+            <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->name }} logo" class="company-logo">
+        </div>
+    @endif
+
+    <h1 class="login-title">Welcome to {{ $company->legal_name }}</h1>
     
-    <!-- Error Messages -->
     @if($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
@@ -109,45 +147,40 @@
         </div>
     @endif
     
-    <!-- Success Message -->
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
     
-    <!-- Error Message -->
     @if (session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
         </div>
     @endif
     
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" class="w-100">
         @csrf
-       
-        <!-- matricule Field -->
         <div class="form-floating">
-    <input type="text"
-           class="form-control @error('matricule') is-invalid @enderror" 
-           name="Matricule"  
-           placeholder="donner votre matricule" 
-           required>
-    <label for="Matricule">Matricule</label>
-    @error('matricule')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+            <input type="text"
+                   class="form-control @error('matricule') is-invalid @enderror" 
+                   name="Matricule"  
+                   placeholder="Enter your matricule" 
+                   required aria-labelledby="matriculeLabel">
+            <label id="matriculeLabel" for="Matricule">Matricule</label>
+            @error('matricule')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
         
-        <!-- Password Field -->
         <div class="form-floating">
             <input type="password" 
                    class="form-control @error('password') is-invalid @enderror" 
                    id="password" 
                    name="password" 
-                   placeholder="Password" 
-                   required>
-            <label for="password">Password</label>
+                   placeholder="Enter your password" 
+                   required aria-labelledby="passwordLabel">
+            <label id="passwordLabel" for="password">Password</label>
             @error('password')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -155,7 +188,6 @@
             @enderror
         </div>
         
-        <!-- Remember Me -->
         <div class="form-check">
             <input class="form-check-input" 
                    type="checkbox" 
@@ -167,32 +199,28 @@
             </label>
         </div>
         
-        <!-- Submit Button -->
         <button type="submit" class="btn btn-primary btn-signin">
             Sign in
         </button>
     </form>
     
-    <!-- Optional: Add forgot password link -->
     @if (Route::has('password.request'))
         <div class="text-center mt-3">
-            <a href="{{ route('password.request') }}" class="text-decoration-none">
+            <a href="{{ route('password.request') }}" class="text-link">
                 Forgot your password?
             </a>
         </div>
     @endif
     
-    <!-- Optional: Add register link -->
     @if (Route::has('register'))
         <div class="text-center mt-2">
             <span class="text-muted">Don't have an account? </span>
-            <a href="{{ route('register') }}" class="text-decoration-none">
+            <a href="{{ route('register', ['company' => $company->id]) }}" class="text-link">
                 Sign up here
             </a>
         </div>
     @endif
     
-    <!-- Footer -->
     <div class="copyright">
         © 2017-2018
     </div>
