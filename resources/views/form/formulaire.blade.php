@@ -688,6 +688,199 @@
         textarea::-webkit-scrollbar-thumb:hover {
             background: var(--text-light);
         }
+
+        /* Multi-page form styles */
+        .page-indicator {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--gradient-color-1) 0%, var(--gradient-color-2) 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            margin: -2rem -2rem 2rem -2rem;
+        }
+
+        .page-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-counter {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .page-container {
+            position: relative;
+            min-height: 300px;
+        }
+
+        .form-page {
+            transition: all 0.3s ease;
+        }
+
+        .form-page.hidden {
+            display: none;
+        }
+
+        .form-page.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .page-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--gradient-color-1);
+            border-color: var(--gradient-color-1);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--gradient-color-1) 0%, var(--gradient-color-2) 100%);
+            border: none;
+            border-radius: var(--border-radius);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.4);
+        }
+
+        /* Satisfaction Rating Styles */
+        .satisfaction-container {
+            margin: 15px 0;
+        }
+
+        .satisfaction-options {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 400px;
+            flex-wrap: wrap;
+        }
+
+        .satisfaction-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-white);
+            min-width: 70px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .satisfaction-option:hover {
+            border-color: var(--gradient-color-1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
+        }
+
+        .satisfaction-option input:checked + .emoji {
+            transform: scale(1.1);
+        }
+
+        .satisfaction-option:has(input:checked) {
+            border-color: var(--gradient-color-1);
+            background: rgba(111, 66, 193, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(111, 66, 193, 0.2);
+        }
+
+        .satisfaction-option .emoji {
+            font-size: 32px;
+            margin-bottom: 6px;
+            transition: transform 0.3s;
+        }
+
+        .satisfaction-option .emoji-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-light);
+            line-height: 1.2;
+        }
+
+        .satisfaction-option:has(input:checked) .emoji-label {
+            color: var(--gradient-color-1);
+            font-weight: 600;
+        }
+
+        /* Signature Styles */
+        .signature-container {
+            margin: 15px 0;
+        }
+
+        .signature-canvas {
+            display: block;
+            margin: 0 auto;
+            background: var(--bg-white);
+            border: 2px solid var(--border-color) !important;
+            border-radius: 8px !important;
+            cursor: crosshair !important;
+            transition: border-color 0.3s;
+        }
+
+        .signature-canvas:hover {
+            border-color: var(--gradient-color-1) !important;
+        }
     </style>
 </head>
 <body>
@@ -703,8 +896,36 @@
 
     <script>
         // Get form data directly from Laravel
-        const formData = @json($form->schema);
-        console.log('Form Data:', formData); // Debugging
+        const rawFormData = @json($form->schema ?? []);
+        console.log('Raw Form Data:', rawFormData); // Debugging
+
+        // Handle both old format (array of questions) and new format (pages structure)
+        let formData = [];
+        let formPages = [];
+
+        if (Array.isArray(rawFormData)) {
+            // Old format - array of questions
+            formData = rawFormData;
+            formPages = [{
+                id: 'page-1',
+                title: 'Page 1',
+                questions: rawFormData
+            }];
+        } else if (rawFormData && rawFormData.pages) {
+            // New format - pages structure
+            formPages = rawFormData.pages;
+            // For backward compatibility, flatten all questions for now
+            formData = formPages.reduce((allQuestions, page) => {
+                return allQuestions.concat(page.questions || []);
+            }, []);
+        } else {
+            console.error('Invalid form data format');
+            formData = [];
+            formPages = [];
+        }
+
+        console.log('Processed Form Data:', formData);
+        console.log('Form Pages:', formPages);
 
         // Function to generate form fields
         function createFormField(field, index) {
@@ -803,9 +1024,10 @@
                             
                             const radio = document.createElement('input');
                             radio.type = 'radio';
-                            radio.id = `${field.id}-${option.value}`;
+                            const optionValue = option.value || option;
+                            radio.id = `${field.id}-${optionValue.replace(/\s+/g, '-').toLowerCase()}`;
                             radio.name = field.id;
-                            radio.value = option.value || option;
+                            radio.value = optionValue;
                             radio.required = field.required || false;
                             if (option.selected || field.defaultValue === option.value) radio.checked = true;
                             
@@ -825,9 +1047,10 @@
                             
                             const radio = document.createElement('input');
                             radio.type = 'radio';
-                            radio.id = `${field.id}-${option.value}`;
+                            const optionValue = option.value || option;
+                            radio.id = `${field.id}-${optionValue.replace(/\s+/g, '-').toLowerCase()}`;
                             radio.name = field.id;
-                            radio.value = option.value || option;
+                            radio.value = optionValue;
                             radio.required = field.required || false;
                             if (option.selected || field.defaultValue === option.value) radio.checked = true;
                             
@@ -856,9 +1079,10 @@
                             
                             const checkbox = document.createElement('input');
                             checkbox.type = 'checkbox';
-                            checkbox.id = `${field.id}-${option.value}`;
+                            const optionValue = option.value || option;
+                            checkbox.id = `${field.id}-${optionValue.replace(/\s+/g, '-').toLowerCase()}`;
                             checkbox.name = `${field.id}[]`;
-                            checkbox.value = option.value || option;
+                            checkbox.value = optionValue;
                             if (option.selected || (field.defaultValue && field.defaultValue.includes(option.value))) checkbox.checked = true;
                             
                             const label = document.createElement('label');
@@ -877,9 +1101,10 @@
                             
                             const checkbox = document.createElement('input');
                             checkbox.type = 'checkbox';
-                            checkbox.id = `${field.id}-${option.value}`;
+                            const optionValue = option.value || option;
+                            checkbox.id = `${field.id}-${optionValue.replace(/\s+/g, '-').toLowerCase()}`;
                             checkbox.name = `${field.id}[]`;
-                            checkbox.value = option.value || option;
+                            checkbox.value = optionValue;
                             if (option.selected || (field.defaultValue && field.defaultValue.includes(option.value))) checkbox.checked = true;
                             
                             const label = document.createElement('label');
@@ -1088,7 +1313,126 @@
                     ratingContainer.appendChild(ratingInput);
                     container.appendChild(ratingContainer);
                     break;
-                    
+
+                case 'satisfaction':
+                    const satisfactionContainer = document.createElement('div');
+                    satisfactionContainer.className = 'satisfaction-container';
+
+                    const satisfactionOptions = document.createElement('div');
+                    satisfactionOptions.className = 'satisfaction-options';
+
+                    // Define satisfaction emojis based on scale type
+                    const scaleType = field.scaleType || '5-point';
+                    let emojis = [];
+
+                    switch (scaleType) {
+                        case '3-point':
+                            emojis = [
+                                { icon: '😞', label: 'Dissatisfied', value: 1 },
+                                { icon: '😐', label: 'Neutral', value: 2 },
+                                { icon: '😊', label: 'Satisfied', value: 3 }
+                            ];
+                            break;
+                        case '7-point':
+                            emojis = [
+                                { icon: '😡', label: 'Extremely Dissatisfied', value: 1 },
+                                { icon: '😠', label: 'Very Dissatisfied', value: 2 },
+                                { icon: '😞', label: 'Dissatisfied', value: 3 },
+                                { icon: '😐', label: 'Neutral', value: 4 },
+                                { icon: '🙂', label: 'Satisfied', value: 5 },
+                                { icon: '😊', label: 'Very Satisfied', value: 6 },
+                                { icon: '😍', label: 'Extremely Satisfied', value: 7 }
+                            ];
+                            break;
+                        default: // 5-point
+                            emojis = [
+                                { icon: '😡', label: 'Very Dissatisfied', value: 1 },
+                                { icon: '😞', label: 'Dissatisfied', value: 2 },
+                                { icon: '😐', label: 'Neutral', value: 3 },
+                                { icon: '😊', label: 'Satisfied', value: 4 },
+                                { icon: '😍', label: 'Very Satisfied', value: 5 }
+                            ];
+                    }
+
+                    emojis.forEach(emoji => {
+                        const optionLabel = document.createElement('label');
+                        optionLabel.className = 'satisfaction-option';
+
+                        const optionInput = document.createElement('input');
+                        optionInput.type = 'radio';
+                        optionInput.name = field.id;
+                        optionInput.value = emoji.value;
+                        optionInput.required = field.required || false;
+                        optionInput.style.display = 'none';
+
+                        const emojiSpan = document.createElement('div');
+                        emojiSpan.className = 'emoji';
+                        emojiSpan.textContent = emoji.icon;
+
+                        const labelSpan = document.createElement('div');
+                        labelSpan.className = 'emoji-label';
+                        labelSpan.textContent = emoji.label;
+
+                        optionLabel.appendChild(optionInput);
+                        optionLabel.appendChild(emojiSpan);
+                        optionLabel.appendChild(labelSpan);
+
+                        satisfactionOptions.appendChild(optionLabel);
+                    });
+
+                    satisfactionContainer.appendChild(satisfactionOptions);
+                    container.appendChild(satisfactionContainer);
+                    break;
+
+                case 'signature':
+                    const signatureContainer = document.createElement('div');
+                    signatureContainer.className = 'signature-container';
+
+                    const signatureCanvas = document.createElement('canvas');
+                    signatureCanvas.id = field.id;
+                    signatureCanvas.width = 400;
+                    signatureCanvas.height = 200;
+                    signatureCanvas.className = 'signature-canvas';
+                    signatureCanvas.style.border = '2px solid #d1d5db';
+                    signatureCanvas.style.borderRadius = '8px';
+                    signatureCanvas.style.cursor = 'crosshair';
+
+                    const clearButton = document.createElement('button');
+                    clearButton.type = 'button';
+                    clearButton.className = 'btn btn-secondary';
+                    clearButton.textContent = 'Clear Signature';
+                    clearButton.style.marginTop = '10px';
+
+                    // Basic signature functionality
+                    let isDrawing = false;
+                    const ctx = signatureCanvas.getContext('2d');
+
+                    signatureCanvas.addEventListener('mousedown', (e) => {
+                        isDrawing = true;
+                        ctx.beginPath();
+                        ctx.moveTo(e.offsetX, e.offsetY);
+                    });
+
+                    signatureCanvas.addEventListener('mousemove', (e) => {
+                        if (isDrawing) {
+                            ctx.lineTo(e.offsetX, e.offsetY);
+                            ctx.stroke();
+                        }
+                    });
+
+                    signatureCanvas.addEventListener('mouseup', () => {
+                        isDrawing = false;
+                    });
+
+                    clearButton.addEventListener('click', () => {
+                        ctx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+                    });
+
+                    signatureContainer.appendChild(signatureCanvas);
+                    signatureContainer.appendChild(clearButton);
+                    container.appendChild(signatureContainer);
+                    break;
+
                 // Layout Elements
                 case 'section-title':
                     const sectionTitle = document.createElement('h3');
@@ -1144,125 +1488,342 @@
 
         // Function to generate the complete form
         function generateForm() {
-
             const formContent = document.querySelector('.form-content');
             formContent.innerHTML = '';
-            
+
             const form = document.createElement('form');
             form.id = 'dynamic-form';
+            form.method = 'POST';
+            form.action = '/test';
             form.noValidate = true;
-            
-            // Add all fields
-            formData.forEach((field, index) => {
-                form.appendChild(createFormField(field, index));
+
+            // Add CSRF token for POST requests
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+
+            // Add multi-page support if there are multiple pages
+            if (formPages.length > 1) {
+                generateMultiPageForm(form);
+            } else {
+                // Single page form - add all fields directly
+                formData.forEach((field, index) => {
+                    form.appendChild(createFormField(field, index));
+                });
+
+                // Add submit button for single page
+                const submitBtn = document.createElement('button');
+                submitBtn.type = 'submit';
+                submitBtn.className = 'submit-btn';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Form';
+                form.appendChild(submitBtn);
+            }
+
+            formContent.appendChild(form);
+
+            // Setup form submission handler
+            setupFormSubmission(form);
+        }
+
+        // Function to generate multi-page form
+        function generateMultiPageForm(form) {
+            let currentPageIndex = 0;
+
+            // Create page container
+            const pageContainer = document.createElement('div');
+            pageContainer.className = 'page-container';
+
+            // Create page indicator
+            const pageIndicator = document.createElement('div');
+            pageIndicator.className = 'page-indicator';
+            pageIndicator.innerHTML = `
+                <div class="page-dots">
+                    ${formPages.map((_, index) =>
+                        `<div class="page-dot ${index === 0 ? 'active' : ''}" data-page="${index}"></div>`
+                    ).join('')}
+                </div>
+                <div class="page-title">${formPages[0].title}</div>
+                <div class="page-counter">Page 1 of ${formPages.length}</div>
+            `;
+            form.appendChild(pageIndicator);
+
+            // Create pages
+            formPages.forEach((page, pageIndex) => {
+                const pageDiv = document.createElement('div');
+                pageDiv.className = `form-page ${pageIndex === 0 ? 'active' : 'hidden'}`;
+                pageDiv.dataset.page = pageIndex;
+
+                // Add page questions
+                page.questions.forEach((field, fieldIndex) => {
+                    pageDiv.appendChild(createFormField(field, fieldIndex));
+                });
+
+                pageContainer.appendChild(pageDiv);
             });
-            
-            // Add form actions
-            const actions = document.createElement('div');
-            actions.className = 'form-actions';
-            
-            const submitButton = document.createElement('button');
-            submitButton.type = 'submit';
-            submitButton.className = 'btn btn-primary';
-            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Form';
-            actions.appendChild(submitButton);
-            
-            const resetButton = document.createElement('button');
-            resetButton.type = 'reset';
-            resetButton.className = 'btn btn-secondary';
-            resetButton.innerHTML = '<i class="fas fa-undo"></i> Reset';
-            actions.appendChild(resetButton);
-        
-            form.appendChild(actions);
+
+            form.appendChild(pageContainer);
+
+            // Create navigation buttons
+            const navContainer = document.createElement('div');
+            navContainer.className = 'page-navigation';
+            navContainer.innerHTML = `
+                <button type="button" class="nav-btn prev-btn" style="display: none;">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <button type="button" class="nav-btn next-btn">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                <button type="submit" class="submit-btn" style="display: none;">
+                    <i class="fas fa-paper-plane"></i> Submit Form
+                </button>
+            `;
+            form.appendChild(navContainer);
+
+            // Add navigation functionality
+            setupPageNavigation(form, currentPageIndex);
+        }
+
+        // Function to setup page navigation
+        function setupPageNavigation(form, currentPageIndex) {
+            const prevBtn = form.querySelector('.prev-btn');
+            const nextBtn = form.querySelector('.next-btn');
+            const submitBtn = form.querySelector('.submit-btn');
+            const pages = form.querySelectorAll('.form-page');
+            const dots = form.querySelectorAll('.page-dot');
+            const pageTitle = form.querySelector('.page-title');
+            const pageCounter = form.querySelector('.page-counter');
+
+            function updatePage(newIndex) {
+                // Hide all pages
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                    page.classList.add('hidden');
+                });
+
+                // Show current page
+                pages[newIndex].classList.remove('hidden');
+                pages[newIndex].classList.add('active');
+
+                // Update dots
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === newIndex);
+                });
+
+                // Update page info
+                pageTitle.textContent = formPages[newIndex].title;
+                pageCounter.textContent = `Page ${newIndex + 1} of ${formPages.length}`;
+
+                // Update button visibility
+                prevBtn.style.display = newIndex === 0 ? 'none' : 'inline-flex';
+                nextBtn.style.display = newIndex === formPages.length - 1 ? 'none' : 'inline-flex';
+                submitBtn.style.display = newIndex === formPages.length - 1 ? 'inline-flex' : 'none';
+
+                currentPageIndex = newIndex;
+            }
+
+            // Previous button
+            prevBtn.addEventListener('click', () => {
+                if (currentPageIndex > 0) {
+                    updatePage(currentPageIndex - 1);
+                }
+            });
+
+            // Next button
+            nextBtn.addEventListener('click', () => {
+                if (currentPageIndex < formPages.length - 1) {
+                    updatePage(currentPageIndex + 1);
+                }
+            });
+
+            // Dot navigation
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    updatePage(index);
+                });
+            });
+        }
+
             
            
     
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Clear previous validation messages
-    
-    
-    // Prepare submission data
-    const submissionData = [];
-    
-    // Process each field in formData (assuming formData contains your field definitions)
-    formData.forEach(field => {
-        const value = getFieldValue(field);
-        console.log(value);
-        if (value !== null && value !== undefined) {
-            submissionData.push({
-                questionId: field.id,
-                answer: value,
-                fieldType: field.type
-            });
-        }
-        else {
-            // Handle empty values if necessary
-            submissionData.push({
-                questionId: field.id,
-                answer: '',
-                fieldType: field.type
-            });
-        }
+        // Add form submission handler after form is generated
+        function setupFormSubmission(form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-    });
-    console.log(submissionData);
-    console.log('test fetch');
-    try {
-        const stringg= JSON.stringify(submissionData, null, 2) ;
-        console.log(stringg);
-             const response = await fetch('/test', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-            form_id: '{{ $id }}',
-            data: submissionData
-        })
-    });
-    
-        
-        // Display the response directly
-        const result = await response.text();
-        document.body.innerHTML = result; // Shows the string on page
-    } catch (error) {
-        console.error('Error:', error);
-    }
-    // Submit data
-});
-       
-
-// Helper function to get field values based on type
-function getFieldValue(field) {
-    switch (field.type) {
-        case 'checkbox-group':
-            return Array.from(form.querySelectorAll(`input[name="${field.id}[]"]:checked`))
-                       .map(checkbox => checkbox.value);
-        case 'radio-group':
-            return form.querySelector(`input[name="${field.id}"]:checked`)?.value || null;
-        default:
-            return form.querySelector(`#${field.id}`)?.value || null;
-    }
-}
-
-// Basic validation example - expand with your actual rules
-function validateForm() {
-    let isValid = true;
-    // Add your validation logic here
-    return isValid;
-}          // Handle reset
-            form.addEventListener('reset', function() {
+                // Clear previous validation messages
                 document.querySelectorAll('.validation-message').forEach(el => {
                     el.textContent = '';
                     el.className = 'validation-message';
                 });
+
+                // Prepare submission data
+                const submissionData = [];
+
+                // Process all fields from all pages
+                const allFields = [];
+
+                if (formPages.length > 1) {
+                    // Multi-page form: collect fields from all pages
+                    formPages.forEach(page => {
+                        if (page.questions) {
+                            allFields.push(...page.questions);
+                        }
+                    });
+                } else {
+                    // Single page form: use formData directly
+                    allFields.push(...formData);
+                }
+
+                // Process each field
+                allFields.forEach(field => {
+                    // Skip layout elements that don't have values
+                    if (field.type === 'section-title' || field.type === 'divider' || field.type === 'html') {
+                        return;
+                    }
+
+                    const value = getFieldValue(field, form);
+                    console.log(`Field ${field.id} (${field.type}):`, value);
+
+                    submissionData.push({
+                        questionId: field.id,
+                        answer: value !== null && value !== undefined ? value : '',
+                        fieldType: field.type,
+                        pageId: field.pageId || 'page-1', // Include page information
+                        label: field.label || '', // Include field label for reference
+                        required: field.required || false
+                    });
+                });
+
+                console.log('=== FORM SUBMISSION DEBUG ===');
+                console.log('Form Type:', formPages.length > 1 ? 'Multi-page' : 'Single-page');
+                console.log('Total Pages:', formPages.length);
+                console.log('Total Fields:', allFields.length);
+                console.log('Submission Data:', submissionData);
+                console.log('============================');
+
+                try {
+                    // Show loading state
+                    const submitButton = form.querySelector('.submit-btn');
+                    const originalText = submitButton.innerHTML;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+                    submitButton.disabled = true;
+
+                    const response = await fetch('/test', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            form_id: '{{ $id }}',
+                            data: submissionData,
+                            form_type: formPages.length > 1 ? 'multi-page' : 'single-page',
+                            total_pages: formPages.length
+                        })
+                    });
+
+                    if (response.ok) {
+                        // Success - show confirmation message
+                        const successMessage = document.createElement('div');
+                        successMessage.className = 'success-message';
+                        successMessage.innerHTML = `
+                            <div style="text-align: center; padding: 2rem; background: #10b981; color: white; border-radius: 12px; margin: 2rem 0;">
+                                <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                                <h2>Form Submitted Successfully!</h2>
+                                <p>Thank you for your submission. Your response has been recorded.</p>
+                                <p><strong>Submission ID:</strong> ${Date.now()}</p>
+                                <p><strong>Form Type:</strong> ${formPages.length > 1 ? 'Multi-page' : 'Single-page'}</p>
+                                <p><strong>Total Fields:</strong> ${submissionData.length}</p>
+                            </div>
+                        `;
+
+                        // Replace form with success message
+                        form.innerHTML = '';
+                        form.appendChild(successMessage);
+
+                        // Optional: redirect after delay
+                        setTimeout(() => {
+                            window.location.href = '/home';
+                        }, 3000);
+                    } else {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                } catch (error) {
+                    console.error('Submission Error:', error);
+                    alert('Error submitting form. Please try again.');
+
+                    // Reset button state
+                    const submitButton = form.querySelector('.submit-btn');
+                    if (submitButton) {
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                    }
+                }
             });
-            
-            formContent.appendChild(form);
+        }
+       
+
+        // Helper function to get field values based on type
+        function getFieldValue(field, formElement) {
+            switch (field.type) {
+                // Text-based inputs
+                case 'text':
+                case 'textarea':
+                case 'email':
+                case 'number':
+                case 'date':
+                case 'time':
+                case 'range':
+                    return formElement.querySelector(`#${field.id}`)?.value || null;
+
+                // Choice inputs
+                case 'checkbox-group':
+                    return Array.from(formElement.querySelectorAll(`input[name="${field.id}[]"]:checked`))
+                               .map(checkbox => checkbox.value);
+
+                case 'radio-group':
+                case 'satisfaction':
+                case 'rating':
+                    return formElement.querySelector(`input[name="${field.id}"]:checked`)?.value || null;
+
+                case 'select':
+                    return formElement.querySelector(`#${field.id}`)?.value || null;
+
+                case 'toggle':
+                    return formElement.querySelector(`#${field.id}`)?.checked || false;
+
+                // File input
+                case 'file':
+                    const fileInput = formElement.querySelector(`#${field.id}`);
+                    return fileInput?.files?.length > 0 ? Array.from(fileInput.files).map(f => f.name) : null;
+
+                // Signature field
+                case 'signature':
+                    const signatureCanvas = formElement.querySelector(`#${field.id}`);
+                    return signatureCanvas?.toDataURL ? signatureCanvas.toDataURL() : null;
+
+                // Layout elements (no values)
+                case 'section-title':
+                case 'divider':
+                    return null; // These don't have values
+
+                // Default fallback
+                default:
+                    return formElement.querySelector(`#${field.id}`)?.value || null;
+            }
+        }
+
+        // Basic validation function
+        function validateForm() {
+            let isValid = true;
+            // Add your validation logic here
+            return isValid;
         }
 
         // Generate the form when page loads

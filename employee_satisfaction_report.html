@@ -1,0 +1,223 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Satisfaction Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .report-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .section-title {
+            color: #4a5568;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 10px 0;
+        }
+        .insights-list, .recommendations-list {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .insights-list li, .recommendations-list li {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #48bb78;
+        }
+        .recommendations-list li {
+            border-left-color: #ed8936;
+        }
+        .chart-container {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Employee Satisfaction Report</h1>
+            <p>AI-Powered Analysis • 5 Questions Analyzed</p>
+        </div>
+
+        <div class="report-card">
+            <h2 class="section-title">📈 Survey Statistics</h2>
+            <div class="stats-grid">
+    
+                <div class="stat-card">
+                    <h3>Overall job satisfaction</h3>
+                    <div class="stat-value">3.5/5</div>
+                    <p>Range: 3.0 - 4.0</p>
+                    <p>Responses: 2</p>
+                </div>
+            
+                <div class="stat-card">
+                    <h3>Work environment satisfaction</h3>
+                    <div class="stat-value">3.5/5</div>
+                    <p>Range: 3.0 - 4.0</p>
+                    <p>Responses: 2</p>
+                </div>
+            
+                <div class="stat-card">
+                    <h3>Management support satisfaction</h3>
+                    <div class="stat-value">2.5/5</div>
+                    <p>Range: 2.0 - 3.0</p>
+                    <p>Responses: 2</p>
+                </div>
+            
+                <div class="stat-card">
+                    <h3>How would you rate your current workload?</h3>
+            
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Just right</span>
+                            <span style="font-weight: bold;">50.0%</span>
+                        </div>
+                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #667eea; height: 100%; width: 50.0%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Too light</span>
+                            <span style="font-weight: bold;">50.0%</span>
+                        </div>
+                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #667eea; height: 100%; width: 50.0%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                
+                    <p>Total responses: 2</p>
+                </div>
+            
+                <div class="stat-card">
+                    <h3>Would you recommend this company as a great place to work?</h3>
+            
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Probably yes</span>
+                            <span style="font-weight: bold;">100.0%</span>
+                        </div>
+                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #667eea; height: 100%; width: 100.0%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                
+                    <p>Total responses: 2</p>
+                </div>
+            
+            </div>
+        </div>
+
+        <div class="report-card">
+            <h2 class="section-title">💡 Key Insights</h2>
+            <div class="insights-list">
+                <ul>
+    
+                    <li>Moderate overall satisfaction (3.5/5)</li>
+        
+                    <li>Management support needs improvement (2.5/5)</li>
+        
+                    <li>Workload distribution could be optimized</li>
+        
+                </ul>
+            </div>
+        </div>
+
+        <div class="report-card">
+            <h2 class="section-title">🎯 Recommendations</h2>
+            <div class="recommendations-list">
+                <ul>
+    
+                    <li>Conduct management training</li>
+        
+                    <li>Investigate workload balance</li>
+        
+                    <li>Implement regular feedback mechanisms</li>
+        
+                </ul>
+            </div>
+        </div>
+
+        <div class="report-card">
+            <h2 class="section-title">📋 Summary</h2>
+            <div style="background: #f7fafc; padding: 20px; border-radius: 10px;">
+                <p>The employee satisfaction survey reveals areas of strength and opportunities for improvement. 
+                While overall sentiment is positive, targeted actions in management support and workload distribution 
+                could significantly enhance employee experience and engagement.</p>
+                <p><strong>Next Steps:</strong> Schedule management training sessions and conduct follow-up interviews 
+                to address specific concerns.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Generated automatically • AI-Powered Analysis</p>
+    </div>
+</body>
+</html>
+    

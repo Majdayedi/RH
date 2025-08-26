@@ -11,12 +11,23 @@ class CompanyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        // Code to list all companies
-        $companies = company::all();
-        return view('companies.index', compact('companies'));
+   public function index(Request $request)
+{
+    $query = Company::where('is_active', true);
+
+    if ($request->filled('query')) {
+        $query->where('legal_name', 'LIKE', '%' . $request->input('query') . '%');
     }
+
+    $companies = $query->get();
+
+    // If AJAX request, return JSON only
+    if ($request->ajax()) {
+        return response()->json($companies);
+    }
+
+    return view('companies.index', compact('companies'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -85,9 +96,10 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(company $company)
+    public function showdash(company $company)
     {
-        //
+          $companies = company::all();
+         return view('dashboard.companydash', compact('companies'));
     }
 
     /**
@@ -109,9 +121,14 @@ class CompanyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(company $company)
+    public function destroy(Request $request)
     {
-        //
+        $company_id = $request->query('id');
+        $company = Company::find($company_id);
+        $company->delete();
+
+        return redirect()->route('companies.companydash');
     }
+    
 
 }

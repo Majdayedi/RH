@@ -116,6 +116,45 @@
             gap: 8px;
         }
 
+        .toolbox-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 15px;
+        }
+
+        .category-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-tab:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%);
+            border-color: #6f42c1;
+            color: white;
+        }
+
+        .category-tab i {
+            font-size: 14px;
+        }
+
         .toolbox-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -148,6 +187,30 @@
         .toolbox-card:active {
             cursor: grabbing;
             transform: translateY(0);
+        }
+
+        .template-card {
+            position: relative;
+            border: 2px solid #6f42c1;
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+        }
+
+        .template-card:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.15);
+        }
+
+        .template-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #6f42c1 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);
         }
 
         .toolbox-icon {
@@ -237,17 +300,118 @@
 
         .page-meta {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 15px;
         }
 
+        .page-navigation {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .page-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             background: var(--gradient-color-2);
             color: var(--white);
-            padding: 4px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .page-title-input {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 100px;
+            max-width: 200px;
+        }
+
+        .page-title-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .page-title-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 2px 6px;
+        }
+
+        .page-counter {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .page-nav-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            min-width: auto;
+        }
+
+        .page-tabs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .page-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gray-100);
+            border: 2px solid var(--gray-200);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
             font-size: 12px;
             font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .page-tab:hover {
+            border-color: var(--gradient-color-1);
+            background: var(--gray-50);
+        }
+
+        .page-tab.active {
+            background: var(--gradient-color-1);
+            border-color: var(--gradient-color-1);
+            color: var(--white);
+        }
+
+        .page-delete-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 10px;
+            cursor: pointer;
+            padding: 2px;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .page-delete-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .page-add-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            min-width: auto;
+            border-style: dashed;
         }
 
         /* Drop Area */
@@ -326,12 +490,18 @@
             border-bottom: 2px solid var(--gradient-color-1);
             padding-bottom: 10px;
             margin-bottom: 15px;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            z-index: 10;
+            margin-top: 0;
         }
 
         .section-title h3 {
             color: var(--gradient-color-1);
             font-weight: 600;
             margin: 0;
+            padding: 10px 0;
         }
 
         .question-controls {
@@ -441,6 +611,68 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
+        }
+
+        /* Satisfaction Rating Styles */
+        .satisfaction-rating {
+            margin: 15px 0;
+        }
+
+        .satisfaction-options {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .satisfaction-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            border: 2px solid var(--gray-300);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--white);
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .satisfaction-option:hover {
+            border-color: var(--gradient-color-1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.15);
+        }
+
+        .satisfaction-option.selected {
+            border-color: var(--gradient-color-1);
+            background: rgba(111, 66, 193, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(111, 66, 193, 0.2);
+        }
+
+        .satisfaction-option .emoji {
+            font-size: 32px;
+            margin-bottom: 6px;
+            transition: transform 0.3s;
+        }
+
+        .satisfaction-option:hover .emoji,
+        .satisfaction-option.selected .emoji {
+            transform: scale(1.1);
+        }
+
+        .satisfaction-option .emoji-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gray-600);
+            line-height: 1.2;
+        }
+
+        .satisfaction-option.selected .emoji-label {
+            color: var(--gradient-color-1);
+            font-weight: 600;
         }
 
         /* Modal Styles */
@@ -593,20 +825,37 @@
             </div>
 
             <div class="toolbox-content">
+                <!-- Category Tabs -->
+                <div class="toolbox-categories">
+                    <button v-for="category in toolboxCategories"
+                            :key="category.id"
+                            class="category-tab"
+                            :class="{ 'active': activeToolboxCategory === category.id }"
+                            @click="activeToolboxCategory = category.id">
+                        <i :class="category.icon"></i>
+                        @{{ category.label }}
+                    </button>
+                </div>
+
+                <!-- Current Category Items -->
                 <div class="toolbox-section-title">
-                    <i class="fas fa-cube"></i>
-                    Basic Elements
+                    <i :class="getCurrentCategoryIcon()"></i>
+                    @{{ getCurrentCategoryLabel() }}
                 </div>
                 <div class="toolbox-grid">
-                    <div v-for="item in toolboxItems"
+                    <div v-for="item in filteredToolboxItems"
                          :key="item.type"
                          class="toolbox-card"
+                         :class="{ 'template-card': item.category === 'hr-templates' }"
+                         :style="{ backgroundColor: item.color }"
                          draggable="true"
-                         @dragstart="startDrag(item.type)">
+                         @dragstart="startDrag(item.type)"
+                         @click="addQuestionFromToolbox(item.type)">
                         <div class="toolbox-icon">
                             <span v-html="item.icon"></span>
                         </div>
                         <div class="toolbox-label">@{{ item.label }}</div>
+                        <div v-if="item.category === 'hr-templates'" class="template-badge">Template</div>
                     </div>
                 </div>
             </div>
@@ -624,9 +873,10 @@
                     <i class="fas fa-redo"></i>
                     Redo
                 </button>
-                <button @click="addPage" class="btn">
-                    <i class="fas fa-plus"></i>
-                    Add Page
+
+                <button @click="clearForm" class="btn" style="color: #ef4444; border-color: #ef4444;">
+                    <i class="fas fa-trash"></i>
+                    Clear All
                 </button>
                 <button @click="showFormPreview" class="btn" :class="{ 'active': previewMode }">
                     <i class="fas fa-eye"></i>
@@ -635,22 +885,53 @@
                 
                 <div class="toolbar-spacer"></div>
                 
-                <button @click="testFetch" class="btn primary">
+                <button @click="saveFormToServer" class="btn primary">
                     <i class="fas fa-save"></i>
                     Save Form
                 </button>
-                <button @click="showJson = !showJson" class="btn">
-                    <i class="fas fa-code"></i>
-                    JSON
+                <button @click="saveToLocalStorage" class="btn">
+                    <i class="fas fa-download"></i>
+                    Save Draft
                 </button>
+                
+               
             </div>
 
             <!-- Page Info -->
             <div class="page-info">
                 <div class="page-title">Form Designer</div>
                 <div class="page-meta">
-                    <div class="page-indicator">Page 1</div>
-                    <span style="color: var(--gray-500); font-size: 14px;">Resignation Form</span>
+                    <div class="page-navigation">
+                        <button v-if="currentPageIndex > 0" @click="currentPageIndex--" class="btn page-nav-btn">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="page-indicator">
+                            <input type="text"
+                                   v-model="currentPage.title"
+                                   class="page-title-input"
+                                   placeholder="Page Title"
+                                   @blur="updatePageTitle">
+                            <span class="page-counter">(@{{ currentPageIndex + 1 }} of @{{ pages.length }})</span>
+                        </div>
+                        <button v-if="currentPageIndex < pages.length - 1" @click="currentPageIndex++" class="btn page-nav-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="page-tabs">
+                        <div v-for="(page, index) in pages"
+                             :key="page.id"
+                             class="page-tab"
+                             :class="{ 'active': index === currentPageIndex }"
+                             @click="currentPageIndex = index">
+                            <span>@{{ page.title || 'Page ' + (index + 1) }}</span>
+                            <button v-if="pages.length > 1" @click.stop="deletePage(index)" class="page-delete-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button @click="addPage" class="btn page-add-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -706,6 +987,19 @@
                             <div v-for="opt in question.options" class="checkbox-option">
                                 <input type="checkbox" :id="'chk-'+question.id+'-'+opt" :value="opt">
                                 <label :for="'chk-'+question.id+'-'+opt">@{{ opt }}</label>
+                            </div>
+                        </div>
+
+                        <div v-if="question.type === 'satisfaction'" class="satisfaction-rating">
+                            <div class="satisfaction-options">
+                                <div v-for="(emoji, index) in getSatisfactionEmojis(question.scaleType || '5-point')"
+                                     :key="index"
+                                     class="satisfaction-option"
+                                     :class="{ 'selected': question.selectedValue === index + 1 }"
+                                     @click="question.selectedValue = index + 1">
+                                    <div class="emoji">@{{ emoji.icon }}</div>
+                                    <div class="emoji-label">@{{ emoji.label }}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -774,6 +1068,15 @@
                 </select>
             </div>
 
+            <div v-if="questions[selectedQuestionIndex].type === 'satisfaction'" class="settings-group">
+                <label>Satisfaction Scale</label>
+                <select class="form-control" v-model="questions[selectedQuestionIndex].scaleType">
+                    <option value="5-point">5-Point Scale (Default)</option>
+                    <option value="3-point">3-Point Scale (Simple)</option>
+                    <option value="7-point">7-Point Scale (Detailed)</option>
+                </select>
+            </div>
+
             <div class="settings-group" style="margin-top: 30px;">
                 <button @click="duplicateQuestion(selectedQuestionIndex)" class="btn" style="width: 100%;">
                     <i class="fas fa-copy"></i>
@@ -806,6 +1109,22 @@
         new Vue({
             el: '#app',
             data: {
+                pages: [
+                    {
+                        id: 'page-1',
+                        title: 'Page 1',
+                        questions: []
+                    }
+                ],
+                currentPageIndex: 0,
+                toolboxCategories: [
+                    { id: 'basic', label: 'Basic', icon: 'fas fa-font' },
+                    { id: 'choice', label: 'Choice', icon: 'fas fa-check-square' },
+                    { id: 'datetime', label: 'Date/Time', icon: 'fas fa-calendar' },
+                    { id: 'special', label: 'Special', icon: 'fas fa-star' },
+                    { id: 'layout', label: 'Layout', icon: 'fas fa-heading' },
+                    { id: 'hr-templates', label: 'HR Templates', icon: 'fas fa-users' }
+                ],
                 toolboxItems: [
                     // Basic Inputs
                     { 
@@ -898,11 +1217,18 @@
                         color: '#eff6ff',
                         category: 'special'
                     },
-                    { 
-                        type: 'rating', 
-                        label: 'Rating', 
+                    {
+                        type: 'rating',
+                        label: 'Star Rating',
                         icon: '<i class="fas fa-star"></i>',
                         color: '#fffbeb',
+                        category: 'special'
+                    },
+                    {
+                        type: 'satisfaction',
+                        label: 'Satisfaction',
+                        icon: '<i class="fas fa-smile"></i>',
+                        color: '#fef3c7',
                         category: 'special'
                     },
                     { 
@@ -914,28 +1240,87 @@
                     },
 
                     // Layout Elements
-                    { 
-                        type: 'section-title', 
-                        label: 'Section Title', 
+                    {
+                        type: 'section-title',
+                        label: 'Section Title',
                         icon: '<i class="fas fa-heading"></i>',
                         color: '#f0fdf4',
                         category: 'layout'
                     },
-                    { 
-                        type: 'divider', 
-                        label: 'Divider', 
+                    {
+                        type: 'divider',
+                        label: 'Divider',
                         icon: '<i class="fas fa-minus"></i>',
                         color: '#f8fafc',
                         category: 'layout'
+                    },
+
+                    // HR Templates
+                    {
+                        type: 'hr-satisfaction-survey',
+                        label: 'Satisfaction Survey',
+                        icon: '<i class="fas fa-smile-beam"></i>',
+                        color: '#fef3c7',
+                        category: 'hr-templates'
+                    },
+                    {
+                        type: 'hr-employee-feedback',
+                        label: 'Employee Feedback',
+                        icon: '<i class="fas fa-comments"></i>',
+                        color: '#ecfdf5',
+                        category: 'hr-templates'
+                    },
+                    {
+                        type: 'hr-performance-review',
+                        label: 'Performance Review',
+                        icon: '<i class="fas fa-chart-line"></i>',
+                        color: '#eff6ff',
+                        category: 'hr-templates'
+                    },
+                    {
+                        type: 'hr-exit-interview',
+                        label: 'Exit Interview',
+                        icon: '<i class="fas fa-door-open"></i>',
+                        color: '#fef2f2',
+                        category: 'hr-templates'
+                    },
+                    {
+                        type: 'hr-onboarding',
+                        label: 'Onboarding Form',
+                        icon: '<i class="fas fa-user-plus"></i>',
+                        color: '#f0fdf9',
+                        category: 'hr-templates'
                     }
                 ],
-                questions: [],
                 draggedType: '',
                 draggedIndex: null,
                 previewMode: false,
                 showJson: false,
                 selectedQuestionIndex: null,
                 activeToolboxCategory: 'basic'
+            },
+            computed: {
+                currentPage() {
+                    return this.pages[this.currentPageIndex];
+                },
+                questions() {
+                    return this.currentPage ? this.currentPage.questions : [];
+                },
+                filteredToolboxItems() {
+                    return this.toolboxItems.filter(item => item.category === this.activeToolboxCategory);
+                },
+                getCurrentCategoryLabel() {
+                    return () => {
+                        const category = this.toolboxCategories.find(cat => cat.id === this.activeToolboxCategory);
+                        return category ? category.label : 'Basic';
+                    };
+                },
+                getCurrentCategoryIcon() {
+                    return () => {
+                        const category = this.toolboxCategories.find(cat => cat.id === this.activeToolboxCategory);
+                        return category ? category.icon : 'fas fa-font';
+                    };
+                }
             },
             methods: {
                 startDrag(type) {
@@ -946,8 +1331,8 @@
                 },
                 reorderQuestion(index) {
                     if (this.draggedIndex !== null && this.draggedIndex !== index) {
-                        const moved = this.questions.splice(this.draggedIndex, 1)[0];
-                        this.questions.splice(index, 0, moved);
+                        const moved = this.currentPage.questions.splice(this.draggedIndex, 1)[0];
+                        this.currentPage.questions.splice(index, 0, moved);
                         this.draggedIndex = null;
                     }
                 },
@@ -974,6 +1359,11 @@
                                 question.max = 5;
                                 question.icon = 'star';
                                 break;
+                            case 'satisfaction':
+                                question.selectedValue = null;
+                                question.scaleType = '5-point';
+                                question.emojis = this.getSatisfactionEmojis('5-point');
+                                break;
                             case 'range':
                                 question.min = 0;
                                 question.max = 100;
@@ -984,9 +1374,19 @@
                                 break;
                         }
                         
-                        this.questions.push(question);
+                        // Check if it's an HR template
+                        if (this.draggedType.startsWith('hr-')) {
+                            const templateQuestions = this.generateHRTemplate(this.draggedType);
+                            templateQuestions.forEach(templateQuestion => {
+                                this.currentPage.questions.push(templateQuestion);
+                            });
+                            this.selectedQuestionIndex = this.currentPage.questions.length - 1;
+                        } else {
+                            this.currentPage.questions.push(question);
+                            this.selectedQuestionIndex = this.currentPage.questions.length - 1;
+                        }
+
                         this.draggedType = '';
-                        this.selectedQuestionIndex = this.questions.length - 1;
                     }
                 },
                 getDefaultLabel(type) {
@@ -1004,7 +1404,8 @@
                         'datetime-local': 'Select Date & Time',
                         'file': 'Upload File',
                         'signature': 'Signature',
-                        'rating': 'Rating',
+                        'rating': 'Star Rating',
+                        'satisfaction': 'How satisfied are you?',
                         'range': 'Range',
                         'section-title': 'Section Title',
                         'divider': '',
@@ -1012,6 +1413,32 @@
                         'page-break': ''
                     };
                     return defaults[type] || '';
+                },
+                getSatisfactionEmojis(scaleType = '5-point') {
+                    const scales = {
+                        '3-point': [
+                            { icon: '😞', label: 'Dissatisfied' },
+                            { icon: '😐', label: 'Neutral' },
+                            { icon: '😊', label: 'Satisfied' }
+                        ],
+                        '5-point': [
+                            { icon: '😡', label: 'Very Dissatisfied' },
+                            { icon: '😞', label: 'Dissatisfied' },
+                            { icon: '😐', label: 'Neutral' },
+                            { icon: '😊', label: 'Satisfied' },
+                            { icon: '😍', label: 'Very Satisfied' }
+                        ],
+                        '7-point': [
+                            { icon: '😡', label: 'Extremely Dissatisfied' },
+                            { icon: '😠', label: 'Very Dissatisfied' },
+                            { icon: '😞', label: 'Dissatisfied' },
+                            { icon: '😐', label: 'Neutral' },
+                            { icon: '🙂', label: 'Satisfied' },
+                            { icon: '😊', label: 'Very Satisfied' },
+                            { icon: '😍', label: 'Extremely Satisfied' }
+                        ]
+                    };
+                    return scales[scaleType] || scales['5-point'];
                 },
                 addOption(question) {
                     if (!question.options) question.options = [];
@@ -1022,7 +1449,7 @@
                     question.options.splice(index, 1);
                 },
                 removeQuestion(index) {
-                    this.questions.splice(index, 1);
+                    this.currentPage.questions.splice(index, 1);
                     if (this.selectedQuestionIndex === index) {
                         this.selectedQuestionIndex = null;
                     } else if (this.selectedQuestionIndex > index) {
@@ -1033,9 +1460,9 @@
                     this.selectedQuestionIndex = index;
                 },
                 duplicateQuestion(index) {
-                    const question = JSON.parse(JSON.stringify(this.questions[index]));
+                    const question = JSON.parse(JSON.stringify(this.currentPage.questions[index]));
                     question.id = 'q-' + Date.now();
-                    this.questions.splice(index + 1, 0, question);
+                    this.currentPage.questions.splice(index + 1, 0, question);
                     this.selectedQuestionIndex = index + 1;
                 },
                 undo() { 
@@ -1044,18 +1471,332 @@
                 redo() { 
                     alert('Redo functionality would be implemented with a history stack');
                 },
-                addPage() { 
-                    alert('Multi-page support would be implemented by managing multiple question arrays');
+                addPage() {
+                    const newPageNumber = this.pages.length + 1;
+                    const newPage = {
+                        id: 'page-' + Date.now(),
+                        title: `Page ${newPageNumber}`,
+                        questions: []
+                    };
+                    this.pages.push(newPage);
+                    this.currentPageIndex = this.pages.length - 1;
+                    this.selectedQuestionIndex = null;
+                },
+                deletePage(index) {
+                    if (this.pages.length <= 1) {
+                        alert('You must have at least one page.');
+                        return;
+                    }
+
+                    if (confirm(`Are you sure you want to delete "${this.pages[index].title}"? All questions on this page will be lost.`)) {
+                        this.pages.splice(index, 1);
+
+                        // Adjust current page index if necessary
+                        if (this.currentPageIndex >= this.pages.length) {
+                            this.currentPageIndex = this.pages.length - 1;
+                        } else if (this.currentPageIndex > index) {
+                            this.currentPageIndex--;
+                        }
+
+                        this.selectedQuestionIndex = null;
+                    }
+                },
+                updatePageTitle() {
+                    // This method can be used for additional validation if needed
+                },
+                addQuestionFromToolbox(type) {
+                    // Check if it's an HR template
+                    if (type.startsWith('hr-')) {
+                        const templateQuestions = this.generateHRTemplate(type);
+                        templateQuestions.forEach(templateQuestion => {
+                            this.currentPage.questions.push(templateQuestion);
+                        });
+                        this.selectedQuestionIndex = this.currentPage.questions.length - 1;
+                    } else {
+                        // Regular single question
+                        const question = this.createQuestion(type);
+                        this.currentPage.questions.push(question);
+                        this.selectedQuestionIndex = this.currentPage.questions.length - 1;
+                    }
+                },
+                clearForm() {
+                    if (confirm('Are you sure you want to clear all pages and form elements? This action cannot be undone.')) {
+                        this.pages = [{
+                            id: 'page-1',
+                            title: 'Page 1',
+                            questions: []
+                        }];
+                        this.currentPageIndex = 0;
+                        this.selectedQuestionIndex = null;
+                        localStorage.removeItem('formBuilderData');
+                    }
+                },
+                generateHRTemplate(templateType) {
+                    const templates = {
+                        'hr-satisfaction-survey': [
+                            {
+                                id: 'section-' + Date.now(),
+                                type: 'section-title',
+                                label: 'Employee Satisfaction Survey',
+                                description: 'Please rate your satisfaction with various aspects of your work experience'
+                            },
+                            {
+                                id: 'q-overall-satisfaction-' + Date.now(),
+                                type: 'satisfaction',
+                                label: 'Overall job satisfaction',
+                                required: true,
+                                scaleType: '5-point'
+                            },
+                            {
+                                id: 'q-work-environment-' + Date.now(),
+                                type: 'satisfaction',
+                                label: 'Work environment satisfaction',
+                                required: true,
+                                scaleType: '5-point'
+                            },
+                            {
+                                id: 'q-management-' + Date.now(),
+                                type: 'satisfaction',
+                                label: 'Management support satisfaction',
+                                required: true,
+                                scaleType: '5-point'
+                            },
+                            {
+                                id: 'q-workload-' + Date.now(),
+                                type: 'radio-group',
+                                label: 'How would you rate your current workload?',
+                                required: true,
+                                options: ['Too light', 'Just right', 'Too heavy', 'Overwhelming']
+                            },
+                            {
+                                id: 'q-recommend-' + Date.now(),
+                                type: 'radio-group',
+                                label: 'Would you recommend this company as a great place to work?',
+                                required: true,
+                                options: ['Definitely yes', 'Probably yes', 'Probably no', 'Definitely no']
+                            },
+                            {
+                                id: 'q-comments-' + Date.now(),
+                                type: 'textarea',
+                                label: 'Additional comments or suggestions',
+                                required: false,
+                                placeholder: 'Share any additional feedback...'
+                            }
+                        ],
+                        'hr-employee-feedback': [
+                            {
+                                id: 'section-' + Date.now(),
+                                type: 'section-title',
+                                label: 'Employee Feedback Form',
+                                description: 'Your feedback helps us improve our workplace'
+                            },
+                            {
+                                id: 'q-feedback-type-' + Date.now(),
+                                type: 'radio-group',
+                                label: 'Type of feedback',
+                                required: true,
+                                options: ['Suggestion', 'Complaint', 'Compliment', 'General feedback']
+                            },
+                            {
+                                id: 'q-department-' + Date.now(),
+                                type: 'select',
+                                label: 'Which department does this relate to?',
+                                required: true,
+                                options: ['HR', 'IT', 'Finance', 'Marketing', 'Operations', 'Management', 'Other']
+                            },
+                            {
+                                id: 'q-urgency-' + Date.now(),
+                                type: 'radio-group',
+                                label: 'Urgency level',
+                                required: true,
+                                options: ['Low', 'Medium', 'High', 'Critical']
+                            },
+                            {
+                                id: 'q-feedback-details-' + Date.now(),
+                                type: 'textarea',
+                                label: 'Please provide details',
+                                required: true,
+                                placeholder: 'Describe your feedback in detail...'
+                            },
+                            {
+                                id: 'q-anonymous-' + Date.now(),
+                                type: 'toggle',
+                                label: 'Submit anonymously',
+                                required: false
+                            }
+                        ],
+                        'hr-performance-review': [
+                            {
+                                id: 'section-' + Date.now(),
+                                type: 'section-title',
+                                label: 'Performance Review',
+                                description: 'Self-assessment and goal setting'
+                            },
+                            {
+                                id: 'q-goals-achievement-' + Date.now(),
+                                type: 'rating',
+                                label: 'Rate your achievement of previous goals',
+                                required: true,
+                                max: 5
+                            },
+                            {
+                                id: 'q-key-accomplishments-' + Date.now(),
+                                type: 'textarea',
+                                label: 'Key accomplishments this period',
+                                required: true,
+                                placeholder: 'List your main achievements...'
+                            },
+                            {
+                                id: 'q-challenges-' + Date.now(),
+                                type: 'textarea',
+                                label: 'Challenges faced and how you overcame them',
+                                required: false,
+                                placeholder: 'Describe any challenges...'
+                            },
+                            {
+                                id: 'q-skills-development-' + Date.now(),
+                                type: 'checkbox-group',
+                                label: 'Skills you want to develop',
+                                required: false,
+                                options: ['Leadership', 'Communication', 'Technical skills', 'Project management', 'Problem solving', 'Teamwork']
+                            },
+                            {
+                                id: 'q-future-goals-' + Date.now(),
+                                type: 'textarea',
+                                label: 'Goals for next review period',
+                                required: true,
+                                placeholder: 'Set your goals for the upcoming period...'
+                            }
+                        ],
+                        'hr-exit-interview': [
+                            {
+                                id: 'section-' + Date.now(),
+                                type: 'section-title',
+                                label: 'Exit Interview',
+                                description: 'Help us understand your experience and improve for future employees'
+                            },
+                            {
+                                id: 'q-leaving-reason-' + Date.now(),
+                                type: 'radio-group',
+                                label: 'Primary reason for leaving',
+                                required: true,
+                                options: ['Better opportunity', 'Career advancement', 'Compensation', 'Work-life balance', 'Management issues', 'Company culture', 'Other']
+                            },
+                            {
+                                id: 'q-job-satisfaction-' + Date.now(),
+                                type: 'satisfaction',
+                                label: 'Overall job satisfaction during your time here',
+                                required: true,
+                                scaleType: '5-point'
+                            },
+                            {
+                                id: 'q-manager-relationship-' + Date.now(),
+                                type: 'satisfaction',
+                                label: 'Relationship with your direct manager',
+                                required: true,
+                                scaleType: '5-point'
+                            },
+                            {
+                                id: 'q-recommend-employer-' + Date.now(),
+                                type: 'radio-group',
+                                label: 'Would you recommend this company to others?',
+                                required: true,
+                                options: ['Definitely yes', 'Probably yes', 'Probably no', 'Definitely no']
+                            },
+                            {
+                                id: 'q-improvements-' + Date.now(),
+                                type: 'textarea',
+                                label: 'What could the company improve?',
+                                required: false,
+                                placeholder: 'Share suggestions for improvement...'
+                            }
+                        ],
+                        'hr-onboarding': [
+                            {
+                                id: 'section-' + Date.now(),
+                                type: 'section-title',
+                                label: 'New Employee Onboarding',
+                                description: 'Welcome! Please complete this form to help us prepare for your first day'
+                            },
+                            {
+                                id: 'q-start-date-' + Date.now(),
+                                type: 'date',
+                                label: 'Preferred start date',
+                                required: true
+                            },
+                            {
+                                id: 'q-emergency-contact-' + Date.now(),
+                                type: 'text',
+                                label: 'Emergency contact name',
+                                required: true,
+                                placeholder: 'Full name'
+                            },
+                            {
+                                id: 'q-emergency-phone-' + Date.now(),
+                                type: 'text',
+                                label: 'Emergency contact phone',
+                                required: true,
+                                placeholder: 'Phone number'
+                            },
+                            {
+                                id: 'q-dietary-restrictions-' + Date.now(),
+                                type: 'checkbox-group',
+                                label: 'Dietary restrictions (for catering)',
+                                required: false,
+                                options: ['Vegetarian', 'Vegan', 'Gluten-free', 'Dairy-free', 'Nut allergies', 'None']
+                            },
+                            {
+                                id: 'q-equipment-needs-' + Date.now(),
+                                type: 'checkbox-group',
+                                label: 'Equipment preferences',
+                                required: false,
+                                options: ['Windows laptop', 'Mac laptop', 'External monitor', 'Wireless mouse', 'Wireless keyboard', 'Headset']
+                            },
+                            {
+                                id: 'q-questions-' + Date.now(),
+                                type: 'textarea',
+                                label: 'Questions or special requests',
+                                required: false,
+                                placeholder: 'Any questions about your first day or special accommodations needed...'
+                            }
+                        ]
+                    };
+
+                    return templates[templateType] || [];
                 },
                 exportFormJSON() {
-                    return JSON.stringify(this.questions, null, 2);
+                    return JSON.stringify({
+                        pages: this.pages,
+                        totalPages: this.pages.length,
+                        createdAt: new Date().toISOString()
+                    }, null, 2);
                 },
                 generateFormHTML() {
                     let html = `
                         <form style="padding:30px; max-width:700px; margin:0 auto; font-family:Poppins, sans-serif; background:#fff; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.1);">
                     `;
 
-                    this.questions.forEach(q => {
+                    // Add page navigation if multiple pages
+                    if (this.pages.length > 1) {
+                        html += `
+                            <div style="margin-bottom:30px; text-align:center;">
+                                <div style="display:flex; justify-content:center; gap:8px; margin-bottom:20px;">
+                        `;
+                        this.pages.forEach((page, index) => {
+                            html += `
+                                <div style="width:12px; height:12px; border-radius:50%; background:${index === 0 ? 'var(--gradient-color-1)' : '#d1d5db'}; transition:all 0.3s;"></div>
+                            `;
+                        });
+                        html += `
+                                </div>
+                                <h3 style="margin:0; color:var(--gradient-color-1);">${this.pages[0].title}</h3>
+                            </div>
+                        `;
+                    }
+
+                    // Generate current page content
+                    const currentPageQuestions = this.pages.length > 0 ? this.pages[0].questions : [];
+                    currentPageQuestions.forEach(q => {
                         html += `<div style="margin-bottom:24px;">`;
 
                         // Section title
@@ -1122,8 +1863,31 @@
                                 (q.options || []).forEach(opt => {
                                     html += `
                                         <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:8px; border-radius:8px; transition:all 0.3s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
-                                            <input type="checkbox" value="${opt}" style="margin:0;"> 
+                                            <input type="checkbox" value="${opt}" style="margin:0;">
                                             <span>${opt}</span>
+                                        </label>
+                                    `;
+                                });
+                                html += `</div>`;
+                                break;
+                            case 'satisfaction':
+                                const emojis = [
+                                    { icon: '😡', label: 'Very Dissatisfied', value: 1 },
+                                    { icon: '😞', label: 'Dissatisfied', value: 2 },
+                                    { icon: '😐', label: 'Neutral', value: 3 },
+                                    { icon: '😊', label: 'Satisfied', value: 4 },
+                                    { icon: '😍', label: 'Very Satisfied', value: 5 }
+                                ];
+                                html += `<div style="display:flex; justify-content:space-between; gap:10px; max-width:400px; margin:10px 0;">`;
+                                emojis.forEach(emoji => {
+                                    html += `
+                                        <label style="display:flex; flex-direction:column; align-items:center; padding:12px 8px; border:2px solid #d1d5db; border-radius:12px; cursor:pointer; transition:all 0.3s; background:#fff; min-width:70px; text-align:center;"
+                                               onmouseover="this.style.borderColor='var(--gradient-color-1)'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(111, 66, 193, 0.15)'"
+                                               onmouseout="this.style.borderColor='#d1d5db'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                                               onclick="this.style.borderColor='var(--gradient-color-1)'; this.style.background='rgba(111, 66, 193, 0.05)'">
+                                            <input type="radio" name="${q.id}" value="${emoji.value}" style="display:none;">
+                                            <div style="font-size:32px; margin-bottom:6px;">${emoji.icon}</div>
+                                            <div style="font-size:11px; font-weight:500; color:#6b7280; line-height:1.2;">${emoji.label}</div>
                                         </label>
                                     `;
                                 });
@@ -1152,7 +1916,13 @@
                     console.log("closing");                  
                       document.getElementById('previewModal').style.display = 'none';
                 },
-                async testFetch() {
+                async saveFormToServer() {
+                    const totalQuestions = this.pages.reduce((total, page) => total + page.questions.length, 0);
+                    if (totalQuestions === 0) {
+                        alert('Please add some form elements before saving.');
+                        return;
+                    }
+
                     try {
                         const formData = this.exportFormJSON();
                         const response = await fetch('/show-string', {
@@ -1161,36 +1931,80 @@
                                 'Content-Type': 'text/plain',
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                             },
-                            body: formData 
+                            body: formData
                         });
-                        
+
                         const result = await response.text();
-                        alert('Form saved successfully!');
+                        alert('Form saved to server successfully!');
                         console.log('Form saved:', result);
+
+    window.location.href = '{{ route("dashboard", ["page" => "forms"]) }}';
+                        // Clear local storage after successful server save
+                        localStorage.removeItem('formBuilderData');
                     } catch (error) {
                         console.error('Error:', error);
                         alert('Error saving form: ' + error.message);
                     }
-                }
-            },
-            mounted() {
-                const saved = localStorage.getItem('formBuilderData');
-                if (saved) {
-                    try {
-                        this.questions = JSON.parse(saved);
-                    } catch (e) {
-                        console.error('Failed to parse saved form data', e);
+                },
+                saveToLocalStorage() {
+                    const totalQuestions = this.pages.reduce((total, page) => total + page.questions.length, 0);
+                    if (totalQuestions === 0) {
+                        alert('No form elements to save.');
+                        return;
+                    }
+
+                    localStorage.setItem('formBuilderData', JSON.stringify({
+                        pages: this.pages,
+                        currentPageIndex: this.currentPageIndex
+                    }));
+                    alert('Form draft saved locally!');
+                },
+                loadFromLocalStorage() {
+                    const saved = localStorage.getItem('formBuilderData');
+                    if (saved) {
+                        try {
+                            const data = JSON.parse(saved);
+                            if (data.pages) {
+                                // New format with pages
+                                this.pages = data.pages;
+                                this.currentPageIndex = data.currentPageIndex || 0;
+                            } else {
+                                // Old format - convert to pages
+                                this.pages = [{
+                                    id: 'page-1',
+                                    title: 'Page 1',
+                                    questions: data
+                                }];
+                                this.currentPageIndex = 0;
+                            }
+                            alert('Form draft loaded successfully!');
+                        } catch (e) {
+                            console.error('Failed to parse saved form data', e);
+                            alert('Error loading saved form data.');
+                        }
+                    } else {
+                        alert('No saved form data found.');
                     }
                 }
             },
-            watch: {
-                questions: {
-                    handler() {
-                        localStorage.setItem('formBuilderData', JSON.stringify(this.questions));
-                    },
-                    deep: true
+            mounted() {
+                // Clear any existing form data on fresh load
+                localStorage.removeItem('formBuilderData');
+                this.pages = [{
+                    id: 'page-1',
+                    title: 'Page 1',
+                    questions: []
+                }];
+                this.currentPageIndex = 0;
+
+                // Optional: Load saved data only if explicitly requested
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('load_saved') === 'true') {
+                    this.loadFromLocalStorage();
                 }
-            }
+            },
+            // Removed automatic localStorage saving to prevent unwanted persistence
+            // Users can now explicitly save drafts using the "Save Draft" button
         });
     </script>
     <script>

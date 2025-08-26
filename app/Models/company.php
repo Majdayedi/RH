@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
 {
-    use HasUuids;
+    use HasFactory, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -56,7 +57,18 @@ class Company extends Model
      * Get the forms for the company.
      */
     public function forms()
-    {
-        return $this->hasMany(Form::class);
-    }
+{
+    return $this->hasMany(Form::class, 'company_id');
+}
+protected static function boot()
+{
+    parent::boot();
+
+    static::deleting(function ($company) {
+        $company->forms()->delete(); // delete all related forms first
+    });
+}
+
+
+    
 }

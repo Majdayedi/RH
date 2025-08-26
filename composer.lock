@@ -1056,16 +1056,16 @@
         },
         {
             "name": "ksubileau/color-thief-php",
-            "version": "v2.0.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ksubileau/color-thief-php.git",
-                "reference": "a1378533433dae824c2e5b70359f8b6ae16b1deb"
+                "reference": "d6189b34a21b70aec6b56359aa5bf0e00ded9b4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ksubileau/color-thief-php/zipball/a1378533433dae824c2e5b70359f8b6ae16b1deb",
-                "reference": "a1378533433dae824c2e5b70359f8b6ae16b1deb",
+                "url": "https://api.github.com/repos/ksubileau/color-thief-php/zipball/d6189b34a21b70aec6b56359aa5bf0e00ded9b4d",
+                "reference": "d6189b34a21b70aec6b56359aa5bf0e00ded9b4d",
                 "shasum": ""
             },
             "require": {
@@ -1110,9 +1110,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ksubileau/color-thief-php/issues",
-                "source": "https://github.com/ksubileau/color-thief-php/tree/v2.0.1"
+                "source": "https://github.com/ksubileau/color-thief-php/tree/v2.0.2"
             },
-            "time": "2022-11-12T10:09:40+00:00"
+            "time": "2025-07-17T15:26:54+00:00"
         },
         {
             "name": "laravel/framework",
@@ -8294,12 +8294,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

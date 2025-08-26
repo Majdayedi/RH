@@ -24,11 +24,10 @@ class Form extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    public function company(): BelongsTo
-    {
-        return $this->belongsTo(Company::class);
-    }
+public function company()
+{
+    return $this->belongsTo(Company::class, 'company_id');
+}
 
     public function creator(): BelongsTo
     {

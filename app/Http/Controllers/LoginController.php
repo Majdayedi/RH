@@ -24,7 +24,7 @@ class LoginController extends Controller
     $logoPath = storage_path('app/public/' . $company->logo);
     $dominantColors = ColorThief::getPalette($logoPath, 3); // Extract two dominant colors
 
-   // $gradientColor1 = "rgb({$dominantColors[0][0]}, {$dominantColors[0][1]}, {$dominantColors[0][2]})";
+  // $gradientColor2 = "rgb({$dominantColors[0][0]}, {$dominantColors[0][1]}, {$dominantColors[0][2]})";
     $gradientColor1 = "rgb({$dominantColors[1][0]}, {$dominantColors[1][1]}, {$dominantColors[1][2]})";
     $gradientColor2 = "rgb({$dominantColors[2][0]}, {$dominantColors[2][1]}, {$dominantColors[2][2]})";
 
@@ -41,9 +41,8 @@ class LoginController extends Controller
             'Matricule' => 'required|string',
             'password' => 'required|string',
         ]);
-
-        // 2. Check if user exists
-        $user = User::where('Matricule', $credentials['Matricule'])->first();
+        $companyId = $request->query('company');
+        $user = User::where('Matricule', $credentials['Matricule'])->where('company_id',$companyId )->first();
         
         if (!$user) {
             Log::warning('User not found', ['matricule' => $credentials['Matricule']]);
@@ -65,7 +64,7 @@ class LoginController extends Controller
             Log::info('Login successful', ['user_id' => Auth::id()]);
 
             $request->session()->regenerate();
-            if (strcasecmp(Auth::user()->role, 'RH') === 0)
+            if (in_array(Auth::user()->role, ['hr_staff', 'hr_admin']))
  {
                 $companyId= Auth::user()->company_id ;
                 $company = Company::find($companyId);
@@ -119,16 +118,16 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
     
         // 4. Redirect to login page
-       if ($company) {
-
-        dd($company->id,$company->legal_name);
-             /*return redirect()->route('login', [
-                'company' => $company->id,
-                'gradientColor1' => $gradientColor1,
-                'gradientColor2' => $gradientColor2
-            ]);*/
-        }
+       
         
+    }
+    public function admin()
+    {
+        return view('login', [
+            'company' => null,
+            'gradientColor1' => '#6f42c1',
+            'gradientColor2' => '#b14fcfff'
+        ]);
     }
    
 }
