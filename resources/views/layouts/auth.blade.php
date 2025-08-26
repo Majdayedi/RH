@@ -56,7 +56,6 @@
 </head>
 <body>
     <div id="app" class="align-items-center">
-        <!-- Navigation Bar (optional, can be conditionally shown) -->
         @auth
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div class="container">
@@ -99,11 +98,53 @@
         @endauth
         
        
-        <main class="d-flex align-items-center justify-content-center min-vh-100"
-              style=" @yield('background') ">
-            @yield('content')
-        
+      
+<main class="d-flex align-items-center justify-content-center min-vh-100" style="@yield('background')">
+
+    <!-- Left-corner button -->
+    <a 
+    href="{{ route('companies.index') }}" 
+    class="company-btn"
+>
+    <i class="fas fa-building"></i>
+</a>
+
+<style>
+.company-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px;
+    background-color: transparent;
+    color: #ffffffff;
+    border: 2px solid #ffffffff;
+    border-radius: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.company-btn:hover {
+    background-color: #ffffffff;
+    color: black;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.4);
+}
+</style>
+
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+   
+
+    <!-- Page content -->
+    @yield('content')
+
 </main>
+
         
         <!-- Footer (optional) -->
         @hasSection('footer')

@@ -51,6 +51,7 @@ class RegisterController extends Controller
                     $gradientColor1 = sprintf("rgb(%d, %d, %d)", ...$dominantColors[1]);
                     $gradientColor2 = sprintf("rgb(%d, %d, %d)", ...$dominantColors[2]);
                 }
+                
             } catch (\Exception $e) {
                 // Use default colors if extraction fails
             }
@@ -63,7 +64,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'department' => ['required', 'string', 'max:255'],
-            'role' => ['required', 'string', 'in:employee,manager,RH,admin'],
+            'role' => ['required', 'string', 'in:employee,hr_staff,hr_admin,manager'],
         ]);
 
         // Create the user

@@ -296,11 +296,11 @@ background: linear-gradient(135deg, {{ $gradientColor1 ?? '#6f42c1' }}, {{ $grad
                 <option value="">Select Role</option>
                 <option value="employee" {{ old('role') == 'employee' ? 'selected' : '' }}>Employee</option>
                 <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
-                <option value="RH" {{ old('role') == 'RH' ? 'selected' : '' }}>RH</option>
-                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="hr_staff" {{ old('role') == 'hr_staff' ? 'selected' : '' }}>HR Staff</option>
+                <option value="hr_admin" {{ old('role') == 'hr_admin' ? 'selected' : '' }}>HR Admin</option>
             </select>
             <label for="role">Role</label>
-            @error('role')
+            @error('role')  
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

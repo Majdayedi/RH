@@ -19,6 +19,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Share language data with all views
+        view()->composer('*', function ($view) {
+            $view->with([
+                'currentLocale' => app()->getLocale(),
+                'isRtl' => in_array(app()->getLocale(), ['ar']),
+                'availableLanguages' => [
+                    'en' => ['name' => 'English', 'flag' => '🇺🇸'],
+                    'fr' => ['name' => 'Français', 'flag' => '🇫🇷'],
+                    'ar' => ['name' => 'العربية', 'flag' => '🇸🇦'],
+                ]
+            ]);
+        });
     }
 }

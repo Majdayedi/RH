@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Sign in')
+@section('title', __('messages.login'))
 
 @push('styles')
 <style>
@@ -129,13 +129,23 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
 
 @section('content')
 <div class="login-container">
+    <!-- Language Switcher -->
+    <div style="position: absolute; top: 20px; right: 20px;">
+        <select onchange="switchLanguage(this.value)" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; background: white;">
+            <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>🇺🇸 English</option>
+            <option value="fr" {{ app()->getLocale() == 'fr' ? 'selected' : '' }}>🇫🇷 Français</option>
+            <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>🇸🇦 العربية</option>
+        </select>
+    </div>
+
     @if(isset($company))
         <div class="company-logo-container">
             <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->name }} logo" class="company-logo">
         </div>
     @endif
 
-    <h1 class="login-title">Welcome to {{ $company->legal_name }}</h1>
+    <h1 class="login-title">Welcome to {{ $company->legal_name ?? 'your space' }}
+</h1>
     
     @if($errors->any())
         <div class="alert alert-danger">
@@ -158,8 +168,12 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
             {{ session('error') }}
         </div>
     @endif
-    
-    <form method="POST" action="{{ route('login') }}" class="w-100">
+    @if (isset($company))
+        
+    <form method="POST" action="{{ route('login', ['company' => $company->id]) }}" class="w-100">
+    @else
+    <form method="POST" action="{{ route('loginAdmin') }}" class="w-100">
+    @endif
         @csrf
         <div class="form-floating">
             <input type="text"
@@ -167,10 +181,17 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
                    name="Matricule"  
                    placeholder="Enter your matricule" 
                    required aria-labelledby="matriculeLabel">
+                   @if(isset($company))
             <label id="matriculeLabel" for="Matricule">Matricule</label>
             @error('matricule')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
+            @else
+            <label id="matriculeLabel" for="Matricule">Username</label>
+            @error('matricule')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                 @endif
         </div>
         
         <div class="form-floating">
@@ -180,7 +201,7 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
                    name="password" 
                    placeholder="Enter your password" 
                    required aria-labelledby="passwordLabel">
-            <label id="passwordLabel" for="password">Password</label>
+            <label id="passwordLabel" for="password">{{ __('messages.password') }}</label>
             @error('password')
                 <div class="invalid-feedback">
                     {{ $message }}
@@ -195,12 +216,12 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
                    id="remember" 
                    {{ old('remember') ? 'checked' : '' }}>
             <label class="form-check-label" for="remember">
-                Remember me
+                {{ __('messages.remember_me') }}
             </label>
         </div>
         
         <button type="submit" class="btn btn-primary btn-signin">
-            Sign in
+            {{ __('messages.login') }}
         </button>
     </form>
     
@@ -215,14 +236,22 @@ background: linear-gradient(135deg, {{ $gradientColor1 }}, {{ $gradientColor2 }}
     @if (Route::has('register'))
         <div class="text-center mt-2">
             <span class="text-muted">Don't have an account? </span>
+            @if(isset($company))
             <a href="{{ route('register', ['company' => $company->id]) }}" class="text-link">
                 Sign up here
             </a>
+            @endif
         </div>
     @endif
     
     <div class="copyright">
-        © 2017-2018
+        © 2024-2025
     </div>
 </div>
+
+<script>
+    function switchLanguage(language) {
+        window.location.href = '/language/' + language;
+    }
+</script>
 @endsection

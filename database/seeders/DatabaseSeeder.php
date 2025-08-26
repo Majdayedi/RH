@@ -13,11 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed companies first
+        $this->call(CompanySeeder::class);
+
+        // Get the first company to assign to our test user
+        $company = \App\Models\Company::first();
+
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
+            'first_name' => 'Test User',
             'email' => 'test@example.com',
+            'company_id' => $company->id,
         ]);
     }
 }

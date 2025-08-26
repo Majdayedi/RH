@@ -7,7 +7,7 @@
     <title>Modern Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
+<style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         :root {
@@ -417,6 +417,156 @@
             text-decoration: underline;
         }
 
+        /* Submitters expandable section styles */
+       
+
+
+      
+
+        .expand-icon {
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .submitters-row {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-gradient);
+        }
+
+        .submitters-container {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            margin: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .submitters-container h4 {
+            color: var(--main-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .submitters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .submitter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid var(--secondary-gradient);
+            transition: all 0.2s ease;
+        }
+
+        .submitter-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .submitter-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .submitter-name {
+            font-weight: 600;
+            color: var(--main-color);
+            font-size: 0.95rem;
+        }
+
+        .submitter-email {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .submission-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+
+        .submission-date {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .submission-status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .submission-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .submission-status.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .submission-status.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .no-submissions {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .no-submissions i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        .no-submissions p {
+            margin: 0;
+            font-style: italic;
+        }
+
+        /* Status indicators */
+        .status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.published {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.active {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
         .main-content .analytics {
             background: rgba(255, 255, 255, 0.95);
             padding: 2.5rem;
@@ -633,12 +783,11 @@
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
             width: 100%;
             border-color:var(--secondary-gradient) ;
-            transform: translateY(300px);
             
         }
 
         .logout-btn:hover {
-            transform: translateY(297px);
+            transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
             background: var(--primary-gradient);
             border-color:var(--primary-gradient) ;
@@ -726,18 +875,25 @@
 <body>
     <div class="dashboard-container">
         <aside class="sidebar">
+
             <div class="logo">
                 @if(isset($company))
                     <img src="{{ asset('storage/'.$company->logo) }}" alt="{{ $company->name }} logo">
                 @endif
             </div>
             <nav>
-                <a href="#" class="active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                <a href="#" data-page="forms"><i class="fas fa-file-alt"></i> Forms</a>
-                <a href="#" data-page="analytics"><i class="fas fa-chart-pie"></i> Analytics</a>
-                <a href="#" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" class="active" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> {{ __('messages.dashboard') }}</a>
+                <a href="#" data-page="forms"><i class="fas fa-file-alt"></i> {{ __('messages.forms') }}</a>
+                <a href="#" data-page="analytics"><i class="fas fa-chart-pie"></i> {{ __('messages.analytics') }}</a>
+                <a href="#" data-page="settings"><i class="fas fa-cog"></i> {{ __('messages.settings') }}</a>
             </nav>
-            
+             <div class="language-switcher">
+                            <select onchange="switchLanguage(this.value)" style="padding: 10px 15px; border-radius: 10px; border: 2px solid #e2e8f0; background: white; font-size: 14px; cursor: pointer;">
+                                <option value="en" {{ app()->getLocale() == 'en' ? 'selected' : '' }}>🇺🇸 English</option>
+                                <option value="fr" {{ app()->getLocale() == 'fr' ? 'selected' : '' }}>🇫🇷 Français</option>
+                                <option value="ar" {{ app()->getLocale() == 'ar' ? 'selected' : '' }}>🇸🇦 العربية</option>
+                            </select>
+                        </div>
 
   <form method="POST" action="{{ route('logout', ['company' => $company->id]) }}">
             @csrf
@@ -752,41 +908,45 @@
             <div id="dashboard-content">
                 <header>
                     <div>
-                        <h2>Welcome Back, Admin!</h2>
-                        <p>Here's what's happening with your forms today.</p>
+                        <h2>{{ __('messages.welcome_back') }}, {{ __('messages.admin') }}!</h2>
+                        <p>{{ __('messages.happening_today') }}</p>
                     </div>
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search for forms...">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <!-- Language Switcher -->
+                        @include('components.language-switcher')
+                        <div class="search-bar">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="{{ __('messages.search_forms') }}">
+                        </div>
                     </div>
                 </header>
 
                 <section class="stats">
                     <div class="card">
                         <i class="fas fa-file-alt"></i>
-                        <h2>Total Forms</h2>
+                        <h2>{{ __('messages.total_forms') }}</h2>
                         <p>24</p>
                     </div>
                     <div class="card">
                         <i class="fas fa-check-circle"></i>
-                        <h2>Active Forms</h2>
+                        <h2>{{ __('messages.active_forms') }}</h2>
                         <p>18</p>
                     </div>
                     <div class="card">
                         <i class="fas fa-poll"></i>
-                        <h2>Total Submissions</h2>
+                        <h2>{{ __('messages.total_submissions') }}</h2>
                         <p>1,234</p>
                     </div>
                     <div class="card">
                         <i class="fas fa-user-plus"></i>
-                        <h2>Pending Invites</h2>
+                        <h2>{{ __('messages.total_users') }}</h2>
                         <p>5</p>
                     </div>
                 </section>
                 
                 <section class="forms-overview">
                     <div class="header">
-                        <h2>Company's users</h2>
+                        <h2>{{ __('messages.company_users') }}</h2>
                     </div>
                     <table>
                         <thead>
@@ -840,12 +1000,12 @@
             <div id="forms-content" style="display: none;">
                 <header>
                     <div>
-                        <h2>All Forms</h2>
-                        <p>Manage and organize your forms collection</p>
+                        <h2>{{ __('messages.all_forms') }}</h2>
+                        <p>{{ __('messages.manage_forms') }}</p>
                     </div>
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search forms..." id="form-search">
+                        <input type="text" placeholder="{{ __('messages.search_forms') }}" id="forms-search">
                     </div>
                 </header>
 
@@ -910,15 +1070,166 @@
                 </div>
             </div>
 
-            <div id="analytics-content" style="display: none;">
-                <h2>Analytics</h2>
-                <p>This is where the analytics content will go.</p>
+           <div id="analytics-content" style="display: none;">
+    <header>
+        <div>
+            <h2>{{ __('messages.analytics') }}</h2>
+            <p>{{ __('messages.manage_forms') }}</p>
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="{{ __('messages.search_forms') }}" id="analytics-search">
+        </div>
+    </header>
+
+    <section class="forms-overview">
+        <div class="header">
+            <h2>{{ __('messages.forms_analytics') }}</h2>
+            <p style="color: var(--text-light); margin: 0; font-size: 0.9rem;">{{ __('messages.click_row_details') }}</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form Title</th>
+                    <th></th>
+                    <th></th>
+                    <th>Response Rate</th>
+                    <th>Submissions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($forms as $form)
+                <tr class="form-row" data-form-id="{{ $form->id }}">
+                    <td>{{ $form->title }}</td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        @php
+                            $submissionCount = \App\Models\Submission::where('form_id', $form->id)->count();
+                            $totalUsers = \App\Models\User::where('company_id', $form->company_id)->count();
+                            $responseRate = $totalUsers > 0 ? round(($submissionCount / $totalUsers) * 100, 1) : 0;
+                        @endphp
+                        {{ $responseRate }}%
+                    </td>
+                    <td style="color:var(--secondary-gradient); cursor: pointer;">
+                        <i class="fas fa-chevron-right expand-icon" id="icon-{{ $form->id }}"></i>
+                        {{ $submissionCount }} Submissions
+                    </td>
+                    <td>
+                        
+                        
+                    </td>
+                </tr>
+                <!-- Submitters row (initially hidden) -->
+                <tr class="submitters-row" id="submitters-{{ $form->id }}" style="display: none;">
+                    <td colspan="5">
+                        <div class="submitters-container">
+                            <div class="submitters-list">
+                                @php
+                                    $submissions = \App\Models\Submission::where('form_id', $form->id)->with('user')->get();
+                                @endphp
+                                    @if($submissions->count() > 0)
+                                        @foreach($submissions as $submission)
+                                        @php
+                                                // Create a map of question ID to question data
+                                                $questionMap = [];
+                                                $answerMap = [];
+                                                $schema = json_decode($form->schema, true);
+                                                // Check if data is already an array or needs decoding
+                                                $submissionData = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
+
+                                                // Build question map
+                                                if (isset($schema['pages'][0]['questions'])) {
+                                                    foreach ($schema['pages'][0]['questions'] as $q) {
+                                                        $questionMap[$q['id']] = [
+                                                            'label' => $q['label'],
+                                                            'type' => $q['type'],
+                                                            'options' => $q['options'] ?? null
+                                                        ];
+                                                    }
+                                                }
+
+                                                // Build answer map
+                                                if (isset($submissionData['answers'])) {
+                                                    foreach ($submissionData['answers'] as $answer) {
+                                                        $answerMap[$answer['questionId']] = $answer['answer'];
+                                                    }
+                                                }
+
+                                                // Create combined map
+                                                $dataMap = [];
+                                                foreach ($questionMap as $questionId => $questionData) {
+                                                    $dataMap[$questionId] = [
+                                                        'question' => $questionData,
+                                                        'answer' => $answerMap[$questionId] ?? 'No answer'
+                                                    ];
+                                                }
+                                                $preRenderedHtml = '';
+                                                foreach($dataMap as $questionId => $data) {
+                                                    $preRenderedHtml .= "<p><strong>{$data['question']['label']}:</strong> {$data['answer']}</p>";
+                                                }
+                                            @endphp
+
+                                        <div class="submitter-item"  onclick='showSubmissionDetails(@json($submission->data), @json($form->schema), "{{ $submission->user->first_name ?? 'Anonymous' }}", "{{ $submission->user->email ?? 'No email' }}", "{{ $submission->created_at->format('M d, Y H:i') }}",{!! json_encode($preRenderedHtml) !!})'>
+                                            <div class="submitter-info">
+                                                <span class="submitter-name">{{ $submission->user->first_name ?? 'Anonymous' }}</span>
+                                                <span class="submitter-email">{{ $submission->user->email ?? 'No email' }}</span>
+                                            </div>
+                                            <div class="submission-meta">
+                                                <span class="submission-date">{{ $submission->created_at->format('M d, Y H:i') }}</span>
+                                            </div>
+                                         
+                                        </div>
+                                       
+                                        
+                                    @endforeach
+
+                                    <a href="{{ route('statistics', ['form_id' => $form->id]) }}" type="button" class="act-btn" style="background: #ffffffff; margin-left: 10px;" >
+                            <i class="fas fa-chart-bar"></i> AI Report
+                                            </a>
+                                @else
+                                    <div class="no-submissions">
+                                        <i class="fas fa-inbox"></i>
+                                        <p>No submissions yet</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                @endforeach
+            </tbody>
+        </table>
+         <div id="submission-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Submission Details</h3>
+                    
+                    <button onclick="closeSubmissionPopup()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                </div>
+                <div id="submission-content">
+                    
+                </div>
             </div>
+        </div>
+    </section>
+
+   
+    <!-- Example: Display Forms Map Data -->
+
+</div>
+
+<!-- Single Modal for all submission details (placed outside loops) -->
+
+
 
             <div id="settings-content" style="display: none;">
                 <h2>Settings</h2>
                 <p>This is where the settings content will go.</p>
             </div>
+            
+        </div>
         </main>
     </div>
 
@@ -959,6 +1270,11 @@
                 // Show the selected content section
                 document.getElementById(pageId + '-content').style.display = 'block';
 
+                // Re-initialize page-specific functionality
+                if (pageId === 'analytics') {
+                    initializeAnalyticsPage();
+                }
+
                 // Update active class on nav links
                 navLinks.forEach(link => {
                     link.classList.remove('active');
@@ -978,7 +1294,229 @@
 
             // Show default page
             switchPage('{{ $page }}');
+
+            // Initialize analytics page if it's the default page
+            if ('{{ $page }}' === 'analytics') {
+                setTimeout(initializeAnalyticsPage, 100);
+            }
         });
+
+        // Function to toggle submitters visibility
+        function toggleSubmitters(formId) {
+            console.log('toggleSubmitters called with formId:', formId);
+
+            // Debug: Check what elements exist
+            const allSubmitterRows = document.querySelectorAll('[id^="submitters-"]');
+            const allIcons = document.querySelectorAll('[id^="icon-"]');
+            console.log('All submitter rows found:', allSubmitterRows.length);
+            console.log('All icons found:', allIcons.length);
+
+            const submittersRowId = 'submitters-' + formId;
+            const expandIconId = 'icon-' + formId;
+
+            console.log('Looking for submittersRow ID:', submittersRowId);
+            console.log('Looking for expandIcon ID:', expandIconId);
+
+            const submittersRow = document.getElementById(submittersRowId);
+            const expandIcon = document.getElementById(expandIconId);
+
+            console.log('submittersRow found:', submittersRow);
+            console.log('expandIcon found:', expandIcon);
+
+            if (!submittersRow) {
+                console.error('Submitters row not found for ID:', submittersRowId);
+                // Try alternative selector
+                const altSubmittersRow = document.querySelector(`tr[id="${submittersRowId}"]`);
+                console.log('Alternative submitters row:', altSubmittersRow);
+            }
+
+            if (!expandIcon) {
+                console.error('Expand icon not found for ID:', expandIconId);
+                // Try alternative selector
+                const altExpandIcon = document.querySelector(`i[id="${expandIconId}"]`);
+                console.log('Alternative expand icon:', altExpandIcon);
+            }
+
+            if (!submittersRow || !expandIcon) {
+                console.error('Elements not found for formId:', formId);
+                return;
+            }
+
+            if (submittersRow.style.display === 'none' || submittersRow.style.display === '') {
+                // Show submitters
+                console.log('Showing submitters');
+                submittersRow.style.display = 'table-row';
+                expandIcon.classList.add('expanded');
+                expandIcon.classList.remove('fa-chevron-right');
+                expandIcon.classList.add('fa-chevron-down');
+            } else {
+                // Hide submitters
+                console.log('Hiding submitters');
+                submittersRow.style.display = 'none';
+                expandIcon.classList.remove('expanded');
+                expandIcon.classList.remove('fa-chevron-down');
+                expandIcon.classList.add('fa-chevron-right');
+            }
+        }
+
+        // Make sure the function is available globally
+        window.toggleSubmitters = toggleSubmitters;
+
+        // Function to generate AI report for specific form
+      
+
+        // Function to show report in popup
+        function showReportPopup(content, title) {
+            // Remove existing popup if any
+            const existingPopup = document.getElementById('ai-report-popup');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+
+            // Create popup
+            const popup = document.createElement('div');
+            popup.id = 'ai-report-popup';
+            popup.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                box-sizing: border-box;
+            `;
+
+            popup.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 10px;
+                    max-width: 90%;
+                    max-height: 90%;
+                    overflow-y: auto;
+                    position: relative;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                ">
+                    <div style="
+                        position: sticky;
+                        top: 0;
+                        background: white;
+                        padding: 20px;
+                        border-bottom: 1px solid #eee;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        border-radius: 10px 10px 0 0;
+                    ">
+                        <h3 style="margin: 0; color: #333;">AI Report: ${title}</h3>
+                        <button onclick="closeReportPopup()" style="
+                            background: #dc3545;
+                            color: white;
+                            border: none;
+                            border-radius: 5px;
+                            padding: 8px 15px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">Close</button>
+                    </div>
+                    <div style="padding: 20px;">
+                        ${content}
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(popup);
+
+            // Close on background click
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    closeReportPopup();
+                }
+            });
+        }
+
+        // Function to close report popup
+        function closeReportPopup() {
+            const popup = document.getElementById('ai-report-popup');
+            if (popup) {
+                popup.remove();
+            }
+        }
+
+        // Make functions globally available
+        window.closeReportPopup = closeReportPopup;
+
+        // Function to initialize analytics page functionality
+        let analyticsInitialized = false;
+        function initializeAnalyticsPage() {
+            if (analyticsInitialized) {
+                console.log('Analytics page already initialized, skipping...');
+                return;
+            }
+
+            console.log('Initializing analytics page...');
+
+            // Remove any existing event listeners to prevent duplicates
+            const existingRows = document.querySelectorAll('.form-row');
+            existingRows.forEach(row => {
+                row.removeEventListener('click', handleRowClick);
+            });
+
+            // Add event listeners to form rows
+            const formRows = document.querySelectorAll('.form-row');
+            formRows.forEach(row => {
+                row.addEventListener('click', handleRowClick);
+            });
+
+            analyticsInitialized = true;
+            console.log('Analytics page initialized with', formRows.length, 'form rows');
+        }
+
+        // Handle row click
+        function handleRowClick(e) {
+            e.preventDefault();
+            const formId = this.getAttribute('data-form-id');
+            if (formId) {
+                console.log('Row clicked, formId:', formId);
+                toggleSubmitters(formId);
+            }
+        }
+
+        // Remove the event delegation backup to prevent double firing
+        // The direct event listeners should be sufficient
+
+        // Popup functions
+        function showSubmissionDetails(submission, form, userName, userEmail, submissionDate, dataMap) {
+            document.getElementById('submission-popup').style.display = 'block';
+            document.getElementById('submission-content').innerHTML = `
+                <p><strong>Submitter:</strong> ${userName}</p>
+                <p><strong>Email:</strong> ${userEmail}</p>
+                <p><strong>Date:</strong> ${submissionDate}</p>
+                <hr style="margin: 15px 0;">
+                ${dataMap}`
+                
+            ;
+        }
+
+        function closeSubmissionPopup() {
+            document.getElementById('submission-popup').style.display = 'none';
+        }
+
+        // Close popup when clicking outside
+        document.getElementById('submission-popup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSubmissionPopup();
+            }
+        });
+
+        // Language switching function
+        function switchLanguage(language) {
+            window.location.href = '/language/' + language;
+        }
     </script>
 
 </body>

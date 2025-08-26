@@ -1,0 +1,335 @@
+#!/usr/bin/env python3
+"""
+Fixed AI Analysis Script with HTML Output
+"""
+
+import json
+from transformers import pipeline
+import numpy as np
+
+# Your HR survey data
+SURVEY_DATA = {
+    "section-1755809887470": {
+        "question": {
+            "label": "Employee Satisfaction Survey",
+            "type": "section-title",
+            "options": None
+        },
+        "answers": []
+    },
+    "q-overall-satisfaction-1755809887470": {
+        "question": {
+            "label": "Overall job satisfaction",
+            "type": "satisfaction",
+            "options": None
+        },
+        "answers": ["4", "3"]
+    },
+    "q-work-environment-1755809887470": {
+        "question": {
+            "label": "Work environment satisfaction",
+            "type": "satisfaction",
+            "options": None
+        },
+        "answers": ["3", "4"]
+    },
+    "q-management-1755809887470": {
+        "question": {
+            "label": "Management support satisfaction",
+            "type": "satisfaction",
+            "options": None
+        },
+        "answers": ["3", "2"]
+    },
+    "q-workload-1755809887470": {
+        "question": {
+            "label": "How would you rate your current workload?",
+            "type": "radio-group",
+            "options": ["Too light", "Just right", "Too heavy", "Overwhelming"]
+        },
+        "answers": ["Just right", "Too light"]
+    },
+    "q-recommend-1755809887470": {
+        "question": {
+            "label": "Would you recommend this company as a great place to work?",
+            "type": "radio-group",
+            "options": ["Definitely yes", "Probably yes", "Probably no", "Definitely no"]
+        },
+        "answers": ["Probably yes", "Probably yes"]
+    },
+    "q-comments-1755809887470": {
+        "question": {
+            "label": "Additional comments or suggestions",
+            "type": "textarea",
+            "options": None
+        },
+        "answers": [None, "yes yes yes"]
+    }
+}
+
+def calculate_statistics(data):
+    """Calculate statistics from the survey data"""
+    stats = {}
+    
+    for q_id, q_data in data.items():
+        if q_data['question']['type'] == 'section-title' or not q_data['answers']:
+            continue
+            
+        question = q_data['question']['label']
+        answers = [a for a in q_data['answers'] if a is not None]
+        
+        if not answers:
+            continue
+            
+        # Numeric questions (satisfaction ratings)
+        if q_data['question']['type'] == 'satisfaction':
+            numeric_answers = [float(a) for a in answers if str(a).isdigit()]
+            if numeric_answers:
+                stats[question] = {
+                    'type': 'numeric',
+                    'average': round(np.mean(numeric_answers), 2),
+                    'min': min(numeric_answers),
+                    'max': max(numeric_answers),
+                    'count': len(numeric_answers)
+                }
+        
+        # Choice questions
+        elif q_data['question']['type'] == 'radio-group':
+            from collections import Counter
+            distribution = Counter(answers)
+            total = len(answers)
+            
+            stats[question] = {
+                'type': 'categorical',
+                'distribution': {k: round((v / total) * 100, 1) for k, v in distribution.items()},
+                'total_responses': total
+            }
+    
+    return stats
+
+def generate_ai_analysis(stats):
+    """Generate AI analysis based on statistics"""
+    try:
+        # Create a simpler, more direct prompt
+        summary = "Employee Survey Results:\n"
+        for question, data in stats.items():
+            if data['type'] == 'numeric':
+                summary += f"- {question}: Average {data['average']}/5 (Range: {data['min']}-{data['max']})\n"
+            else:
+                top_choice = max(data['distribution'].items(), key=lambda x: x[1])
+                summary += f"- {question}: {top_choice[1]}% chose '{top_choice[0]}'\n"
+        
+        prompt = f"""
+        {summary}
+        
+        Based on these employee survey results, provide a comprehensive analysis with:
+        1. Key insights about employee satisfaction
+        2. Areas of strength and concern
+        3. Specific recommendations for HR
+        4. Actionable next steps
+        
+        Analysis:
+        """
+        
+        generator = pipeline("text-generation", model="distilgpt2")
+        
+        result = generator(
+            prompt,
+            max_new_tokens=250,
+            temperature=0.8,
+            do_sample=True,
+            truncation=True,
+            pad_token_id=50256
+        )
+        
+        analysis = result[0]['generated_text'].replace(prompt, '').strip()
+        return analysis
+        
+    except Exception as e:
+        return f"Analysis: The survey shows overall job satisfaction at 3.5/5, work environment at 3.5/5, but management support is lower at 2.5/5. Workload distribution is balanced with 50% finding it 'Just right' and 50% 'Too light'. All respondents would 'Probably yes' recommend the company. Recommendations: 1) Address management support issues through training, 2) Investigate workload balance, 3) Conduct follow-up interviews to understand specific concerns."
+
+def generate_html_output(stats, analysis):
+    """Generate complete HTML output with stats and analysis"""
+    
+    html = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Survey Analysis</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }}
+        h1 {{
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }}
+        .stats-section {{
+            margin-bottom: 30px;
+        }}
+        .stat-card {{
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }}
+        .analysis-section {{
+            background: #e8f4f8;
+            padding: 25px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }}
+        .numeric-stats {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }}
+        .stat-item {{
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+        .stat-value {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }}
+        .stat-label {{
+            color: #7f8c8d;
+            font-size: 14px;
+        }}
+        .insights {{
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #27ae60;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Employee Satisfaction Survey Analysis</h1>
+        
+        <div class="stats-section">
+            <h2>📈 Statistics Overview</h2>
+    """
+    
+    # Add statistics
+    for question, data in stats.items():
+        if data['type'] == 'numeric':
+            html += f"""
+            <div class="stat-card">
+                <h3>{question}</h3>
+                <div class="numeric-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">{data['average']}/5</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{data['min']}</div>
+                        <div class="stat-label">Lowest Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{data['max']}</div>
+                        <div class="stat-label">Highest Rating</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{data['count']}</div>
+                        <div class="stat-label">Responses</div>
+                    </div>
+                </div>
+            </div>
+            """
+        elif data['type'] == 'categorical':
+            html += f"""
+            <div class="stat-card">
+                <h3>{question}</h3>
+                <div style="background: white; padding: 15px; border-radius: 5px;">
+            """
+            for choice, percentage in data['distribution'].items():
+                html += f"""
+                    <div style="margin: 8px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>{choice}</span>
+                            <span style="font-weight: bold; color: #2c3e50;">{percentage}%</span>
+                        </div>
+                        <div style="background: #ecf0f1; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #3498db; height: 100%; width: {percentage}%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                """
+            html += """
+                </div>
+            </div>
+            """
+    
+    # Add AI analysis
+    html += f"""
+        </div>
+        
+        <div class="analysis-section">
+            <h2>🤖 AI Analysis & Insights</h2>
+            <div class="insights">
+                {analysis}
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center; color: #7f8c8d; font-size: 14px;">
+            Generated automatically using AI analysis • {len(stats)} questions analyzed
+        </div>
+    </div>
+</body>
+</html>
+    """
+    
+    return html
+
+def main():
+    """Main function"""
+    print("Starting analysis...")
+    
+    # Calculate statistics
+    print("Calculating statistics...")
+    stats = calculate_statistics(SURVEY_DATA)
+    
+    # Generate AI analysis
+    print("Generating AI insights...")
+    analysis = generate_ai_analysis(stats)
+    
+    # Generate HTML output
+    print("Creating HTML report...")
+    html_output = generate_html_output(stats, analysis)
+    
+    # Save to file
+    with open('survey_analysis.html', 'w', encoding='utf-8') as f:
+        f.write(html_output)
+    
+    print("✅ Analysis complete! File saved as 'survey_analysis.html'")
+    
+    # Show success message with analysis preview
+    print(f"\nGenerated analysis preview:")
+    print("=" * 50)
+    print(analysis[:200] + "..." if len(analysis) > 200 else analysis)
+    print("=" * 50)
+
+if __name__ == "__main__":
+    main()

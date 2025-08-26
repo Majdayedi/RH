@@ -1,0 +1,13 @@
+# Required Python libraries for AI analysis
+# Install with: pip install -r python_ai_requirements.txt
+
+# Core AI/ML libraries
+    transformers==4.28.2
+    torch==2.0.0
+    tokenizers==0.13.3
+    accelerate==0.21.0
+    datasets==2.12.0
+    scikit-learn==1.2.2
+    scipy==1.10.1
+    numpy==1.24.2
+    pandas==2.0.2
