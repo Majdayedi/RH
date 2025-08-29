@@ -620,6 +620,120 @@
             background: var(--secondary-gradient);
             color: white;
             border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Enhanced Search and Filter Styles */
+        .search-filter-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-filters {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            background: white;
+            color: #4a5568;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .filter-btn i {
+            font-size: 0.85rem;
+        }
+
+        .sort-options select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-options select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        #results-counter {
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            border: 2px dashed #e2e8f0;
+        }
+
+        .no-results i {
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+            color: #718096;
+        }
+
+        /* Table Search Bars */
+        .forms-overview .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .forms-overview .header h2 {
+            margin: 0;
+            flex: 1;
+        }
+
+        .forms-overview .header .search-bar {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .forms-overview .header .search-bar input {
+            transition: all 0.3s ease;
+        }
+
+        .forms-overview .header .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .btn-create-new {
@@ -835,6 +949,37 @@
 
             .form-filters {
                 justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .search-filter-container {
+                padding: 1rem;
+            }
+
+            .sort-options {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 0.5rem;
+            }
+
+            .sort-options select {
+                width: 100%;
+            }
+
+            .forms-overview .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .forms-overview .header .search-bar {
+                width: 100%;
+                min-width: auto;
             }
 
             .form-card-footer {
@@ -868,6 +1013,445 @@
     background: transparent;
     border:transparent;
     font-size: 1.0rem;
+}
+
+    </style>
+    <style>
+        /* Settings Page Specific Styles */
+        .settings-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-gradient);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-title i {
+            font-size: 1.1rem;
+            color: var(--secondary-gradient);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gradient), var(--secondary-gradient));
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+            padding: 0.875rem 2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e0;
+        }
+
+        /* Error Messages */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .error-message::before {
+            content: "⚠";
+            font-size: 0.75rem;
+        }
+
+        /* Form Link Popup Styles */
+        .form-link-popup-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(5px);
+            z-index: 10000 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            animation: fadeIn 0.3s ease;
+            display:none;
+        }
+
+        .form-link-popup-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 2rem 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .popup-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .popup-header i {
+            color: var(--secondary-gradient);
+            font-size: 1.25rem;
+        }
+
+        .close-popup-btn {
+            background: #f7fafc;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+
+        .close-popup-btn:hover {
+            background: #e2e8f0;
+            color: #1a202c;
+            transform: scale(1.1);
+        }
+
+        .popup-body {
+            padding: 2rem;
+        }
+
+        .popup-body p {
+            margin: 0 0 1.5rem 0;
+            color: #4a5568;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-container {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .link-input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background: white;
+            color: #2d3748;
+        }
+
+        .link-input:focus {
+            outline: none;
+            border-color: var(--secondary-gradient);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .copy-link-btn {
+            background: linear-gradient(135deg, var(--primary-gradient), var(--secondary-gradient));
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .copy-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .copy-link-btn.copied {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .copy-status {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            min-height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .copy-status.success {
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .link-info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            color: #0369a1;
+            font-size: 0.95rem;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item i {
+            width: 20px;
+            text-align: center;
+            color: #0284c7;
+        }
+
+        .popup-footer {
+            padding: 1rem 2rem 2rem 2rem;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .popup-footer small {
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .popup-footer i {
+            color: #fbbf24;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .form-link-popup-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .popup-header, .popup-body, .popup-footer {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .link-container {
+                flex-direction: column;
+            }
+
+            .copy-link-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+    <style>
+        /* Form Section Container */
+.info-section {
+    background: #f8fafc;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+/* Form Row Layout */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Group (label + input) */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Labels */
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.form-label i {
+    color: #667eea;
+    font-size: 0.85rem;
+}
+
+/* Form Inputs */
+.form-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Error Message */
+.error-message {
+    color: #e53e3e;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.error-message::before {
+    content: "⚠";
+    font-size: 0.7rem;
+}
+
+/* Help Text */
+.form-help {
+    color: #718096;
+    font-size: 0.8rem;
+}
+
+/* Actions Section */
+.actions-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background: #f8fafc;
+    border-radius: 15px;
+    margin-top: 2rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Responsive Design for Forms */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .actions-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 }
 
     </style>
@@ -911,44 +1495,56 @@
                         <h2>{{ __('messages.welcome_back') }}, {{ __('messages.admin') }}!</h2>
                         <p>{{ __('messages.happening_today') }}</p>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 20px;">
-                        <!-- Language Switcher -->
-                        @include('components.language-switcher')
-                        <div class="search-bar">
-                            <i class="fas fa-search"></i>
-                            <input type="text" placeholder="{{ __('messages.search_forms') }}">
-                        </div>
-                    </div>
+                    
                 </header>
 
                 <section class="stats">
                     <div class="card">
                         <i class="fas fa-file-alt"></i>
                         <h2>{{ __('messages.total_forms') }}</h2>
-                        <p>24</p>
+                        <p>{{  App\Models\form::where('company_id', $company->id)->count() }}</p>
                     </div>
                     <div class="card">
                         <i class="fas fa-check-circle"></i>
                         <h2>{{ __('messages.active_forms') }}</h2>
-                        <p>18</p>
+                        <p>{{  App\Models\form::where('company_id', $company->id)->where('is_active', true)->count() }}</p>
                     </div>
                     <div class="card">
                         <i class="fas fa-poll"></i>
                         <h2>{{ __('messages.total_submissions') }}</h2>
-                        <p>1,234</p>
+                        <p>
+                        {{ App\Models\Submission::whereHas('form', function($query) use ($company) {
+                        $query->where('company_id', $company->id);
+                        })->count() }}
+                        </p>
                     </div>
                     <div class="card">
                         <i class="fas fa-user-plus"></i>
                         <h2>{{ __('messages.total_users') }}</h2>
-                        <p>5</p>
+                        <p>{{  App\Models\user::where('company_id', $company->id)->count() }}</p>
                     </div>
                 </section>
                 
                 <section class="forms-overview">
                     <div class="header">
                         <h2>{{ __('messages.company_users') }}</h2>
+                        <!-- Users Search Bar -->
+                        <div class="search-bar" style="max-width: 300px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="users-search" placeholder="{{ __('messages.search_users') }}"
+                                   style="width: 100%; padding: 10px 40px; border: 2px solid #e2e8f0; border-radius: 20px; font-size: 14px;">
+                        </div>
                     </div>
-                    <table>
+
+                    <!-- Users Results Counter -->
+                    <div id="users-results-counter" style="margin-bottom: 1rem; color: #718096; font-size: 14px;">
+                        @php
+                            $userCount = isset($userc) ? count($userc) : 0;
+                        @endphp
+                        {{ __('messages.showing') }} {{ $userCount }} {{ __('messages.of') }} {{ $userCount }} {{ __('messages.users') }}
+                    </div>
+
+                    <table id="users-table">
                         <thead>
                             <tr>
                                 <th>Matricule</th>
@@ -960,7 +1556,7 @@
                         </thead>
                         @foreach ($userc as $user)
                         <tbody>
-                            <tr>
+                            <tr class="user-row" data-name="{{ strtolower($user->first_name) }}" data-matricule="{{ strtolower($user->matricule) }}">
                                 <td>"{{ $user->matricule }}"</td>
                                 <td>"{{ $user->first_name }}"</td>
                                 @if ($user->is_active)
@@ -991,10 +1587,7 @@
                     </table>
                 </section>
 
-                <section class="analytics">
-                    <h2>Submissions in the last 30 days</h2>
-                    <canvas id="submissionsChart"></canvas>
-                </section>
+                
             </div>
 
             <div id="forms-content" style="display: none;">
@@ -1009,22 +1602,74 @@
                     </div>
                 </header>
 
-                <div class="forms-actions" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-                    <div class="form-filters">
-                        <button class="filter-btn active" data-filter="all">All Forms</button>
-                        <button class="filter-btn" data-filter="published">Published</button>
-                        <button class="filter-btn" data-filter="draft">Drafts</button>
+                <!-- Enhanced Search and Filter Section -->
+                <div class="forms-actions" style="margin-bottom: 2rem;">
+                    <!-- Search Bar -->
+                    <div class="search-filter-container" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="search-bar" style="flex: 1; max-width: 400px;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="form-search" placeholder="{{ __('messages.search_forms') }}"
+                                       style="width: 100%; padding: 12px 45px; border: 2px solid #e2e8f0; border-radius: 25px; font-size: 14px;">
+                            </div>
+                            <a href="{{ route('form', ['company' => $company->id]) }}" class="btn-create-new">
+                                <i class="fas fa-plus"></i> {{ __('messages.create_new_form') }}
+                            </a>
+                        </div>
+
+                        <!-- Filter Buttons -->
+                        <div class="form-filters" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i> {{ __('messages.all_forms') }}
+                            </button>
+                            <button class="filter-btn" data-filter="published">
+                                <i class="fas fa-check-circle"></i> {{ __('messages.published') }}
+                            </button>
+                            <button class="filter-btn" data-filter="draft">
+                                <i class="fas fa-edit"></i> {{ __('messages.drafts') }}
+                            </button>
+                            <button class="filter-btn" data-filter="recent">
+                                <i class="fas fa-clock"></i> {{ __('messages.recent') }}
+                            </button>
+                        </div>
+
+                        <!-- Sort Options -->
+                        <div class="sort-options" style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-weight: 500; color: #4a5568;">{{ __('messages.sort_by') }}:</span>
+                            <select id="sort-select" style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: white;">
+                                <option value="created_at_desc">{{ __('messages.newest_first') }}</option>
+                                <option value="created_at_asc">{{ __('messages.oldest_first') }}</option>
+                                <option value="title_asc">{{ __('messages.title_a_z') }}</option>
+                                <option value="title_desc">{{ __('messages.title_z_a') }}</option>
+                                <option value="responses_desc">{{ __('messages.most_responses') }}</option>
+                            </select>
+                        </div>
                     </div>
-                    <a href="{{ route('form', ['company' => $company->id]) }}" class="btn-create-new">+ Create New Form</a>
+
+                    <!-- Results Counter -->
+                    <div id="results-counter" style="margin-bottom: 1rem; color: #718096; font-size: 14px;">
+                        @php
+                            $formCount = isset($forms) ? count($forms) : 0;
+                        @endphp
+                        {{ __('messages.showing') }} {{ $formCount }} {{ __('messages.of') }} {{ $formCount }} {{ __('messages.forms') }}
+                    </div>
+
+                    <!-- Debug Test Button (temporary) -->
+                    <button onclick="showFormLinkPopup('test123', 'Test Form')" style="background: red; color: white; padding: 10px; margin-bottom: 10px; border: none; border-radius: 5px;">
+                        🧪 Test Popup (Debug)
+                    </button>
                 </div>
 
                 <div class="forms-grid" id="forms-grid">
                 @foreach ($forms as $form)
 
-                <div class="form-card" data-status="published">
+                <div class="form-card"
+                     data-status="{{ $form->is_active ? 'published' : 'draft' }}"
+                     data-created="{{ $form->created_at->toISOString() }}"
+                     data-responses="{{ $form->submissions->count() ?? 0 }}">
                     <form action="{{ route('form.delete',['form_id'=>$form->id])}}" method="POST" >
                         @csrf
-                        <button class="close-btn">×</button>
+                        <button class="close-btn">X</button>
 
                     </form>
 
@@ -1044,16 +1689,18 @@
     </div>
     @endif
 
-    <h3>{{ $form->title }}</h3>
-    <p>{{ $form->description }}</p>
+    <h3 class="form-title">{{ $form->title }}</h3>
+    <p class="form-description">{{ $form->description }}</p>
 
     <div class="form-card-meta">
-        <span>245 responses</span>
+        <span>{{app\models\Submission::where('form_id', $form->id)->count()}}</span>
         <span>{{ $form->created_at }}</span>
     </div>
 
     <div class="form-card-actions">
-    <button class="form-card-btn">Edit</button>
+    <button class="form-card-btn" onclick="showFormLinkPopup('{{ $form->id }}', '{{ $form->title }}')">
+        <i class="fas fa-link"></i> Get Link
+    </button>
 
     <form action="{{ route('form.publish',['form_id'=>$form->id]) }}" method="POST" style="flex: 1;">
         @csrf
@@ -1066,11 +1713,37 @@
 </div>
 
                     @endforeach
-                    
+
                 </div>
             </div>
 
-           <div id="analytics-content" style="display: none;">
+            <!-- Form Link Popup Modal -->
+         <div id="formLinkPopup" class="form-link-popup-overlay">
+    <div class="form-link-popup-content">
+        <div class="popup-header">
+            <h3><i class="fas fa-share-alt"></i> <span id="popupFormTitle">Form Submission Link</span></h3>
+            <button onclick="closeFormLinkPopup()" class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="popup-body">
+            <p><i class="fas fa-info-circle"></i> Share this link with outsiders to submit this company:</p>
+            <div class="link-container">
+                <input type="text" id="formSubmissionLink" readonly class="link-input">
+                <button onclick="copyFormLink()" class="copy-link-btn" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
+            </div>
+            <div class="copy-status" id="copyStatus"></div>
+        </div>
+        <div class="popup-footer">
+            <small><i class="fas fa-lightbulb"></i> Tip: You can share this link via email, social media, or embed it on your website.</small>
+        </div>
+    </div>
+</div>
+
+
+          <div id="analytics-content" style="display: none;">
     <header>
         <div>
             <h2>{{ __('messages.analytics') }}</h2>
@@ -1216,17 +1889,198 @@
     </section>
 
    
-    <!-- Example: Display Forms Map Data -->
 
 </div>
 
-<!-- Single Modal for all submission details (placed outside loops) -->
+
 
 
 
             <div id="settings-content" style="display: none;">
-                <h2>Settings</h2>
-                <p>This is where the settings content will go.</p>
+                <header class="dashboard-header">
+                    <div class="header-content">
+                        <h1><i class="fas fa-cog"></i> {{ __('messages.settings') }}</h1>
+                        <p>{{ __('messages.manage_profile_settings') }}</p>
+                    </div>
+                </header>
+
+              
+                <section class="forms-overview">
+                    <div class="header">
+                        <h2>{{ __('messages.profile_settings') }}</h2>
+                        <p style="color: var(--text-light); margin: 0; font-size: 0.9rem;">{{ __('messages.update_profile_info') }}</p>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    @if(session('success'))
+                        <div class="alert alert-success" style="margin-bottom: 1.5rem; padding: 1rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; color: #155724;">
+                            <i class="fas fa-check-circle"></i>
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if($errors->has('error'))
+                        <div class="alert alert-error" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; color: #721c24;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ $errors->first('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('profile.updateDASH') }}" method="POST" enctype="multipart/form-data" id="profileForm" style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Personal Information Section -->
+                        <div class="settings-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-user"></i>
+                                {{ __('messages.personal_information', [], app()->getLocale()) }}
+                            </h3>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="first_name" class="form-label">
+                                        <i class="fas fa-user"></i>
+                                        {{ __('messages.first_name', [], app()->getLocale()) }}
+                                    </label>
+                                    <input type="text" id="first_name" name="first_name"
+                                           value="{{ old('first_name', Auth::user()->first_name) }}"
+                                           class="form-input" required>
+                                    @error('first_name')
+                                        <span class="error-message">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="matricule" class="form-label">
+                                        <i class="fas fa-id-card"></i>
+                                        {{ __('messages.matricule', [], app()->getLocale()) }}
+                                    </label>
+                                    <input type="text" id="matricule" name="matricule"
+                                           value="{{ old('matricule', Auth::user()->matricule) }}"
+                                           class="form-input" required>
+                                    @error('matricule')
+                                        <span class="error-message">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    {{ __('messages.email', [], app()->getLocale()) }}
+                                </label>
+                                <input type="email" id="email" name="email"
+                                       value="{{ old('email', Auth::user()->email) }}"
+                                       class="form-input" required>
+                                @error('email')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="role" class="form-label">
+                                    <i class="fas fa-user-tag"></i>
+                                    {{ __('messages.role', [], app()->getLocale()) }}
+                                </label>
+                                <select id="role" name="role" class="form-input" required>
+                                    <option value="employee" {{ old('role', Auth::user()->role) == 'employee' ? 'selected' : '' }}>
+                                        {{ __('messages.employee', [], app()->getLocale()) }}
+                                    </option>
+                                    <option value="hr_staff" {{ old('role', Auth::user()->role) == 'hr_staff' ? 'selected' : '' }}>
+                                        {{ __('messages.hr_staff', [], app()->getLocale()) }}
+                                    </option>
+                                    <option value="hr_admin" {{ old('role', Auth::user()->role) == 'hr_admin' ? 'selected' : '' }}>
+                                        {{ __('messages.hr_admin', [], app()->getLocale()) }}
+                                    </option>
+                                    <option value="manager" {{ old('role', Auth::user()->role) == 'manager' ? 'selected' : '' }}>
+                                        {{ __('messages.manager', [], app()->getLocale()) }}
+                                    </option>
+                                </select>
+                                @error('role')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="department" class="form-label">
+                                    <i class="fas fa-building"></i>
+                                    {{ __('messages.department', [], app()->getLocale()) }}
+                                </label>
+                                <input type="text" id="department" name="department"
+                                       value="{{ old('department', Auth::user()->department) }}"
+                                       class="form-input" required>
+                                @error('department')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Information Section -->
+                   
+
+                    <!-- Security Section -->
+                    <div class="info-section">
+                        <div class="section-title">
+                            <i class="fas fa-lock"></i>
+                            {{ __('messages.security_settings', [], app()->getLocale()) }}
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="current_password" class="form-label">
+                                    <i class="fas fa-key"></i>
+                                    {{ __('messages.current_password', [], app()->getLocale()) }}
+                                </label>
+                                <input type="password" id="current_password" name="current_password"
+                                       class="form-input" placeholder="{{ __('messages.leave_blank_no_change', [], app()->getLocale()) }}">
+                                @error('current_password')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    {{ __('messages.new_password', [], app()->getLocale()) }}
+                                </label>
+                                <input type="password" id="password" name="password"
+                                       class="form-input" placeholder="{{ __('messages.leave_blank_no_change', [], app()->getLocale()) }}">
+                                @error('password')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password_confirmation" class="form-label">
+                                    <i class="fas fa-lock"></i>
+                                    {{ __('messages.confirm_password', [], app()->getLocale()) }}
+                                </label>
+                                <input type="password" id="password_confirmation" name="password_confirmation"
+                                       class="form-input" placeholder="{{ __('messages.leave_blank_no_change', [], app()->getLocale()) }}">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                        <!-- Form Actions -->
+                        <div class="action-buttons">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i>
+                                {{ __('messages.save_changes', [], app()->getLocale()) }}
+                            </button>
+
+                            <button type="button" class="btn-secondary" onclick="resetForm()">
+                                <i class="fas fa-undo"></i>
+                                {{ __('messages.reset', [], app()->getLocale()) }}
+                            </button>
+                        </div>
+                    </form>
+                </section>
             </div>
             
         </div>
@@ -1234,28 +2088,7 @@
     </div>
 
     <script>
-        const ctx = document.getElementById('submissionsChart').getContext('2d');
-        const submissionsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan 1', 'Jan 5', 'Jan 10', 'Jan 15', 'Jan 20', 'Jan 25', 'Jan 30'],
-                datasets: [{
-                    label: 'Submissions',
-                    data: [12, 19, 3, 5, 2, 3, 9],
-                    backgroundColor: 'rgba(66, 153, 225, 0.2)',
-                    borderColor: 'rgba(66, 153, 225, 1)',
-                    borderWidth: 1,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+       
 
         document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('.sidebar nav a');
@@ -1518,6 +2351,363 @@
             window.location.href = '/language/' + language;
         }
     </script>
+
+    <!-- Enhanced Forms Search and Filter Script -->
+    <script>
+        // Forms Search and Filter Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('form-search');
+            const formsGrid = document.getElementById('forms-grid');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const sortSelect = document.getElementById('sort-select');
+            const resultsCounter = document.getElementById('results-counter');
+
+            let currentFilter = 'all';
+            let currentSort = 'created_at_desc';
+            let allForms = [];
+
+            // Initialize forms data
+            function initializeForms() {
+                const formCards = document.querySelectorAll('.form-card');
+                allForms = Array.from(formCards).map(card => {
+                    return {
+                        element: card,
+                        title: card.querySelector('.form-title')?.textContent.toLowerCase() || '',
+                        description: card.querySelector('.form-description')?.textContent.toLowerCase() || '',
+                        status: card.dataset.status || 'draft',
+                        createdAt: card.dataset.created || new Date().toISOString(),
+                        responses: parseInt(card.dataset.responses || '0')
+                    };
+                });
+            }
+
+            // Search functionality
+            function performSearch() {
+                const query = searchInput.value.toLowerCase().trim();
+                let filteredForms = allForms;
+
+                // Apply search filter
+                if (query) {
+                    filteredForms = allForms.filter(form =>
+                        form.title.includes(query) ||
+                        form.description.includes(query)
+                    );
+                }
+
+                // Apply status filter
+                if (currentFilter !== 'all') {
+                    filteredForms = filteredForms.filter(form => {
+                        switch(currentFilter) {
+                            case 'published':
+                                return form.status === 'published';
+                            case 'draft':
+                                return form.status === 'draft';
+                            case 'recent':
+                                const weekAgo = new Date();
+                                weekAgo.setDate(weekAgo.getDate() - 7);
+                                return new Date(form.createdAt) > weekAgo;
+                            default:
+                                return true;
+                        }
+                    });
+                }
+
+                // Apply sorting
+                filteredForms.sort((a, b) => {
+                    switch(currentSort) {
+                        case 'created_at_desc':
+                            return new Date(b.createdAt) - new Date(a.createdAt);
+                        case 'created_at_asc':
+                            return new Date(a.createdAt) - new Date(b.createdAt);
+                        case 'title_asc':
+                            return a.title.localeCompare(b.title);
+                        case 'title_desc':
+                            return b.title.localeCompare(a.title);
+                        case 'responses_desc':
+                            return b.responses - a.responses;
+                        default:
+                            return 0;
+                    }
+                });
+
+                // Update display
+                updateFormsDisplay(filteredForms);
+                updateResultsCounter(filteredForms.length, allForms.length);
+            }
+
+            // Update forms display
+            function updateFormsDisplay(filteredForms) {
+                // Hide all forms first
+                allForms.forEach(form => {
+                    form.element.style.display = 'none';
+                });
+
+                // Show filtered forms
+                filteredForms.forEach(form => {
+                    form.element.style.display = 'block';
+                });
+
+                // Show no results message if needed
+                if (filteredForms.length === 0) {
+                    showNoResultsMessage();
+                } else {
+                    hideNoResultsMessage();
+                }
+            }
+
+            // Update results counter
+            function updateResultsCounter(showing, total) {
+                resultsCounter.textContent = `{{ __('messages.showing') }} ${showing} {{ __('messages.of') }} ${total} {{ __('messages.forms') }}`;
+            }
+
+            // Show no results message
+            function showNoResultsMessage() {
+                let noResultsDiv = document.getElementById('no-results-message');
+                if (!noResultsDiv) {
+                    noResultsDiv = document.createElement('div');
+                    noResultsDiv.id = 'no-results-message';
+                    noResultsDiv.className = 'no-results';
+                    noResultsDiv.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: #718096;">
+                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <h3 style="margin-bottom: 0.5rem;">{{ __('messages.no_forms_found') }}</h3>
+                            <p>{{ __('messages.try_different_search') }}</p>
+                        </div>
+                    `;
+                    formsGrid.appendChild(noResultsDiv);
+                }
+                noResultsDiv.style.display = 'block';
+            }
+
+            // Hide no results message
+            function hideNoResultsMessage() {
+                const noResultsDiv = document.getElementById('no-results-message');
+                if (noResultsDiv) {
+                    noResultsDiv.style.display = 'none';
+                }
+            }
+
+            // Event listeners
+            searchInput.addEventListener('input', performSearch);
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active filter button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update current filter
+                    currentFilter = this.dataset.filter;
+                    performSearch();
+                });
+            });
+
+            sortSelect.addEventListener('change', function() {
+                currentSort = this.value;
+                performSearch();
+            });
+
+            // Initialize
+            initializeForms();
+            performSearch();
+        });
+
+        // Users Search Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const usersSearchInput = document.getElementById('users-search');
+            const usersTable = document.getElementById('users-table');
+            const usersResultsCounter = document.getElementById('users-results-counter');
+
+            if (usersSearchInput && usersTable) {
+                const userRows = document.querySelectorAll('.user-row');
+                const totalUsers = userRows.length;
+
+                function performUsersSearch() {
+                    const query = usersSearchInput.value.toLowerCase().trim();
+                    let visibleCount = 0;
+
+                    userRows.forEach(row => {
+                        const name = row.dataset.name || '';
+                        const matricule = row.dataset.matricule || '';
+
+                        if (query === '' || name.includes(query) || matricule.includes(query)) {
+                            row.style.display = '';
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+
+                    // Update counter
+                    if (usersResultsCounter) {
+                        usersResultsCounter.textContent = `{{ __('messages.showing') }} ${visibleCount} {{ __('messages.of') }} ${totalUsers} {{ __('messages.users') }}`;
+                    }
+
+                    // Show no results message
+                    showUsersNoResults(visibleCount === 0 && query !== '');
+                }
+
+                function showUsersNoResults(show) {
+                    let noResultsRow = document.getElementById('users-no-results');
+                    if (show && !noResultsRow) {
+                        noResultsRow = document.createElement('tr');
+                        noResultsRow.id = 'users-no-results';
+                        noResultsRow.innerHTML = `
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: #718096;">
+                                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <div>{{ __('messages.no_users_found') }}</div>
+                                <small>{{ __('messages.try_different_search') }}</small>
+                            </td>
+                        `;
+                        usersTable.querySelector('tbody').appendChild(noResultsRow);
+                    } else if (!show && noResultsRow) {
+                        noResultsRow.remove();
+                    }
+                }
+
+                usersSearchInput.addEventListener('input', performUsersSearch);
+            }
+        });
+
+        // Analytics Search Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyticsSearchInput = document.getElementById('analytics-search');
+            const analyticsTable = document.getElementById('analytics-table');
+            const analyticsResultsCounter = document.getElementById('analytics-results-counter');
+
+            if (analyticsSearchInput && analyticsTable) {
+                const formRows = document.querySelectorAll('.analytics-form-row');
+                const totalForms = formRows.length;
+
+                function performAnalyticsSearch() {
+                    const query = analyticsSearchInput.value.toLowerCase().trim();
+                    let visibleCount = 0;
+
+                    formRows.forEach(row => {
+                        const title = row.dataset.title || '';
+
+                        if (query === '' || title.includes(query)) {
+                            row.style.display = '';
+                            // Also show/hide the submitters row if it exists
+                            const submittersRow = document.getElementById('submitters-' + row.dataset.formId);
+                            if (submittersRow && submittersRow.style.display === 'table-row') {
+                                submittersRow.style.display = 'table-row';
+                            }
+                            visibleCount++;
+                        } else {
+                            row.style.display = 'none';
+                            // Hide submitters row too
+                            const submittersRow = document.getElementById('submitters-' + row.dataset.formId);
+                            if (submittersRow) {
+                                submittersRow.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    // Update counter
+                    if (analyticsResultsCounter) {
+                        analyticsResultsCounter.textContent = `{{ __('messages.showing') }} ${visibleCount} {{ __('messages.of') }} ${totalForms} {{ __('messages.forms') }}`;
+                    }
+
+                    // Show no results message
+                    showAnalyticsNoResults(visibleCount === 0 && query !== '');
+                }
+
+                function showAnalyticsNoResults(show) {
+                    let noResultsRow = document.getElementById('analytics-no-results');
+                    if (show && !noResultsRow) {
+                        noResultsRow = document.createElement('tr');
+                        noResultsRow.id = 'analytics-no-results';
+                        noResultsRow.innerHTML = `
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: #718096;">
+                                <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <div>{{ __('messages.no_forms_found') }}</div>
+                                <small>{{ __('messages.try_different_search') }}</small>
+                            </td>
+                        `;
+                        analyticsTable.querySelector('tbody').appendChild(noResultsRow);
+                    } else if (!show && noResultsRow) {
+                        noResultsRow.remove();
+                    }
+                }
+
+                analyticsSearchInput.addEventListener('input', performAnalyticsSearch);
+            }
+        });
+document.addEventListener('DOMContentLoaded', () => {
+
+    const popup = document.getElementById('formLinkPopup');
+    const titleElement = document.getElementById('popupFormTitle');
+    const linkInput = document.getElementById('formSubmissionLink');
+    const copyStatus = document.getElementById('copyStatus');
+    const copyBtn = document.getElementById('copyBtn');
+
+    // Open popup with dynamic title/link
+    window.showFormLinkPopup = function(formId, formTitle) {
+        if (!popup) return;
+
+        titleElement.textContent = `${formTitle} - Submission Link`;
+        linkInput.value = `${window.location.origin}/formulaire?form=${formId}`;
+
+        // Reset copy button/status
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+        copyStatus.textContent = '';
+        copyStatus.className = 'copy-status';
+
+        popup.style.display = 'flex';
+        linkInput.select();
+    };
+
+    // Close popup
+    window.closeFormLinkPopup = function() {
+        if (popup) popup.style.display = 'none';
+    };
+
+    // Copy link
+    window.copyFormLink = function() {
+        if (!linkInput) return;
+
+        navigator.clipboard.writeText(linkInput.value).then(() => {
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.classList.add('copied');
+            copyStatus.innerHTML = '<i class="fas fa-check-circle"></i> Link copied to clipboard!';
+
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy Link';
+                copyBtn.classList.remove('copied');
+                copyStatus.textContent = '';
+            }, 3000);
+        }).catch(() => {
+            linkInput.select();
+            document.execCommand('copy');
+        });
+    };
+
+    // Close on click outside
+    popup.addEventListener('click', (e) => {
+        if (!e.target.closest('.form-link-popup-content')) {
+            closeFormLinkPopup();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeFormLinkPopup();
+    });
+
+});
+
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const popup = document.getElementById('formLinkPopup');
+                if (popup && popup.style.display === 'flex') {
+                    closeFormLinkPopup();
+                }
+            }
+        });
+    </script>
+
 
 </body>
 </html>

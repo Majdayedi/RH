@@ -49,6 +49,7 @@ Route::middleware('guest')->group(function () {
     Route::get('companies', [CompanyController::class, 'index'])->name('companies.index');
     Route::get('companies/create', [CompanyController::class, 'create'])->name('companies.create');
     Route::post('companies', [CompanyController::class, 'store'])->name('companies.store');
+    Route::post('api/check-email-availability', [CompanyController::class, 'checkEmailAvailability'])->name('companies.check-email');
         Route::get('companydelete', [CompanyController::class, 'destroy'])->name('company.delete');
     Route::get('searchCompany', [CompanyController::class, 'search'])->name('searchCompany');
     Route::get('admin',function (){
@@ -74,7 +75,8 @@ Route::get('activate',function(Request $request ){
 
         return redirect()->route('companies.companydash');
     })->name('company.activate');
-
+Route::get('form_anonymous',  [FormController::class, 'index'])->name('form.form_anonymous');
+    Route::post('/test_anonymous', [FormController::class,'submit'])->name('testfetch_anonymous');
 
 });
 
@@ -88,18 +90,12 @@ Route::middleware('auth')->group(function () {
    // routes/web.php
 // In routes/web.php (backend)
 Route::post('/show-string',  [FormController::class, 'store'])->name('form.saveHtml');
-Route::get('formulaire',  [FormController::class, 'index'])->name('form.formulaire');
 
     Route::get('forms', [FormController::class, 'listForms'])->name('forms.index');
     Route::get('forms/list', [FormController::class, 'listForms'])->name('forms.show');
     Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
-    Route::post('/test', [FormController::class,'submit'])->name('testfetch');
-    Route::post('/test-simple', function(Request $request) {
-        return response()->json([
-            'message' => 'Test successful',
-            'data' => $request->all()
-        ]);
-    });
+
+   
     Route::post('formDEL',[FormController::class,'delete'])->name('form.delete');
     Route::post('activation', [Dashboard::class, 'active'])->name('user.active');
 
@@ -123,4 +119,10 @@ Route::get('formulaire',  [FormController::class, 'index'])->name('form.formulai
         ]);
     })->name('form.publish');
     Route::get('statistics', [QuestionController::class, 'index'])->name('statistics');
+    Route::get('edit_profile', [loginController::class, 'showEdit'])->name('edit_profile');
+    Route::put('profile/update', [loginController::class, 'updateProfile'])->name('profile.update');
+    Route::put('profile/UPDATEDASH', [dashboard::class, 'updateDASH'])->name('profile.updateDASH');
+
+        Route::get('formulaire',  [FormController::class, 'index'])->name('form.formulaire');
+    Route::post('/test', [FormController::class,'submit'])->name('testfetch');
 });

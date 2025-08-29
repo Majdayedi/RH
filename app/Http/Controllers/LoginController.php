@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Models\Company;
 use ColorThief\ColorThief;
@@ -129,5 +130,95 @@ class LoginController extends Controller
             'gradientColor2' => '#b14fcfff'
         ]);
     }
+    public function showEdit()
+    {
+        return view('edit_profile');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        Log::info('Profile update started', [
+            'user_id' => $user->id,
+            'request_data' => $request->all()
+        ]);
+
+        // Validate the request - ONLY fields that exist in the form
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'matricule' => 'required|string|max:255|unique:users,matricule,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|in:employee,hr_staff,hr_admin,manager',
+            'department' => 'required|string|max:255',
+            'current_password' => 'nullable|string',
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        try {
+            // Check current password if trying to change password
+            if ($request->filled('password')) {
+                if (!$request->filled('current_password')) {
+                    return back()->withErrors(['current_password' => __('messages.current_password_required', [], app()->getLocale())]);
+                }
+
+                if (!Hash::check($request->current_password, $user->password)) {
+                    return back()->withErrors(['current_password' => __('messages.current_password_incorrect', [], app()->getLocale())]);
+                }
+
+                $validatedData['password'] = Hash::make($request->password);
+            } else {
+                // Remove password from update if not changing
+                unset($validatedData['password']);
+            }
+
+            // Remove password confirmation and current password from update data
+            unset($validatedData['password_confirmation']);
+            unset($validatedData['current_password']);
+
+            // Prepare update data - ONLY fields from the form
+            $updateData = [
+                'first_name' => $validatedData['first_name'],
+                'matricule' => $validatedData['matricule'],
+                'email' => $validatedData['email'],
+                'role' => $validatedData['role'],
+                'department' => $validatedData['department'],
+                'updated_at' => now(),
+            ];
+
+            if (isset($validatedData['password'])) {
+                $updateData['password'] = $validatedData['password'];
+            }
+
+            // Update using direct DB query (more reliable)
+            $affected = DB::table('users')
+                ->where('id', $user->id)
+                ->update($updateData);
+
+            Log::info('Profile update attempt', [
+                'user_id' => $user->id,
+                'affected_rows' => $affected,
+                'update_data' => $updateData
+            ]);
+
+            if ($affected > 0) {
+                Log::info('Profile updated successfully', ['user_id' => $user->id]);
+            } else {
+                Log::warning('No rows affected in profile update', ['user_id' => $user->id]);
+            }
+            
+
+            return redirect()->route('home')->with('success', __('messages.profile_updated_successfully', [], app()->getLocale()));
+
+        } catch (\Exception $e) {
+            Log::error('Profile update failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return redirect()->route('home')->with('error', __('messages.profile_update_failed', [], app()->getLocale()));
+        }
+    }
    
+
 }

@@ -313,7 +313,7 @@ background: linear-gradient(135deg, {{ $gradientColor1 ?? '#6f42c1' }}, {{ $grad
                    placeholder="Email" required>
             <label for="email">Email</label>
             @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <div class="invalid-feedback">email already exist <a href ="{{ route('login',['company'=>$company->id]) }}">Sign in</a>?</div>
             @enderror
         </div>
         
@@ -339,7 +339,7 @@ background: linear-gradient(135deg, {{ $gradientColor1 ?? '#6f42c1' }}, {{ $grad
         
         <!-- Company -->
         
-        
+        <p>password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.</p>
         <button type="submit" class="btn btn-signin mt-3">
             Register
         </button>

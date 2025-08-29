@@ -461,7 +461,7 @@
                 <!-- Action Buttons -->
                 <div class="actions-section">
                     <div>
-                        <a href="#" class="btn btn-primary">
+                        <a href="{{ route('edit_profile') }}" class="btn btn-primary">
                             <i class="fas fa-edit"></i>
                             Edit Profile
                         </a>

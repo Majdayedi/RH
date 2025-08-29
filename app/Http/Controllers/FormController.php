@@ -27,32 +27,16 @@ class FormController extends Controller
         $id = $request->query('form');
 
         // Debug: Log what parameters we're receiving
-        \Log::info('Formulaire access attempt', [
-            'form_id' => $id,
-            'all_params' => $request->all(),
-            'query_params' => $request->query()
-        ]);
-
-        // Check if form ID is provided
-        if (!$id) {
-            \Log::warning('No form ID provided to formulaire route');
-            return redirect()->route('dashboard', ['page' => 'forms'])
-                ->with('error', 'No form ID provided. Please select a form to view.');
-        }
+        
 
         $form = Form::find($id);
 
         // Check if form exists
-        if (!$form) {
-            \Log::warning('Form not found', ['form_id' => $id]);
-            return redirect()->route('dashboard', ['page' => 'forms'])
-                ->with('error', 'Form not found.');
-        }
-
+       
+        
         $form->schema = json_decode($form->schema, true);
-        $company_id=$user->company_id;
+        $company_id=$form->company_id;
         $company = Company::find($company_id);
-        $forms= Form::where('company_id', $company_id)->get();
        
         
         if (!$company) {
@@ -140,15 +124,19 @@ class FormController extends Controller
             $jsonString = json_encode($submissionData, JSON_PRETTY_PRINT);
             $submission = Submission::create([
                 'form_id' => $validated['form_id'],
-                'user_id' => Auth::id(),
+                'user_id' => Auth::id(), // Will be null for anonymous users
                 'data' => json_decode($jsonString, true),
                 'status' => 'PENDING',
                 'reviewed_by' => null,
             ]);
             
-            // Return the JSON string as response
-            return redirect()->route('home')
+if (Auth::check()) {
+    return redirect()->route('home')
                 ->with('success', 'Form submitted successfully');
+} else {
+    return response()->json(['success' => true, 'message' => 'Form submitted successfully']);
+}
+          
                 
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation failed', ['errors' => $e->errors()]);

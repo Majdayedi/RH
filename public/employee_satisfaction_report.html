@@ -105,19 +105,51 @@
             .container {
                 max-width: none !important;
                 margin: 0 !important;
-                padding: 20px !important;
+                padding: 15px !important;
             }
             .header {
                 background: #667eea !important;
                 color: white !important;
                 text-align: center;
-                padding: 30px;
-                margin-bottom: 30px;
+                padding: 20px;
+                margin-bottom: 20px;
             }
             .report-card {
-                page-break-inside: avoid;
-                margin-bottom: 25px;
+                margin-bottom: 15px;
                 border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            /* Keep statistics section together */
+            .stats-grid {
+                page-break-inside: avoid !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+                margin: 10px 0 !important;
+            }
+            .stat-card {
+                page-break-inside: avoid !important;
+                margin: 0 !important;
+                padding: 10px !important;
+                font-size: 12px !important;
+            }
+            .stat-value {
+                font-size: 18px !important;
+            }
+            /* Compact other sections for PDF */
+            .insights-list, .recommendations-list, .detailed-analysis-list {
+                padding: 10px !important;
+                margin: 10px 0 !important;
+            }
+            .insights-list li, .recommendations-list li, .detailed-analysis-list li {
+                padding: 8px !important;
+                margin: 5px 0 !important;
+                font-size: 11px !important;
+                line-height: 1.4 !important;
+            }
+            .section-title {
+                font-size: 16px !important;
+                margin: 10px 0 !important;
             }
             .action-buttons {
                 display: none !important;
@@ -127,8 +159,12 @@
                 bottom: 0;
                 width: 100%;
                 text-align: center;
-                font-size: 12px;
+                font-size: 10px;
                 color: #666;
+            }
+            /* Force statistics to stay together */
+            .report-card:first-of-type {
+                page-break-after: avoid !important;
             }
         }
         .chart-container {
@@ -189,23 +225,23 @@
     
                 <div class="stat-card">
                     <h3>Overall job satisfaction</h3>
-                    <div class="stat-value">3.5/5</div>
-                    <p>Range: 3.0 - 4.0</p>
-                    <p>Responses: 2</p>
+                    <div class="stat-value">1.67/5</div>
+                    <p>Range: 1.0 - 3.0</p>
+                    <p>Responses: 3</p>
                 </div>
             
                 <div class="stat-card">
                     <h3>Work environment satisfaction</h3>
-                    <div class="stat-value">3.5/5</div>
-                    <p>Range: 3.0 - 4.0</p>
-                    <p>Responses: 2</p>
+                    <div class="stat-value">4.67/5</div>
+                    <p>Range: 4.0 - 5.0</p>
+                    <p>Responses: 3</p>
                 </div>
             
                 <div class="stat-card">
                     <h3>Management support satisfaction</h3>
-                    <div class="stat-value">2.5/5</div>
-                    <p>Range: 2.0 - 3.0</p>
-                    <p>Responses: 2</p>
+                    <div class="stat-value">3.33/5</div>
+                    <p>Range: 3.0 - 4.0</p>
+                    <p>Responses: 3</p>
                 </div>
             
                 <div class="stat-card">
@@ -214,24 +250,24 @@
                     <div style="margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between;">
                             <span>Just right</span>
-                            <span style="font-weight: bold;">50.0%</span>
+                            <span style="font-weight: bold;">33.3%</span>
                         </div>
                         <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
-                            <div style="background: #667eea; height: 100%; width: 50.0%; border-radius: 4px;"></div>
+                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
                         </div>
                     </div>
                 
                     <div style="margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between;">
                             <span>Too light</span>
-                            <span style="font-weight: bold;">50.0%</span>
+                            <span style="font-weight: bold;">66.7%</span>
                         </div>
                         <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
-                            <div style="background: #667eea; height: 100%; width: 50.0%; border-radius: 4px;"></div>
+                            <div style="background: #667eea; height: 100%; width: 66.7%; border-radius: 4px;"></div>
                         </div>
                     </div>
                 
-                    <p>Total responses: 2</p>
+                    <p>Total responses: 3</p>
                 </div>
             
                 <div class="stat-card">
@@ -240,14 +276,34 @@
                     <div style="margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between;">
                             <span>Probably yes</span>
-                            <span style="font-weight: bold;">100.0%</span>
+                            <span style="font-weight: bold;">33.3%</span>
                         </div>
                         <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
-                            <div style="background: #667eea; height: 100%; width: 100.0%; border-radius: 4px;"></div>
+                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
                         </div>
                     </div>
                 
-                    <p>Total responses: 2</p>
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Definitely yes</span>
+                            <span style="font-weight: bold;">33.3%</span>
+                        </div>
+                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Definitely no</span>
+                            <span style="font-weight: bold;">33.3%</span>
+                        </div>
+                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                
+                    <p>Total responses: 3</p>
                 </div>
             
             </div>
@@ -262,13 +318,15 @@
         
                     <li>2. Current satisfaction levels are within acceptable range but below optimal performance</li>
         
-                    <li>3. High employee engagement demonstrated through 10 total responses across all survey areas</li>
+                    <li>3. High employee engagement demonstrated through 15 total responses across all survey areas</li>
         
                     <li>4. Response completion rate indicates workforce willingness to provide constructive feedback</li>
         
-                    <li>5. Improvement opportunity: 'Management support satisfaction' at 2.5/5 shows room for enhancement</li>
+                    <li>5. Critical concern identified: 'Overall job satisfaction' scored only 1.67/5, requiring urgent attention</li>
         
-                    <li>6. Strong consensus achieved: 100.0% selected 'Probably yes' for Would you recommend this company as a great place to work?</li>
+                    <li>6. Organizational strength: 'Work environment satisfaction' demonstrates high satisfaction at 4.67/5</li>
+        
+                    <li>7. Divided opinions on Would you recommend this company as a great place to work? with no clear majority preference</li>
         
                 </ul>
             </div>
@@ -279,9 +337,11 @@
             <div class="detailed-analysis-list">
                 <ul>
     
-                    <li>1. 'Management support satisfaction' indicates moderate dissatisfaction requiring targeted interventions</li>
+                    <li>1. 'Overall job satisfaction' shows significant dissatisfaction with scores ranging from 1.0 to 3.0</li>
         
-                    <li>2. Clear employee alignment on Would you recommend this company as a great place to work? with 100.0% choosing 'Probably yes'</li>
+                    <li>2. 'Work environment satisfaction' serves as a model area with consistently high scores (4.67/5)</li>
+        
+                    <li>3. Mixed responses on Would you recommend this company as a great place to work? suggest need for clearer communication or policy</li>
         
                 </ul>
             </div>
@@ -292,21 +352,35 @@
             <div class="recommendations-list">
                 <ul>
     
-                    <li>1. Conduct comprehensive focus groups to identify root causes of dissatisfaction</li>
+                    <li>1. Immediate action required: Conduct detailed investigation into overall job satisfaction issues</li>
         
-                    <li>2. Implement monthly pulse surveys to track improvement progress and maintain momentum</li>
+                    <li>2. Develop 30-60-90 day improvement plan specifically targeting overall job satisfaction</li>
         
-                    <li>3. Establish employee feedback champions in each department for ongoing communication</li>
+                    <li>3. Priority focus areas: Overall job satisfaction require immediate management attention</li>
         
-                    <li>4. Develop comprehensive employee experience improvement roadmap with clear timelines</li>
+                    <li>4. Establish cross-functional improvement teams for each critical area identified</li>
         
-                    <li>5. Create accountability measures for management with satisfaction improvement targets</li>
+                    <li>5. Implement weekly progress reviews for low-performing areas until improvement is achieved</li>
         
-                    <li>6. Schedule follow-up comprehensive survey in 6 months to measure progress and impact</li>
+                    <li>6. Leverage successful practices from high-performing areas: Work environment satisfaction</li>
         
-                    <li>7. Establish regular quarterly pulse surveys to maintain continuous feedback loop</li>
+                    <li>7. Document and replicate best practices from top-scoring areas across the organization</li>
         
-                    <li>8. Share anonymized results with all employees to demonstrate transparency and commitment</li>
+                    <li>8. Conduct comprehensive focus groups to identify root causes of dissatisfaction</li>
+        
+                    <li>9. Implement monthly pulse surveys to track improvement progress and maintain momentum</li>
+        
+                    <li>10. Establish employee feedback champions in each department for ongoing communication</li>
+        
+                    <li>11. Develop comprehensive employee experience improvement roadmap with clear timelines</li>
+        
+                    <li>12. Create accountability measures for management with satisfaction improvement targets</li>
+        
+                    <li>13. Schedule follow-up comprehensive survey in 6 months to measure progress and impact</li>
+        
+                    <li>14. Establish regular quarterly pulse surveys to maintain continuous feedback loop</li>
+        
+                    <li>15. Share anonymized results with all employees to demonstrate transparency and commitment</li>
         
                 </ul>
             </div>
@@ -320,7 +394,7 @@
                 <p><strong>Strategic Impact:</strong> Results provide clear direction for management decisions and resource allocation to enhance workplace culture.</p>
                 <p><strong>Action Required:</strong> Review detailed insights and implement priority recommendations within the next 30-60 days for maximum impact.</p>
                 <p><strong>Follow-up:</strong> Schedule progress review in 90 days and follow-up survey in 6 months to measure improvement.</p>
-                <p><strong>Generated:</strong> 2025-08-26 15:27:43</p>
+                <p><strong>Generated:</strong> 2025-08-27 14:29:51</p>
             </div>
         </div>
     </div>
