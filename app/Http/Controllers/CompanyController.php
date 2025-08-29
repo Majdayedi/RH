@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\company;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
@@ -39,7 +42,7 @@ class CompanyController extends Controller
     }
 
 
-    public function store(Request $request)
+public function store(Request $request)
     {
         // Validate all fields
         $validated = $request->validate([
@@ -55,7 +58,7 @@ class CompanyController extends Controller
             'headquarters_address' => 'required|string',
             'country' => 'required|string|size:2',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:companies',
             'website' => 'nullable|url|max:255',
             'certificate_of_incorporation' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'tax_registration_certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -88,9 +91,38 @@ class CompanyController extends Controller
     
         // Create the company
         $company = Company::create($data);
-    
+
+        // Auto-create HR admin user for the company
+        $matricule = 'HR-' . substr($company->id, 0,3);
+        $plainPassword = $data['legal_name'].'123';
+
+        $user = User::create([
+            'company_id' => $company->id,  // ✅ Fixed: Use the created company's ID
+            'matricule' => $matricule,
+            'first_name' => $data['legal_name'],
+            'email' => $data['email'],
+            'password' => Hash::make($plainPassword),
+            'department' => 'Human Resources',  // ✅ Fixed: Set default department
+            'role' => 'hr_admin',
+            'is_active' => true,
+        ]);
+
+        // Log the user creation for debugging
+        Log::info('Auto-created HR admin user', [
+            'company_id' => $company->id,
+            'user_id' => $user->id,
+            'matricule' => $matricule,
+            'email' => $data['email']
+        ]);
+
         return redirect()->route('companies.index')
-            ->with('success', 'Company created successfully!');
+            ->with('success', 'Company created successfully!')
+            ->with('user_credentials', [
+                'matricule' => $matricule,
+                'email' => $data['email'],
+                'password' => $plainPassword,
+                'company_name' => $data['legal_name']
+            ]);
     }
 
     /**

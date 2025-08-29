@@ -62,7 +62,12 @@ class RegisterController extends Controller
             'matricule' => ['required', 'string', 'max:255', 'unique:users'],
             'first_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+'password' => [
+    'required',
+    'confirmed',
+    'min:8',
+    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
+],
             'department' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'in:employee,hr_staff,hr_admin,manager'],
         ]);

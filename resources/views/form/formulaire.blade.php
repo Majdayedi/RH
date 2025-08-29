@@ -1704,67 +1704,61 @@
                 console.log('Total Fields:', allFields.length);
                 console.log('Submission Data:', submissionData);
                 console.log('============================');
+const submitButton = form.querySelector('.submit-btn');
+const originalText = submitButton.innerHTML;
 
-                try {
-                    // Show loading state
-                    const submitButton = form.querySelector('.submit-btn');
-                    const originalText = submitButton.innerHTML;
-                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-                    submitButton.disabled = true;
+try {
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+    submitButton.disabled = true;
 
-                    const response = await fetch('/test', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            form_id: '{{ $id }}',
-                            data: submissionData,
-                            form_type: formPages.length > 1 ? 'multi-page' : 'single-page',
-                            total_pages: formPages.length
-                        })
-                    });
+    const isAuthenticated = {{ auth()->check() ? 'true' : 'false' }};
+const route = isAuthenticated ? '/test' : '/test_anonymous';
 
-                    if (response.ok) {
-                        // Success - show confirmation message
-                        const successMessage = document.createElement('div');
-                        successMessage.className = 'success-message';
-                        successMessage.innerHTML = `
-                            <div style="text-align: center; padding: 2rem; background: #10b981; color: white; border-radius: 12px; margin: 2rem 0;">
-                                <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                                <h2>Form Submitted Successfully!</h2>
-                                <p>Thank you for your submission. Your response has been recorded.</p>
-                                <p><strong>Submission ID:</strong> ${Date.now()}</p>
-                                <p><strong>Form Type:</strong> ${formPages.length > 1 ? 'Multi-page' : 'Single-page'}</p>
-                                <p><strong>Total Fields:</strong> ${submissionData.length}</p>
-                            </div>
-                        `;
+const response = await fetch(route, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({
+        form_id: '{{ $id }}',
+        data: submissionData,
+        form_type: formPages.length > 1 ? 'multi-page' : 'single-page',
+        total_pages: formPages.length
+    })
+});
 
-                        // Replace form with success message
-                        form.innerHTML = '';
-                        form.appendChild(successMessage);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-                        // Optional: redirect after delay
-                        setTimeout(() => {
-                            window.location.href = '/home';
-                        }, 3000);
-                    } else {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+    // Success
+    const successMessage = document.createElement('div');
+    successMessage.className = 'success-message';
+    successMessage.innerHTML = `<div style="text-align:center;padding:2rem;background:#10b981;color:white;border-radius:12px;margin:2rem 0;">
+        <i class="fas fa-check-circle" style="font-size:3rem;margin-bottom:1rem;"></i>
+        <h2>Form Submitted Successfully!</h2>
+        <p>Thank you for your submission. Your response has been recorded.</p>
+        <p><strong>Submission ID:</strong> ${Date.now()}</p>
+        <p><strong>Form Type:</strong> ${formPages.length > 1 ? 'Multi-page' : 'Single-page'}</p>
+        <p><strong>Total Fields:</strong> ${submissionData.length}</p>
+    </div>`;
 
-                } catch (error) {
-                    console.error('Submission Error:', error);
-                    alert('Error submitting form. Please try again.');
+    form.innerHTML = '';
+    form.appendChild(successMessage);
 
-                    // Reset button state
-                    const submitButton = form.querySelector('.submit-btn');
-                    if (submitButton) {
-                        submitButton.innerHTML = originalText;
-                        submitButton.disabled = false;
-                    }
-                }
+    // Only redirect authenticated users
+    if (isAuthenticated) {
+        setTimeout(() => { window.location.href = '/home'; }, 3000);
+    }
+
+} catch (error) {
+    console.error('Submission Error:', error);
+    alert('Error submitting form. Please try again.');
+    
+    // Reset button state
+    submitButton.innerHTML = originalText;
+    submitButton.disabled = false;
+}
+
             });
         }
        
