@@ -119,28 +119,54 @@ class GenerateAIReport extends Command
     {
         $this->info('🧠 Running AI analysis...');
 
-        // Use simple AI script
-        $pythonScript = base_path('simple_ai_report.py');
+        // Prefer virtualenv python if available
+        $venvPython = base_path('ai-env') . DIRECTORY_SEPARATOR . 'Scripts' . DIRECTORY_SEPARATOR . 'python.exe';
+        $python = file_exists($venvPython) ? $venvPython : 'python';
 
-        // Run Python script directly
+        // Use the project's ai_analysis.py script
+        $pythonScript = base_path('ai_analysis.py');
+
+        // Run Python script and capture JSON output
         $process = new Process([
-            'python',
+            $python,
             $pythonScript,
             $jsonPath
         ]);
 
-        $process->setTimeout(120); // 2 minutes timeout
+        $process->setTimeout(300); // 5 minutes timeout
         $process->run();
 
-        
         if (!$process->isSuccessful()) {
+            // Include stderr/exception details if available
             throw new ProcessFailedException($process);
         }
 
         $this->info('✅ AI analysis completed!');
 
-        // Return path to generated report
-        return base_path('ai_report.html');
+        $output = $process->getOutput();
+        $this->info('Raw Python output: ' . substr($output, 0, 400));
+
+        $data = json_decode($output, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('Invalid JSON returned from AI script');
+        }
+
+        if (empty($data['success']) || empty($data['html_report_path'])) {
+            throw new \Exception('AI script failed or did not return report path: ' . ($output ?? '')); 
+        }
+
+        // Normalize path to absolute
+        $reportPath = $data['html_report_path'];
+        if (!file_exists($reportPath)) {
+            // If relative, assume base_path
+            $reportPath = base_path($reportPath);
+        }
+
+        if (!file_exists($reportPath)) {
+            throw new \Exception('Generated report file not found: ' . $reportPath);
+        }
+
+        return $reportPath;
     }
 
 

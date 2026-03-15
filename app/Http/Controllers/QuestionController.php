@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\question;
 use Illuminate\Http\Request;
+use Symfony\Component\Process\Process;
 
 class QuestionController extends Controller
 {
@@ -11,10 +12,18 @@ class QuestionController extends Controller
      * Display a listing of the resource.
      */
 
-public function index(request $request)
+public function index(Request $request)
 {
-    $form_id = $request->query('form_id') ;
+    $form_id = $request->query('form_id');
+    if (!$form_id) {
+        return response('Missing form_id parameter', 400);
+    }
+
     $form = \App\Models\Form::find($form_id);
+    if (!$form) {
+        return response('Form not found', 404);
+    }
+
     $submissions = \App\Models\Submission::where('form_id', $form_id)->get();
 
     $questionAnswerMap = [];
@@ -56,112 +65,67 @@ public function index(request $request)
         }
     }
 
+    $tempFile = null;
     try {
-        // Check if Python script exists
         $pythonScript = base_path('ai_analysis.py');
         if (!file_exists($pythonScript)) {
-            return response()->json([
-                'error' => 'Python script not found',
-                'expected_path' => $pythonScript,
-                'current_directory' => getcwd()
-            ], 500);
+            return response('Python script not found at: ' . $pythonScript, 500);
         }
 
-        // Save data to temporary JSON file for Python script
-        $tempFile = storage_path('app/temp_survey_data.json');
-
-        // Ensure storage directory exists
-        $storageDir = dirname($tempFile);
+        $storageDir = storage_path('app');
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0755, true);
         }
 
+        $tempFile = tempnam($storageDir, 'survey_');
+        if ($tempFile === false) {
+            return response('Failed to create temporary file', 500);
+        }
+
         $jsonResult = file_put_contents($tempFile, json_encode($questionAnswerMap, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-
         if ($jsonResult === false) {
-            return response()->json([
-                'error' => 'Failed to write temporary data file',
-                'temp_file' => $tempFile,
-                'permissions' => is_writable($storageDir) ? 'writable' : 'not writable'
-            ], 500);
+            return response('Failed to write survey data for analysis', 500);
         }
 
-        // Test Python availability
-        $pythonTest = shell_exec('python --version 2>&1');
-        if (empty($pythonTest)) {
-            // Try python3
-            $pythonTest = shell_exec('python3 --version 2>&1');
-            $pythonCommand = empty($pythonTest) ? 'python' : 'python3';
-        } else {
-            $pythonCommand = 'python';
+        $venvPython = base_path('ai-env' . DIRECTORY_SEPARATOR . 'Scripts' . DIRECTORY_SEPARATOR . 'python.exe');
+        $pythonCommand = file_exists($venvPython) ? $venvPython : 'python';
+
+        $process = new Process([$pythonCommand, $pythonScript, $tempFile]);
+        $process->setTimeout(300);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            return response('Python execution failed: ' . $process->getErrorOutput(), 500);
         }
 
-        // Execute Python script with proper error handling
-        $command = $pythonCommand . ' "' . $pythonScript . '" "' . $tempFile . '" 2>&1';
-        $output = shell_exec($command);
-
-        // Clean up temp file
-        if (file_exists($tempFile)) {
-            unlink($tempFile);
-        }
-
-        // Check if we got any output
+        $output = $process->getOutput();
         if (empty($output)) {
-            return response()->json([
-                'error' => 'No output from Python script',
-                'command' => $command,
-                'python_version' => $pythonTest,
-                'script_exists' => file_exists($pythonScript),
-                'script_readable' => is_readable($pythonScript)
-            ], 500);
+            return response('No output returned from Python analysis script', 500);
         }
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Exception during Python execution',
-            'exception_message' => $e->getMessage(),
-            'exception_file' => $e->getFile(),
-            'exception_line' => $e->getLine()
-        ], 500);
+    } catch (\Throwable $e) {
+        return response('Exception during Python execution: ' . $e->getMessage(), 500);
+    } finally {
+        if ($tempFile && file_exists($tempFile)) {
+            @unlink($tempFile);
+        }
     }
 
-    if ($output === null) {
-        return response()->json([
-            'error' => 'Failed to execute Python analysis script',
-            'debug' => [
-                'command' => $command,
-                'possible_causes' => [
-                    'Python3 not installed',
-                    'ai_analyzer.py file not found',
-                    'Script execution permissions',
-                    'Missing dependencies'
-                ]
-            ]
-        ], 500);
-    }
+    $result = $this->decodePythonJsonOutput($output);
 
-    // Decode the result from Python
-    $result = json_decode($output, true);
-    
     if ($result === null) {
-        return response()->json([
-            'error' => 'Invalid response from Python script',
-            'raw_output' => $output,
-            'json_error' => json_last_error_msg()
-        ], 500);
+        return response('Invalid JSON from Python script: ' . json_last_error_msg(), 500);
     }
 
     // Check if Python script succeeded
     if (!isset($result['success']) || $result['success'] !== true) {
-        return response()->json([
-            'error' => 'Python analysis failed',
-            'details' => $result['error'] ?? 'Unknown error',
-            'python_output' => $result
-        ], 500);
+        return response('Python analysis failed: ' . ($result['error'] ?? 'Unknown error'), 500);
     }
 
     // SUCCESS: HTML report was generated - serve the HTML file
     $htmlFilePath = $result['html_report_path'];
+    if (!file_exists($htmlFilePath)) {
+        $htmlFilePath = base_path($htmlFilePath);
+    }
 
     if (file_exists($htmlFilePath)) {
         // Read the HTML content
@@ -173,12 +137,35 @@ public function index(request $request)
         // Return the HTML content directly
         return response($htmlContent)->header('Content-Type', 'text/html');
     } else {
-        return response()->json([
-            'error' => 'HTML report file not found',
-            'expected_path' => $htmlFilePath
-        ], 500);
+        return response('HTML report file not found at: ' . $htmlFilePath, 500);
     }
 }
+
+    /**
+     * Decode Python output even if extra non-JSON text is present.
+     */
+    private function decodePythonJsonOutput(string $output): ?array
+    {
+        $cleanOutput = trim($output);
+        $cleanOutput = preg_replace('/^\xEF\xBB\xBF/', '', $cleanOutput);
+
+        $decoded = json_decode($cleanOutput, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        $firstBrace = strpos($cleanOutput, '{');
+        $lastBrace = strrpos($cleanOutput, '}');
+        if ($firstBrace !== false && $lastBrace !== false && $lastBrace > $firstBrace) {
+            $jsonChunk = substr($cleanOutput, $firstBrace, $lastBrace - $firstBrace + 1);
+            $decodedChunk = json_decode($jsonChunk, true);
+            if (is_array($decodedChunk)) {
+                return $decodedChunk;
+            }
+        }
+
+        return null;
+    }
 
 
     /**

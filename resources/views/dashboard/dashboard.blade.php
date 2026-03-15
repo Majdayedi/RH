@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -357,10 +358,11 @@
         .main-content .forms-overview table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
 
         .main-content .forms-overview th {
-            padding: 1.5rem 1rem;
+            padding: 0.6rem 1rem;
             text-align: left;
             font-weight: 600;
             color: var(--main-color);
@@ -368,13 +370,35 @@
             letter-spacing: 0.5px;
             font-size: 0.85rem;
             border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
         }
         
         .main-content .forms-overview td {
-            padding: 1.5rem 1rem;
+            padding: 0.6rem 1rem;
             text-align: left;
             border-bottom: 1px solid #f7fafc;
             font-weight: 500;
+        }
+
+        /* Analytics table: exactly 3 columns */
+        .main-content .forms-overview th:first-child,
+        .main-content .forms-overview td:first-child {
+            width: 56%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .main-content .forms-overview th:nth-child(2),
+        .main-content .forms-overview td:nth-child(2) {
+            width: 22%;
+            text-align: center;
+        }
+
+        .main-content .forms-overview th:nth-child(3),
+        .main-content .forms-overview td:nth-child(3) {
+            width: 22%;
+            text-align: center;
         }
 
         .main-content .forms-overview tbody tr {
@@ -384,6 +408,10 @@
         .main-content .forms-overview tbody tr:hover {
             background: rgba(102, 126, 234, 0.05);
             transform: scale(1.01);
+        }
+
+        #analytics-table .analytics-form-row {
+            display: table-row;
         }
         
         .main-content .forms-overview .status {
@@ -1352,8 +1380,8 @@
     border: 1px solid #e2e8f0;
 }
 
-/* Form Row Layout */
-.form-row {
+/* Form Row Layout (settings/profile only) */
+#settings-content .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
@@ -1437,7 +1465,7 @@
 
 /* Responsive Design for Forms */
 @media (max-width: 768px) {
-    .form-row {
+    #settings-content .form-row {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
@@ -1654,10 +1682,7 @@
                         {{ __('messages.showing') }} {{ $formCount }} {{ __('messages.of') }} {{ $formCount }} {{ __('messages.forms') }}
                     </div>
 
-                    <!-- Debug Test Button (temporary) -->
-                    <button onclick="showFormLinkPopup('test123', 'Test Form')" style="background: red; color: white; padding: 10px; margin-bottom: 10px; border: none; border-radius: 5px;">
-                        🧪 Test Popup (Debug)
-                    </button>
+                  
                 </div>
 
                 <div class="forms-grid" id="forms-grid">
@@ -1760,42 +1785,37 @@
             <h2>{{ __('messages.forms_analytics') }}</h2>
             <p style="color: var(--text-light); margin: 0; font-size: 0.9rem;">{{ __('messages.click_row_details') }}</p>
         </div>
-        <table>
+        <table id="analytics-table">
+            <colgroup>
+                <col style="width:56%;">
+                <col style="width:22%;">
+                <col style="width:22%;">
+            </colgroup>
             <thead>
                 <tr>
                     <th>Form Title</th>
-                    <th></th>
-                    <th></th>
+                    
                     <th>Response Rate</th>
                     <th>Submissions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($forms as $form)
-                <tr class="form-row" data-form-id="{{ $form->id }}">
+                <tr class="form-row analytics-form-row" data-form-id="{{ $form->id }}" data-title="{{ strtolower($form->title) }}">
                     <td>{{ $form->title }}</td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        @php
+                    
+                    <td>@php
                             $submissionCount = \App\Models\Submission::where('form_id', $form->id)->count();
                             $totalUsers = \App\Models\User::where('company_id', $form->company_id)->count();
                             $responseRate = $totalUsers > 0 ? round(($submissionCount / $totalUsers) * 100, 1) : 0;
                         @endphp
-                        {{ $responseRate }}%
-                    </td>
+                        {{ $responseRate }}%</td>
                     <td style="color:var(--secondary-gradient); cursor: pointer;">
-                        <i class="fas fa-chevron-right expand-icon" id="icon-{{ $form->id }}"></i>
-                        {{ $submissionCount }} Submissions
-                    </td>
-                    <td>
-                        
-                        
-                    </td>
+                        <i class="fas fa-chevron-right expand-icon" id="icon-{{ $form->id }}"></i>{{ $submissionCount }} Submissions</td>
                 </tr>
                 <!-- Submitters row (initially hidden) -->
                 <tr class="submitters-row" id="submitters-{{ $form->id }}" style="display: none;">
-                    <td colspan="5">
+                    <td colspan="3">
                         <div class="submitters-container">
                             <div class="submitters-list">
                                 @php
@@ -1843,7 +1863,14 @@
                                                 }
                                             @endphp
 
-                                        <div class="submitter-item"  onclick='showSubmissionDetails(@json($submission->data), @json($form->schema), "{{ $submission->user->first_name ?? 'Anonymous' }}", "{{ $submission->user->email ?? 'No email' }}", "{{ $submission->created_at->format('M d, Y H:i') }}",{!! json_encode($preRenderedHtml) !!})'>
+                                        <div class="submitter-item"
+                                            data-submission='@json($submission->data, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT)'
+                                            data-schema='@json($form->schema, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT)'
+                                            data-name="{{ $submission->user->first_name ?? 'Anonymous' }}"
+                                            data-email="{{ $submission->user->email ?? 'No email' }}"
+                                            data-date="{{ $submission->created_at->format('M d, Y H:i') }}"
+                                            data-pre="{{ base64_encode($preRenderedHtml) }}"
+                                            onclick="showSubmissionDetailsFromElement(this)">
                                             <div class="submitter-info">
                                                 <span class="submitter-name">{{ $submission->user->first_name ?? 'Anonymous' }}</span>
                                                 <span class="submitter-email">{{ $submission->user->email ?? 'No email' }}</span>
@@ -1857,9 +1884,9 @@
                                         
                                     @endforeach
 
-                                    <a href="{{ route('statistics', ['form_id' => $form->id]) }}" type="button" class="act-btn" style="background: #ffffffff; margin-left: 10px;" >
-                            <i class="fas fa-chart-bar"></i> AI Report
-                                            </a>
+                                    <a href="{{ route('statistics', ['form_id' => $form->id]) }}" class="act-btn" style="background: #ffffffff; margin-left: 10px;" target="_blank" rel="noopener noreferrer">
+                                        <i class="fas fa-chart-bar"></i> AI Report
+                                    </a>
                                 @else
                                     <div class="no-submissions">
                                         <i class="fas fa-inbox"></i>
@@ -1874,7 +1901,7 @@
                 @endforeach
             </tbody>
         </table>
-         <div id="submission-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+            <div id="submission-popup" style="display: none; position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999;">
             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <h3>Submission Details</h3>
@@ -2195,9 +2222,6 @@
         // Make sure the function is available globally
         window.toggleSubmitters = toggleSubmitters;
 
-        // Function to generate AI report for specific form
-      
-
         // Function to show report in popup
         function showReportPopup(content, title) {
             // Remove existing popup if any
@@ -2294,13 +2318,13 @@
             console.log('Initializing analytics page...');
 
             // Remove any existing event listeners to prevent duplicates
-            const existingRows = document.querySelectorAll('.form-row');
+            const existingRows = document.querySelectorAll('.analytics-form-row');
             existingRows.forEach(row => {
                 row.removeEventListener('click', handleRowClick);
             });
 
             // Add event listeners to form rows
-            const formRows = document.querySelectorAll('.form-row');
+            const formRows = document.querySelectorAll('.analytics-form-row');
             formRows.forEach(row => {
                 row.addEventListener('click', handleRowClick);
             });
@@ -2323,8 +2347,27 @@
         // The direct event listeners should be sufficient
 
         // Popup functions
+        function showSubmissionDetailsFromElement(el) {
+            try {
+                const submission = el.dataset.submission ? JSON.parse(el.dataset.submission) : null;
+                const form = el.dataset.schema ? JSON.parse(el.dataset.schema) : null;
+                const userName = el.dataset.name || '';
+                const userEmail = el.dataset.email || '';
+                const submissionDate = el.dataset.date || '';
+                const dataMap = el.dataset.pre ? atob(el.dataset.pre) : '';
+                showSubmissionDetails(submission, form, userName, userEmail, submissionDate, dataMap);
+            } catch (e) {
+                console.error('Failed to parse submission data', e);
+            }
+        }
+
         function showSubmissionDetails(submission, form, userName, userEmail, submissionDate, dataMap) {
-            document.getElementById('submission-popup').style.display = 'block';
+            const popup = document.getElementById('submission-popup');
+            if (!popup) return;
+            if (popup.parentElement !== document.body) {
+                document.body.appendChild(popup);
+            }
+            popup.style.display = 'block';
             document.getElementById('submission-content').innerHTML = `
                 <p><strong>Submitter:</strong> ${userName}</p>
                 <p><strong>Email:</strong> ${userEmail}</p>
@@ -2336,15 +2379,22 @@
         }
 
         function closeSubmissionPopup() {
-            document.getElementById('submission-popup').style.display = 'none';
+            const popup = document.getElementById('submission-popup');
+            if (popup) popup.style.display = 'none';
         }
 
         // Close popup when clicking outside
-        document.getElementById('submission-popup').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSubmissionPopup();
+        const submissionPopup = document.getElementById('submission-popup');
+        if (submissionPopup) {
+            if (submissionPopup.parentElement !== document.body) {
+                document.body.appendChild(submissionPopup);
             }
-        });
+            submissionPopup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeSubmissionPopup();
+                }
+            });
+        }
 
         // Language switching function
         function switchLanguage(language) {
@@ -2619,7 +2669,7 @@
                         noResultsRow = document.createElement('tr');
                         noResultsRow.id = 'analytics-no-results';
                         noResultsRow.innerHTML = `
-                            <td colspan="5" style="text-align: center; padding: 2rem; color: #718096;">
+                            <td colspan="3" style="text-align: center; padding: 2rem; color: #718096;">
                                 <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                                 <div>{{ __('messages.no_forms_found') }}</div>
                                 <small>{{ __('messages.try_different_search') }}</small>

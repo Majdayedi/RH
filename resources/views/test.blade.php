@@ -16,7 +16,7 @@
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="index.html">
-          <img src="images/icons/logo.png" alt="Fashion Store" width="120">
+          <img src="images/form.png"   alt="Fashion Store" width="50">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
@@ -246,55 +246,7 @@
      @yield('content')
     </section>
 
-    <!-- Companies Section -->
-    <section class="companies-section">
-      <div class="container">
-        <h2 class="section-title">Our Partners</h2>
-        <div class="row">
-          <!-- Company 1 -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div class="company-card">
-              <div class="company-img-container">
-                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Tech Company" class="company-img">
-              </div>
-              <div class="company-info">
-                <h3 class="company-name">Tech Innovators</h3>
-                <p class="company-details">Leading technology solutions provider with 200+ employees worldwide, specializing in AI and cloud computing.</p>
-                <a href="#" class="company-link">View Profile</a>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Company 2 -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div class="company-card">
-              <div class="company-img-container">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Design Studio" class="company-img">
-              </div>
-              <div class="company-info">
-                <h3 class="company-name">Creative Design Co.</h3>
-                <p class="company-details">Award-winning design agency with 50 creative professionals focused on branding and user experience.</p>
-                <a href="#" class="company-link">View Profile</a>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Company 3 -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div class="company-card">
-              <div class="company-img-container">
-                <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Green Energy" class="company-img">
-              </div>
-              <div class="company-info">
-                <h3 class="company-name">EcoPower Solutions</h3>
-                <p class="company-details">Pioneers in renewable energy with 150 employees, delivering sustainable power solutions since 2010.</p>
-                <a href="#" class="company-link">View Profile</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+
   </main>
 
   <!-- Footer -->

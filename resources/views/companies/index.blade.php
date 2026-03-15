@@ -62,7 +62,7 @@
                 <span class="current-price">{{ $company->industry }}</span>
 =              </div>
               <div class="product-actions">
-              <button class="details-btn" onclick="window.location.href='{{ route('login', ['company' => $company->id]) }}'">Details</button>
+              <button class="details-btn" onclick="window.location.href='{{ route('login', ['company' => $company->id]) }}'">Log in</button>
                               <button class="wishlist-btn"><i class="far fa-heart"></i></button>
               </div>
             </div>
