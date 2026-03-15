@@ -78,6 +78,11 @@
             border-radius: 5px;
             border-left: 4px solid #48bb78;
             line-height: 1.6;
+            cursor: text;
+        }
+        .insights-list li:focus, .recommendations-list li:focus, .detailed-analysis-list li:focus {
+            outline: 2px dashed #667eea;
+            background: #fff;
         }
         .recommendations-list li {
             border-left-color: #ed8936;
@@ -90,8 +95,9 @@
             padding: 20px;
             border-radius: 10px;
             min-height: 100px;
+            cursor: text;
         }
-        .editable-summary[contenteditable="true"] {
+        .editable-summary:focus {
             border: 2px dashed #667eea;
             background: #fff;
         }
@@ -211,12 +217,11 @@
     <div class="container">
         <div class="header">
             <h1>📊 Employee Satisfaction Report</h1>
-            <p>AI-Powered Analysis • 5 Questions Analyzed</p>
+            <p>AI-Powered Analysis • 2 Questions Analyzed</p>
         </div>
 
         <div class="action-buttons">
             <button class="btn" onclick="exportToPDF()">📄 Export to PDF</button>
-            <button class="btn btn-secondary" onclick="editReport()">✏️ Edit Report</button>
         </div>
 
         <div class="report-card">
@@ -224,42 +229,11 @@
             <div class="stats-grid">
     
                 <div class="stat-card">
-                    <h3>Overall job satisfaction</h3>
-                    <div class="stat-value">1.67/5</div>
-                    <p>Range: 1.0 - 3.0</p>
-                    <p>Responses: 3</p>
-                </div>
-            
-                <div class="stat-card">
-                    <h3>Work environment satisfaction</h3>
-                    <div class="stat-value">4.67/5</div>
-                    <p>Range: 4.0 - 5.0</p>
-                    <p>Responses: 3</p>
-                </div>
-            
-                <div class="stat-card">
-                    <h3>Management support satisfaction</h3>
-                    <div class="stat-value">3.33/5</div>
-                    <p>Range: 3.0 - 4.0</p>
-                    <p>Responses: 3</p>
-                </div>
-            
-                <div class="stat-card">
-                    <h3>How would you rate your current workload?</h3>
+                    <h3>Type of feedback</h3>
             
                     <div style="margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between;">
-                            <span>Just right</span>
-                            <span style="font-weight: bold;">33.3%</span>
-                        </div>
-                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
-                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                
-                    <div style="margin: 10px 0;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Too light</span>
+                            <span>Complaint</span>
                             <span style="font-weight: bold;">66.7%</span>
                         </div>
                         <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
@@ -267,15 +241,25 @@
                         </div>
                     </div>
                 
+                    <div style="margin: 10px 0;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Suggestion</span>
+                            <span style="font-weight: bold;">33.3%</span>
+                        </div>
+                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
+                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                
                     <p>Total responses: 3</p>
                 </div>
             
                 <div class="stat-card">
-                    <h3>Would you recommend this company as a great place to work?</h3>
+                    <h3>Urgency level</h3>
             
                     <div style="margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between;">
-                            <span>Probably yes</span>
+                            <span>Critical</span>
                             <span style="font-weight: bold;">33.3%</span>
                         </div>
                         <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
@@ -285,21 +269,11 @@
                 
                     <div style="margin: 10px 0;">
                         <div style="display: flex; justify-content: space-between;">
-                            <span>Definitely yes</span>
-                            <span style="font-weight: bold;">33.3%</span>
+                            <span>Medium</span>
+                            <span style="font-weight: bold;">66.7%</span>
                         </div>
                         <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
-                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
-                        </div>
-                    </div>
-                
-                    <div style="margin: 10px 0;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Definitely no</span>
-                            <span style="font-weight: bold;">33.3%</span>
-                        </div>
-                        <div style="background: #e2e8f0; height: 8px; border-radius: 4px; margin-top: 5px;">
-                            <div style="background: #667eea; height: 100%; width: 33.3%; border-radius: 4px;"></div>
+                            <div style="background: #667eea; height: 100%; width: 66.7%; border-radius: 4px;"></div>
                         </div>
                     </div>
                 
@@ -314,19 +288,9 @@
             <div class="insights-list">
                 <ul>
     
-                    <li>1. Moderate satisfaction levels averaging 3.2/5 with clear opportunities for improvement</li>
+                    <li contenteditable="true">1. High employee engagement demonstrated through 6 total responses across all survey areas</li>
         
-                    <li>2. Current satisfaction levels are within acceptable range but below optimal performance</li>
-        
-                    <li>3. High employee engagement demonstrated through 15 total responses across all survey areas</li>
-        
-                    <li>4. Response completion rate indicates workforce willingness to provide constructive feedback</li>
-        
-                    <li>5. Critical concern identified: 'Overall job satisfaction' scored only 1.67/5, requiring urgent attention</li>
-        
-                    <li>6. Organizational strength: 'Work environment satisfaction' demonstrates high satisfaction at 4.67/5</li>
-        
-                    <li>7. Divided opinions on Would you recommend this company as a great place to work? with no clear majority preference</li>
+                    <li contenteditable="true">2. Response completion rate indicates workforce willingness to provide constructive feedback</li>
         
                 </ul>
             </div>
@@ -337,11 +301,11 @@
             <div class="detailed-analysis-list">
                 <ul>
     
-                    <li>1. 'Overall job satisfaction' shows significant dissatisfaction with scores ranging from 1.0 to 3.0</li>
+                    <li contenteditable="true">Response rates indicate strong employee engagement</li>
         
-                    <li>2. 'Work environment satisfaction' serves as a model area with consistently high scores (4.67/5)</li>
+                    <li contenteditable="true">Score distributions reveal varied satisfaction levels</li>
         
-                    <li>3. Mixed responses on Would you recommend this company as a great place to work? suggest need for clearer communication or policy</li>
+                    <li contenteditable="true">Trend analysis shows improvement opportunities</li>
         
                 </ul>
             </div>
@@ -352,35 +316,15 @@
             <div class="recommendations-list">
                 <ul>
     
-                    <li>1. Immediate action required: Conduct detailed investigation into overall job satisfaction issues</li>
+                    <li contenteditable="true">1. Develop comprehensive employee experience improvement roadmap with clear timelines</li>
         
-                    <li>2. Develop 30-60-90 day improvement plan specifically targeting overall job satisfaction</li>
+                    <li contenteditable="true">2. Create accountability measures for management with satisfaction improvement targets</li>
         
-                    <li>3. Priority focus areas: Overall job satisfaction require immediate management attention</li>
+                    <li contenteditable="true">3. Schedule follow-up comprehensive survey in 6 months to measure progress and impact</li>
         
-                    <li>4. Establish cross-functional improvement teams for each critical area identified</li>
+                    <li contenteditable="true">4. Establish regular quarterly pulse surveys to maintain continuous feedback loop</li>
         
-                    <li>5. Implement weekly progress reviews for low-performing areas until improvement is achieved</li>
-        
-                    <li>6. Leverage successful practices from high-performing areas: Work environment satisfaction</li>
-        
-                    <li>7. Document and replicate best practices from top-scoring areas across the organization</li>
-        
-                    <li>8. Conduct comprehensive focus groups to identify root causes of dissatisfaction</li>
-        
-                    <li>9. Implement monthly pulse surveys to track improvement progress and maintain momentum</li>
-        
-                    <li>10. Establish employee feedback champions in each department for ongoing communication</li>
-        
-                    <li>11. Develop comprehensive employee experience improvement roadmap with clear timelines</li>
-        
-                    <li>12. Create accountability measures for management with satisfaction improvement targets</li>
-        
-                    <li>13. Schedule follow-up comprehensive survey in 6 months to measure progress and impact</li>
-        
-                    <li>14. Establish regular quarterly pulse surveys to maintain continuous feedback loop</li>
-        
-                    <li>15. Share anonymized results with all employees to demonstrate transparency and commitment</li>
+                    <li contenteditable="true">5. Share anonymized results with all employees to demonstrate transparency and commitment</li>
         
                 </ul>
             </div>
@@ -388,13 +332,13 @@
 
         <div class="report-card">
             <h2 class="section-title">📋 Executive Summary</h2>
-            <div class="editable-summary">
-                <p><strong>Survey Overview:</strong> Comprehensive analysis of 5 key areas with detailed insights and actionable recommendations for organizational improvement.</p>
+            <div class="editable-summary" contenteditable="true">
+                <p><strong>Survey Overview:</strong> Comprehensive analysis of 2 key areas with detailed insights and actionable recommendations for organizational improvement.</p>
                 <p><strong>Key Findings:</strong> Data reveals both organizational strengths and specific areas requiring attention for improved employee satisfaction and engagement.</p>
                 <p><strong>Strategic Impact:</strong> Results provide clear direction for management decisions and resource allocation to enhance workplace culture.</p>
                 <p><strong>Action Required:</strong> Review detailed insights and implement priority recommendations within the next 30-60 days for maximum impact.</p>
                 <p><strong>Follow-up:</strong> Schedule progress review in 90 days and follow-up survey in 6 months to measure improvement.</p>
-                <p><strong>Generated:</strong> 2025-08-27 14:29:51</p>
+                <p><strong>Generated:</strong> 2026-03-15 00:37:18</p>
             </div>
         </div>
     </div>
@@ -421,83 +365,7 @@
             }, 1000);
         }
 
-        function editReport() {
-            // Enhanced edit functionality for all sections
-            const insights = document.querySelectorAll('.insights-list li');
-            const recommendations = document.querySelectorAll('.recommendations-list li');
-            const detailedAnalysis = document.querySelectorAll('.detailed-analysis-list li');
-            const summary = document.querySelector('.editable-summary');
-
-            // Make all sections editable
-            insights.forEach(item => {
-                item.contentEditable = true;
-                item.style.border = '2px dashed #48bb78';
-                item.style.padding = '15px';
-            });
-
-            recommendations.forEach(item => {
-                item.contentEditable = true;
-                item.style.border = '2px dashed #ed8936';
-                item.style.padding = '15px';
-            });
-
-            detailedAnalysis.forEach(item => {
-                item.contentEditable = true;
-                item.style.border = '2px dashed #667eea';
-                item.style.padding = '15px';
-            });
-
-            // Make summary editable
-            summary.contentEditable = true;
-            summary.style.border = '2px dashed #667eea';
-            summary.style.background = '#fff';
-
-            // Change button text
-            const editBtn = document.querySelector('.btn-secondary');
-            editBtn.textContent = '💾 Save Changes';
-            editBtn.onclick = saveReport;
-
-            alert('Report is now fully editable! Click on any section to modify content.');
-        }
-
-        function saveReport() {
-            // Enhanced save functionality
-            const insights = document.querySelectorAll('.insights-list li');
-            const recommendations = document.querySelectorAll('.recommendations-list li');
-            const detailedAnalysis = document.querySelectorAll('.detailed-analysis-list li');
-            const summary = document.querySelector('.editable-summary');
-
-            // Lock all sections
-            insights.forEach(item => {
-                item.contentEditable = false;
-                item.style.border = 'none';
-                item.style.padding = '15px';
-            });
-
-            recommendations.forEach(item => {
-                item.contentEditable = false;
-                item.style.border = 'none';
-                item.style.padding = '15px';
-            });
-
-            detailedAnalysis.forEach(item => {
-                item.contentEditable = false;
-                item.style.border = 'none';
-                item.style.padding = '15px';
-            });
-
-            // Lock summary
-            summary.contentEditable = false;
-            summary.style.border = 'none';
-            summary.style.background = '#f7fafc';
-
-            // Restore button
-            const editBtn = document.querySelector('.btn-secondary');
-            editBtn.textContent = '✏️ Edit Report';
-            editBtn.onclick = editReport;
-
-            alert('All changes saved! Report is ready for PDF export.');
-        }
+        // Text fields are directly editable on click via contenteditable.
     </script>
 </body>
 </html>

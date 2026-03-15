@@ -2,12 +2,14 @@
 # Install with: pip install -r python_ai_requirements.txt
 
 # Core AI/ML libraries
-    transformers==4.28.2
-    torch==2.0.0
-    tokenizers==0.13.3
-    accelerate==0.21.0
-    datasets==2.12.0
-    scikit-learn==1.2.2
-    scipy==1.10.1
-    numpy==1.24.2
-    pandas==2.0.2
+# Use a compatible transformers release range (avoid yanked/specific removed versions)
+transformers>=4.28.1,<5
+# Torch: use latest 2.x compatible release
+torch>=2.0.0,<3
+tokenizers==0.13.3
+accelerate==0.21.0
+datasets==2.12.0
+scikit-learn==1.2.2
+scipy==1.10.1
+numpy==1.24.2
+pandas==2.0.2

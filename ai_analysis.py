@@ -10,16 +10,21 @@ import sys
 import traceback
 import warnings
 import os
+import statistics
 
 # Suppress all warnings to ensure clean JSON output
 warnings.filterwarnings("ignore")
 os.environ['TRANSFORMERS_VERBOSITY'] = 'error'
 
 try:
-    from transformers import pipeline
     import numpy as np
+except Exception:
+    np = None
+
+try:
+    from transformers import pipeline
     HAS_AI = True
-except ImportError:
+except Exception:
     HAS_AI = False
 
 def calculate_statistics(data):
@@ -48,9 +53,10 @@ def calculate_statistics(data):
         if q_data['question']['type'] == 'satisfaction':
             numeric_answers = [float(a) for a in answers if str(a).isdigit()]
             if numeric_answers:
+                average_value = float(np.mean(numeric_answers)) if np is not None else statistics.fmean(numeric_answers)
                 stats[question] = {
                     'type': 'numeric',
-                    'average': round(np.mean(numeric_answers), 2),
+                    'average': round(average_value, 2),
                     'min': min(numeric_answers),
                     'max': max(numeric_answers),
                     'count': len(numeric_answers)
@@ -75,6 +81,7 @@ def generate_detailed_insights(stats):
     insights = []
     recommendations = []
     detailed_analysis = []
+    avg_satisfaction = None
 
     # Analyze satisfaction scores
     satisfaction_scores = []
@@ -139,7 +146,7 @@ def generate_detailed_insights(stats):
         recommendations.append(f"Leverage successful practices from high-performing areas: {', '.join(high_performers[:2])}")
         recommendations.append("Document and replicate best practices from top-scoring areas across the organization")
 
-    if avg_satisfaction < 3.5:
+    if avg_satisfaction is not None and avg_satisfaction < 3.5:
         recommendations.append("Conduct comprehensive focus groups to identify root causes of dissatisfaction")
         recommendations.append("Implement monthly pulse surveys to track improvement progress and maintain momentum")
         recommendations.append("Establish employee feedback champions in each department for ongoing communication")
@@ -309,6 +316,11 @@ def generate_html_report(stats, analysis):
             border-radius: 5px;
             border-left: 4px solid #48bb78;
             line-height: 1.6;
+            cursor: text;
+        }}
+        .insights-list li:focus, .recommendations-list li:focus, .detailed-analysis-list li:focus {{
+            outline: 2px dashed #667eea;
+            background: #fff;
         }}
         .recommendations-list li {{
             border-left-color: #ed8936;
@@ -321,8 +333,9 @@ def generate_html_report(stats, analysis):
             padding: 20px;
             border-radius: 10px;
             min-height: 100px;
+            cursor: text;
         }}
-        .editable-summary[contenteditable="true"] {{
+        .editable-summary:focus {{
             border: 2px dashed #667eea;
             background: #fff;
         }}
@@ -447,7 +460,6 @@ def generate_html_report(stats, analysis):
 
         <div class="action-buttons">
             <button class="btn" onclick="exportToPDF()">📄 Export to PDF</button>
-            <button class="btn btn-secondary" onclick="editReport()">✏️ Edit Report</button>
         </div>
 
         <div class="report-card">
@@ -500,7 +512,7 @@ def generate_html_report(stats, analysis):
 
     for insight in insights:
         html += f"""
-                    <li>{insight}</li>
+                    <li contenteditable="true">{insight}</li>
         """
 
     html += f"""
@@ -516,7 +528,7 @@ def generate_html_report(stats, analysis):
 
     for analysis in detailed_analysis:
         html += f"""
-                    <li>{analysis}</li>
+                    <li contenteditable="true">{analysis}</li>
         """
 
     html += f"""
@@ -532,7 +544,7 @@ def generate_html_report(stats, analysis):
 
     for recommendation in recommendations:
         html += f"""
-                    <li>{recommendation}</li>
+                    <li contenteditable="true">{recommendation}</li>
         """
     
     html += f"""
@@ -542,7 +554,7 @@ def generate_html_report(stats, analysis):
 
         <div class="report-card">
             <h2 class="section-title">📋 Executive Summary</h2>
-            <div class="editable-summary">
+            <div class="editable-summary" contenteditable="true">
                 <p><strong>Survey Overview:</strong> Comprehensive analysis of {len(stats)} key areas with detailed insights and actionable recommendations for organizational improvement.</p>
                 <p><strong>Key Findings:</strong> Data reveals both organizational strengths and specific areas requiring attention for improved employee satisfaction and engagement.</p>
                 <p><strong>Strategic Impact:</strong> Results provide clear direction for management decisions and resource allocation to enhance workplace culture.</p>
@@ -575,83 +587,7 @@ def generate_html_report(stats, analysis):
             }}, 1000);
         }}
 
-        function editReport() {{
-            // Enhanced edit functionality for all sections
-            const insights = document.querySelectorAll('.insights-list li');
-            const recommendations = document.querySelectorAll('.recommendations-list li');
-            const detailedAnalysis = document.querySelectorAll('.detailed-analysis-list li');
-            const summary = document.querySelector('.editable-summary');
-
-            // Make all sections editable
-            insights.forEach(item => {{
-                item.contentEditable = true;
-                item.style.border = '2px dashed #48bb78';
-                item.style.padding = '15px';
-            }});
-
-            recommendations.forEach(item => {{
-                item.contentEditable = true;
-                item.style.border = '2px dashed #ed8936';
-                item.style.padding = '15px';
-            }});
-
-            detailedAnalysis.forEach(item => {{
-                item.contentEditable = true;
-                item.style.border = '2px dashed #667eea';
-                item.style.padding = '15px';
-            }});
-
-            // Make summary editable
-            summary.contentEditable = true;
-            summary.style.border = '2px dashed #667eea';
-            summary.style.background = '#fff';
-
-            // Change button text
-            const editBtn = document.querySelector('.btn-secondary');
-            editBtn.textContent = '💾 Save Changes';
-            editBtn.onclick = saveReport;
-
-            alert('Report is now fully editable! Click on any section to modify content.');
-        }}
-
-        function saveReport() {{
-            // Enhanced save functionality
-            const insights = document.querySelectorAll('.insights-list li');
-            const recommendations = document.querySelectorAll('.recommendations-list li');
-            const detailedAnalysis = document.querySelectorAll('.detailed-analysis-list li');
-            const summary = document.querySelector('.editable-summary');
-
-            // Lock all sections
-            insights.forEach(item => {{
-                item.contentEditable = false;
-                item.style.border = 'none';
-                item.style.padding = '15px';
-            }});
-
-            recommendations.forEach(item => {{
-                item.contentEditable = false;
-                item.style.border = 'none';
-                item.style.padding = '15px';
-            }});
-
-            detailedAnalysis.forEach(item => {{
-                item.contentEditable = false;
-                item.style.border = 'none';
-                item.style.padding = '15px';
-            }});
-
-            // Lock summary
-            summary.contentEditable = false;
-            summary.style.border = 'none';
-            summary.style.background = '#f7fafc';
-
-            // Restore button
-            const editBtn = document.querySelector('.btn-secondary');
-            editBtn.textContent = '✏️ Edit Report';
-            editBtn.onclick = editReport;
-
-            alert('All changes saved! Report is ready for PDF export.');
-        }}
+        // Text fields are directly editable on click via contenteditable.
     </script>
 </body>
 </html>
@@ -677,14 +613,15 @@ def main():
             }))
             return
         
-        # Parse survey data from file or command line
-        if sys.argv[1].endswith('.json'):
-            # File path provided by Laravel
-            with open(sys.argv[1], 'r', encoding='utf-8') as f:
+        # Parse survey data from file path or direct JSON string
+        input_arg = sys.argv[1]
+        if os.path.isfile(input_arg):
+            # File path provided by Laravel or CLI
+            with open(input_arg, 'r', encoding='utf-8') as f:
                 survey_data = json.load(f)
         else:
             # JSON string provided directly
-            survey_data = json.loads(sys.argv[1])
+            survey_data = json.loads(input_arg)
 
         # Debug: Check data structure
         if not survey_data:
